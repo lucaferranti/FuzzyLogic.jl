@@ -3,11 +3,15 @@ uuid = "271df9f8-4390-4196-9d4f-bdd0b67035b3"
 authors = ["Luca Ferranti"]
 version = "0.1.0"
 
+[deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+
 [compat]
-julia = "1"
+julia = "1.6"
 
 [extras]
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["SafeTestsets", "Test"]

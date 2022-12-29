@@ -1,6 +1,7 @@
-using FuzzyInference
-using Test
+using SafeTestsets, Test
 
-@testset "FuzzyInference.jl" begin
-    # Write your tests here.
+testfiles = ["test_membership_functions.jl"]
+
+for file in testfiles
+    @eval @time @safetestset $file begin include($file) end
 end

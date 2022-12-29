@@ -1,3 +1,5 @@
+# Membership functions
+
 """
 Abstract type for membership functions.
 """
@@ -14,7 +16,7 @@ struct GeneralizedBellMF{T <: Real, S <: Real} <: AbstractMembershipFunction
     "Center of the curve."
     c::T
 end
-((; a, b, c)::GeneralizedBellMF)(x) = 1 / (1 + abs((x - c) / a)^(2b))
+(mf::GeneralizedBellMF)(x) = 1 / (1 + abs((x - mf.c) / mf.a)^(2mf.b))
 
 """
 Gaussian membership function ``e^{-\\frac{(x-μ)²}{2σ²}}``.
@@ -25,7 +27,7 @@ struct GaussianMF{T <: Real}
     "standard deviation ``σ``."
     sig::T
 end
-((; mu, sig)::GaussianMF)(x) = exp(-(x - mu)^2 / (2sig^2))
+(mf::GaussianMF)(x) = exp(-(x - mf.mu)^2 / (2mf.sig^2))
 
 """
 Triangular membership function.
@@ -38,7 +40,7 @@ struct TriangularMF{T <: Real}
     "right foot."
     c::T
 end
-((; a, b, c)::TriangularMF)(x) = max(min((x - a) / (b - a), (c - x) / (c - b)), 0)
+(mf::TriangularMF)(x) = max(min((x - mf.a) / (mf.b - mf.a), (mf.c - x) / (mf.c - mf.b)), 0)
 
 """
 Trapezoidal membership function.
@@ -53,7 +55,9 @@ struct TrapezoidalMF{T <: Real}
     "right foot."
     d::T
 end
-((; a, b, c, d)::TrapezoidalMF)(x) = max(min((x - a) / (b - a), 1, (d - x) / (d - c)), 0)
+function (mf::TrapezoidalMF)(x)
+    return max(min((x - mf.a) / (mf.b - mf.a), 1, (mf.d - x) / (mf.d - mf.c)), 0)
+end
 
 """
 Linear membership function.
@@ -65,7 +69,7 @@ struct LinearMF{T <: Real}
     "shoulder."
     b::T
 end
-((; a, b)::LinearMF)(x) = max(min((a - x) / (a - b), 1), 0)
+(mf::LinearMF)(x) = max(min((x - mf.a) / (mf.b - mf.a), 1), 0)
 
 @doc raw"""
 Sigmoid membership function ``\frac{1}{1+e^{-a(x-c)}}``.
@@ -76,7 +80,7 @@ struct SigmoidMF{T <: Real}
     "center of the slope."
     c::T
 end
-((; a, c)::SigmoidMF)(x) = 1 / (1 + exp(-a * (x - c)))
+(mf::SigmoidMF)(x) = 1 / (1 + exp(-mf.a * (x - mf.c)))
 
 """
 Difference of two sigmoids. See also [`SigmoidMF`](@ref).
@@ -91,8 +95,9 @@ struct DifferenceSigmoidMF{T <: Real}
     "center of the second sigmoid."
     c2::T
 end
-function ((; a1, c1, a2, c2)::DifferenceSigmoidMF)(x)
-    return max(min(1 / (1 + exp(-a1 * (x - c1))) - 1 / (1 + exp(-a2 * (x - c2))), 1), 0)
+function (mf::DifferenceSigmoidMF)(x)
+    return max(min(1 / (1 + exp(-mf.a1 * (x - mf.c1))) -
+                   1 / (1 + exp(-mf.a2 * (x - mf.c2))), 1), 0)
 end
 
 """
@@ -108,6 +113,6 @@ struct ProductSigmoidMF{T <: Real}
     "center of the second sigmoid."
     c2::T
 end
-function ((; a1, c1, a2, c2)::ProductSigmoidMF)(x)
-    return 1 / ((1 + exp(-a1 * (x - c1))) * (1 + exp(-a2 * (x - c2))))
+function (mf::ProductSigmoidMF)(x)
+    return 1 / ((1 + exp(-mf.a1 * (x - mf.c1))) * (1 + exp(-mf.a2 * (x - mf.c2))))
 end

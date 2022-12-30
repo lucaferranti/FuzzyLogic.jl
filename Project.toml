@@ -4,17 +4,22 @@ authors = ["Luca Ferranti"]
 version = "0.1.0"
 
 [deps]
+Dictionaries = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 
 [compat]
 Aqua = "0.6"
+Dictionaries = "0.3"
 DocStringExtensions = "0.9"
+MacroTools = "0.5"
 julia = "1.6"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Aqua", "SafeTestsets", "Test"]
+test = ["Aqua", "Documenter", "SafeTestsets", "Test"]

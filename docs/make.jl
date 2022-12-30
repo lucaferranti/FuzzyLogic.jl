@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(FuzzyInference, :DocTestSetup, :(using FuzzyInference);
 
 makedocs(;
          modules = [FuzzyInference], authors = "Luca Ferranti",
-         sitename = "FuzzyInference.jl",
+         sitename = "FuzzyInference.jl", doctest = false,
          format = Documenter.HTML(;
                                   prettyurls = get(ENV, "CI", "false") == "true",
                                   canonical = "https://lucaferranti.github.io/FuzzyInference.jl"),

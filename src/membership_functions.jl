@@ -21,7 +21,7 @@ end
 """
 Gaussian membership function ``e^{-\\frac{(x-μ)²}{2σ²}}``.
 """
-struct GaussianMF{T <: Real}
+struct GaussianMF{T <: Real} <: AbstractMembershipFunction
     "mean ``μ``."
     mu::T
     "standard deviation ``σ``."
@@ -32,7 +32,7 @@ end
 """
 Triangular membership function.
 """
-struct TriangularMF{T <: Real}
+struct TriangularMF{T <: Real} <: AbstractMembershipFunction
     "left foot."
     a::T
     "peak."
@@ -45,7 +45,7 @@ end
 """
 Trapezoidal membership function.
 """
-struct TrapezoidalMF{T <: Real}
+struct TrapezoidalMF{T <: Real} <: AbstractMembershipFunction
     "left foot."
     a::T
     "left shoulder."
@@ -63,7 +63,7 @@ end
 Linear membership function.
 If ``a < b``, it is increasing (S-shaped), otherwise it is decreasing (Z-shaped).
 """
-struct LinearMF{T <: Real}
+struct LinearMF{T <: Real} <: AbstractMembershipFunction
     "foot."
     a::T
     "shoulder."
@@ -74,7 +74,7 @@ end
 @doc raw"""
 Sigmoid membership function ``\frac{1}{1+e^{-a(x-c)}}``.
 """
-struct SigmoidMF{T <: Real}
+struct SigmoidMF{T <: Real} <: AbstractMembershipFunction
     "parameter controlling the slope of the curve."
     a::T
     "center of the slope."
@@ -85,7 +85,7 @@ end
 """
 Difference of two sigmoids. See also [`SigmoidMF`](@ref).
 """
-struct DifferenceSigmoidMF{T <: Real}
+struct DifferenceSigmoidMF{T <: Real} <: AbstractMembershipFunction
     "slope of the first sigmoid."
     a1::T
     "center of the first sigmoid."
@@ -103,7 +103,7 @@ end
 """
 Product of two sigmoids. See also [`SigmoidMF`](@ref).
 """
-struct ProductSigmoidMF{T <: Real}
+struct ProductSigmoidMF{T <: Real} <: AbstractMembershipFunction
     "slope of the first sigmoid."
     a1::T
     "center of the first sigmoid."

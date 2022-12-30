@@ -33,17 +33,17 @@ end
 
 tipper
 
-INPUTS:
+Inputs:
 -------
 service ∈ [0, 10]
 food ∈ [0, 10]
 
-OUTPUTS:
+Outputs:
 --------
 tip ∈ [0, 30]
 
-Membership functions:
----------------------
+Membership functions
+--------------------
 poor = GaussianMF{Float64}(1.5, 0.0)
 good = GaussianMF{Float64}(1.5, 5.0)
 excellent = GaussianMF{Float64}(1.5, 10.0)
@@ -53,6 +53,14 @@ cheap = TriangularMF{Int64}(0, 5, 10)
 average = TriangularMF{Int64}(10, 15, 20)
 generous = TriangularMF{Int64}(20, 25, 30)
 
+Inference rules:
+----------------
+(service is poor ∨ food is rancid) => tip is cheap
+service is good => tip is average
+(service is excellent ∨ food is delicious) => tip is generous
+
+Settings:
+---------
 FuzzyLogic.ProdAnd()
 
 FuzzyLogic.ProbSumOr()
@@ -96,6 +104,7 @@ function parse_body(body)
     mfnames = Symbol[]
     mfs = Expr(:vect)
     kwargs = Expr[]
+    rules = Expr(:vect)
     for line in body.args
         line isa LineNumberNode && continue
         if @capture(line, var_=value_)
@@ -105,7 +114,35 @@ function parse_body(body)
                 push!(mfnames, var)
                 push!(mfs.args, value)
             end
+        elseif @capture(line, ant_=>(cons__,) | cons__)
+            push!(rules.args, parse_rule(ant, cons))
         end
     end
-    push!(kwargs, Expr(:kw, :mfs, :(Dictionary($mfnames, $mfs))))
+    isempty(mfnames) || push!(kwargs, Expr(:kw, :mfs, :(Dictionary($mfnames, $mfs))))
+    isempty(rules.args) || push!(kwargs, Expr(:kw, :rules, rules))
+    kwargs
+end
+
+function parse_rule(ant, cons)
+    Expr(:call, :FuzzyRule, parse_antecedent(ant), parse_consequents(cons))
+end
+
+function parse_antecedent(ant)
+    if @capture(ant, left_&&right_)
+        return Expr(:call, :FuzzyAnd, parse_antecedent(left), parse_antecedent(right))
+    elseif @capture(ant, left_||right_)
+        return Expr(:call, :FuzzyOr, parse_antecedent(left), parse_antecedent(right))
+    elseif @capture(ant, subj_==prop_)
+        return Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+    else
+        throw(ArgumentError("Invalid premise $ant"))
+    end
+end
+
+function parse_consequents(cons)
+    newcons = map(cons) do c
+        @capture(c, subj_==prop_) || throw(ArgumentError("Invalid consequence $c"))
+        Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+    end
+    return Expr(:vect, newcons...)
 end

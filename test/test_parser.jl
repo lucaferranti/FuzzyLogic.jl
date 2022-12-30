@@ -20,7 +20,7 @@ using Dictionaries
         or = ProbSumOr
         implication = ProdImplication
 
-        service == poor || food == rancid => tip == cheap
+        service == poor && food == rancid => tip == cheap
         service == good => tip == average
         service == excellent || food == delicious => tip == generous
 
@@ -54,4 +54,14 @@ using Dictionaries
                          TriangularMF(10, 15, 20),
                          TriangularMF(20, 25, 30),
                      ])
+
+    @test fis.rules ==
+          [
+        FuzzyRule(FuzzyAnd(FuzzyRelation(:service, :poor), FuzzyRelation(:food, :rancid)),
+                  [FuzzyRelation(:tip, :cheap)]),
+        FuzzyRule(FuzzyRelation(:service, :good), [FuzzyRelation(:tip, :average)]),
+        FuzzyRule(FuzzyOr(FuzzyRelation(:service, :excellent),
+                          FuzzyRelation(:food, :delicious)),
+                  [FuzzyRelation(:tip, :generous)]),
+    ]
 end

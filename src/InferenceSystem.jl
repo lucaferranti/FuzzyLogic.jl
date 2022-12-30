@@ -37,6 +37,7 @@ Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
     mfs::Dictionary{Symbol, <:AbstractMembershipFunction} = Dictionary{Symbol,
                                                                        AbstractMembershipFunction
                                                                        }()
+    rules::Vector{FuzzyRule} = FuzzyRule[]
     and::And = DEFAULT_AND
     or::Or = DEFAULT_OR
     implication::Impl = DEFAULT_IMPLICATION
@@ -44,30 +45,39 @@ Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
     defuzzifier::Defuzz = DEFAULT_DEFUZZIFIER
 end
 
+print_title(io::IO, s::String) = println(io, "\n$s\n", repeat('-', length(s)))
+
 function Base.show(io::IO, fis::FuzzyInferenceSystem)
     print(io, fis.name, "\n")
     if !isempty(fis.inputs)
-        print(io, "\nINPUTS:\n-------\n")
+        print_title(io, "Inputs:")
         for (name, dom) in pairs(fis.inputs)
             println(io, name, " ∈ ", dom)
         end
     end
 
     if !isempty(fis.outputs)
-        print(io, "\nOUTPUTS:\n--------\n")
+        print_title(io, "Outputs:")
         for (name, dom) in pairs(fis.outputs)
             println(io, name, " ∈ ", dom)
         end
     end
 
     if !isempty(fis.mfs)
-        print(io, "\nMembership functions:\n$(repeat('-', 21))\n")
+        print_title(io, "Membership functions")
         for (name, mf) in pairs(fis.mfs)
             println(io, name, " = ", mf)
         end
     end
 
-    println(io, "\n", fis.and)
+    if !isempty(fis.rules)
+        print_title(io, "Inference rules:")
+        for rule in fis.rules
+            println(io, rule)
+        end
+    end
+    print_title(io, "Settings:")
+    println(io, fis.and)
     println(io, "\n", fis.or)
     println(io, "\n", fis.implication)
     println(io, "\n", fis.aggregator)

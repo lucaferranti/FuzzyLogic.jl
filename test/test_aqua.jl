@@ -1,3 +1,3 @@
-using FuzzyInference, Aqua
+using FuzzyLogic, Aqua
 
-Aqua.test_all(FuzzyInference)
+Aqua.test_all(FuzzyLogic)

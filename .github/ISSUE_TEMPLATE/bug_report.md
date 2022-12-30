@@ -17,9 +17,9 @@ assignees: ''
 <!-- A clear and concise description of what you expected to happen. -->
 
 ## Version info
-<!-- you can get the package version with `]st FuzzyInference` from the REPL. For the system information, enter `versioninfo()` in the Julia REPL and copy-paste the output. -->
+<!-- you can get the package version with `]st FuzzyLogic` from the REPL. For the system information, enter `versioninfo()` in the Julia REPL and copy-paste the output. -->
 
- - FuzzyInference.jl version:
+ - FuzzyLogic.jl version:
  - System information:
 
 ## Related issues

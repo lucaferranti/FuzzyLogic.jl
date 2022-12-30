@@ -53,15 +53,15 @@ cheap = TriangularMF{Int64}(0, 5, 10)
 average = TriangularMF{Int64}(10, 15, 20)
 generous = TriangularMF{Int64}(20, 25, 30)
 
-FuzzyInference.ProdAnd()
+FuzzyLogic.ProdAnd()
 
-FuzzyInference.ProbSumOr()
+FuzzyLogic.ProbSumOr()
 
-FuzzyInference.ProdImplication()
+FuzzyLogic.ProdImplication()
 
-FuzzyInference.ProbSumAggregator()
+FuzzyLogic.ProbSumAggregator()
 
-FuzzyInference.BisectorDefuzzifier()
+FuzzyLogic.BisectorDefuzzifier()
 ```
 """
 macro fis(ex::Expr)

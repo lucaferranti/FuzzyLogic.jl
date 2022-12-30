@@ -26,4 +26,4 @@ Interactions with people in the community must always follow the [Julia communit
 > 
 > ### Get involved
 > 
-> The Julia community is built on a foundation of reciprocity and collaboration. Be aware that most community members contribute on a voluntary basis, so ideas and bug reports are ok, but demands are not. Pull requests are always welcomed – see the [guidelines for contributing](https://lucaferranti.github.io/FuzzyInference.jl/dev/contributing) to read about how to get started.
+> The Julia community is built on a foundation of reciprocity and collaboration. Be aware that most community members contribute on a voluntary basis, so ideas and bug reports are ok, but demands are not. Pull requests are always welcomed – see the [guidelines for contributing](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing) to read about how to get started.

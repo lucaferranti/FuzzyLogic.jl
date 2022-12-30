@@ -1,15 +1,15 @@
-using FuzzyInference
+using FuzzyLogic
 using Documenter
 
-DocMeta.setdocmeta!(FuzzyInference, :DocTestSetup, :(using FuzzyInference);
+DocMeta.setdocmeta!(FuzzyLogic, :DocTestSetup, :(using FuzzyLogic);
                     recursive = true)
 
 makedocs(;
-         modules = [FuzzyInference], authors = "Luca Ferranti",
-         sitename = "FuzzyInference.jl", doctest = false,
+         modules = [FuzzyLogic], authors = "Luca Ferranti",
+         sitename = "FuzzyLogic.jl", doctest = false,
          format = Documenter.HTML(;
                                   prettyurls = get(ENV, "CI", "false") == "true",
-                                  canonical = "https://lucaferranti.github.io/FuzzyInference.jl"),
+                                  canonical = "https://lucaferranti.github.io/FuzzyLogic.jl"),
          pages = ["Home" => "index.md"])
 
-deploydocs(; repo = "github.com/lucaferranti/FuzzyInference.jl", push_preview = true)
+deploydocs(; repo = "github.com/lucaferranti/FuzzyLogic.jl", push_preview = true)

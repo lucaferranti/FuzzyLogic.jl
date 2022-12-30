@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = FuzzyInference
+CurrentModule = FuzzyLogic
 ```
 
-# FuzzyInference
+# FuzzyLogic
 
-Documentation for [FuzzyInference](https://github.com/lucaferranti/FuzzyInference.jl).
+Documentation for [FuzzyLogic](https://github.com/lucaferranti/FuzzyLogic.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [FuzzyInference]
+Modules = [FuzzyLogic]
 ```

@@ -1,6 +1,6 @@
-using FuzzyInference, Test
-using FuzzyInference: Domain, ProdAnd, ProbSumOr, ProdImplication, ProbSumAggregator,
-                      BisectorDefuzzifier
+using FuzzyLogic, Test
+using FuzzyLogic: Domain, ProdAnd, ProbSumOr, ProdImplication, ProbSumAggregator,
+                  BisectorDefuzzifier
 using Dictionaries
 
 @testset "test parser" begin

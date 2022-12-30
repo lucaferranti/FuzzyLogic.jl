@@ -1,4 +1,4 @@
-using FuzzyInference, Test
+using FuzzyLogic, Test
 
 @testset "Difference of sigmoids MF" begin
     f = DifferenceSigmoidMF(5, 2, 5, 7)

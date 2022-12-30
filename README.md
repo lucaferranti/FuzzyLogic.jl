@@ -1,4 +1,4 @@
-# FuzzyInference.jl
+# FuzzyLogic.jl
 
 |**Info**|**Build status**|**Documentation**|**Contributing**|
 |:------:|:--------------:|:---------------:|:--------------:|
@@ -12,13 +12,13 @@ A Julia library to perform Fuzzy inference.
 To install the package, open a Julia session and run
 
 ```julia
-using Pkg; Pkg.add("FuzzyInference.jl")
+using Pkg; Pkg.add("FuzzyLogic.jl")
 ```
 
 the package can then be loaded with
 
 ```julia
-using FuzzyInference
+using FuzzyLogic
 ```
 
 ## Roadmap
@@ -40,32 +40,32 @@ TODO
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or want to request a feature, [open an issue](https://github.com/lucaferranti/FuzzyInference.jl/issues). You are also encouraged to send pull requests (PRs). For small changes, it is ok to open a PR directly. For bigger changes, it is advisable to discuss it in an issue first. Before opening a PR, make sure to check the [contributing guidelines](https://lucaferranti.github.io/FuzzyInference.jl/dev/contributing).
+Contributions are welcome! If you find a bug or want to request a feature, [open an issue](https://github.com/lucaferranti/FuzzyLogic.jl/issues). You are also encouraged to send pull requests (PRs). For small changes, it is ok to open a PR directly. For bigger changes, it is advisable to discuss it in an issue first. Before opening a PR, make sure to check the [contributing guidelines](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing).
 
 ## Copyright
 
 - Copyright (c) 2022 [Luca Ferranti](https://github.com/lucaferranti)
 
-[ver-img]: https://img.shields.io/github/v/release/lucaferranti/FuzzyInference.jl
-[ver-url]: https://github.com/lucaferranti/FuzzyInference.jl/releases/latest
+[ver-img]: https://img.shields.io/github/v/release/lucaferranti/FuzzyLogic.jl
+[ver-url]: https://github.com/lucaferranti/FuzzyLogic.jl/releases/latest
 
 [license-img]: https://img.shields.io/badge/license-MIT-yellow.svg
-[license-url]: https://github.com/lucaferranti/FuzzyInference.jl/blob/main/LICENSE
+[license-url]: https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/LICENSE
 
-[stable-url]:https://lucaferranti.github.io/FuzzyInference.jl/stable/
+[stable-url]:https://lucaferranti.github.io/FuzzyLogic.jl/stable/
 [stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 
 [dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[dev-url]: https://lucaferranti.github.io/FuzzyInference.jl/dev/
+[dev-url]: https://lucaferranti.github.io/FuzzyLogic.jl/dev/
 
-[ci-img]: https://github.com/lucaferranti/FuzzyInference.jl/actions/workflows/CI.yml/badge.svg?branch=main
-[ci-url]: https://github.com/lucaferranti/FuzzyInference.jl/actions/workflows/CI.yml?query=branch%3Amain
+[ci-img]: https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml/badge.svg?branch=main
+[ci-url]: https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml?query=branch%3Amain
 
-[cov-img]: https://codecov.io/gh/lucaferranti/FuzzyInference.jl/branch/main/graph/badge.svg
-[cov-url]: https://codecov.io/gh/lucaferranti/FuzzyInference.jl
+[cov-img]: https://codecov.io/gh/lucaferranti/FuzzyLogic.jl/branch/main/graph/badge.svg
+[cov-url]: https://codecov.io/gh/lucaferranti/FuzzyLogic.jl
 
 [contrib-img]: https://img.shields.io/badge/Contributor-Guide-important
-[contrib-url]: https://lucaferranti.github.io/FuzzyInference.jl/dev/contributing
+[contrib-url]: https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing
 
 [style-img]: https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826
 [style-url]: https://github.com/SciML/SciMLStyle

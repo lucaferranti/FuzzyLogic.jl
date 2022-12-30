@@ -1,20 +1,6 @@
 # Fuzzy Inference System
 
 """
-An interval representing the domain of a given variable.
-"""
-struct Domain{T <: Real}
-    "lower bound."
-    low::T
-    "upper bound."
-    high::T
-end
-Base.show(io::IO, d::Domain) = print(io, '[', low(d), ", ", high(d), ']')
-low(d::Domain) = d.low
-high(d::Domain) = d.high
-Base.in(x::Number, d::Domain) = low(d) <= x <= high(d)
-
-"""
 Enlarges the domain `d` by a factor `p`. If `p` is negative, the interval is shrunk.
 """
 function enlarge(d::Domain, p::Real)
@@ -82,12 +68,4 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
     println(io, "\n", fis.implication)
     println(io, "\n", fis.aggregator)
     println(io, "\n", fis.defuzzifier)
-end
-
-function (fis::FuzzyInferenceSystem)(; inputs...)
-    # validate input
-    for (name, val) in inputs
-        @assert val in fis.inputs[name], "$name = $val not in domain $(fis.inputs[name])"
-    end
-    return fis
 end

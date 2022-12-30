@@ -1,0 +1,25 @@
+using FuzzyLogic, Test
+
+@testset "test evaluation" begin
+    fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
+        poor = GaussianMF(0.0, 1.5)
+        good = GaussianMF(5.0, 1.5)
+        excellent = GaussianMF(10.0, 1.5)
+
+        rancid = TrapezoidalMF(-2, 0, 1, 3)
+        delicious = TrapezoidalMF(7, 9, 10, 12)
+
+        cheap = TriangularMF(0, 5, 10)
+        average = TriangularMF(10, 15, 20)
+        generous = TriangularMF(20, 25, 30)
+
+        service == poor || food == rancid => tip == cheap
+        service == good => tip == average
+        service == excellent || food == delicious => tip == generous
+    end
+
+    @test fis(service = 1, food = 2)[:tip]≈5.55 atol=1e-2
+    @test fis(service = 3, food = 5)[:tip]≈12.21 atol=1e-2
+    @test fis(service = 2, food = 7)[:tip]≈7.79 atol=1e-2
+    @test fis(service = 3, food = 1)[:tip]≈8.95 atol=1e-2
+end

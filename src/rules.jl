@@ -12,7 +12,6 @@ struct FuzzyRelation <: AbstractFuzzyProposition
     prop::Symbol
 end
 Base.show(io::IO, fr::FuzzyRelation) = print(io, fr.subj, " is ", fr.prop)
-Base.:(==)(r1::FuzzyRelation, r2::FuzzyRelation) = r1.subj == r2.subj && r1.prop == r2.prop
 
 """
 Describes the conjuction of two propositions.
@@ -34,11 +33,6 @@ struct FuzzyOr{T <: AbstractFuzzyProposition, S <: AbstractFuzzyProposition} <:
 end
 Base.show(io::IO, fo::FuzzyOr) = print(io, '(', fo.left, " ∨ ", fo.right, ')')
 
-function Base.:(==)(p1::T, p2::T) where {T <: AbstractFuzzyProposition}
-    p1.left == p2.left && p1.right == p2.right
-end
-Base.:(==)(p1::AbstractFuzzyProposition, p2::AbstractFuzzyProposition) = false
-
 struct FuzzyRule{T <: AbstractFuzzyProposition}
     "premise of the inference rule."
     antecedent::T
@@ -46,6 +40,15 @@ struct FuzzyRule{T <: AbstractFuzzyProposition}
     consequent::Vector{FuzzyRelation}
 end
 Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " => ", r.consequent...)
+
+# comparisons (for testing)
+
+Base.:(==)(r1::FuzzyRelation, r2::FuzzyRelation) = r1.subj == r2.subj && r1.prop == r2.prop
+
+function Base.:(==)(p1::T, p2::T) where {T <: AbstractFuzzyProposition}
+    p1.left == p2.left && p1.right == p2.right
+end
+Base.:(==)(p1::AbstractFuzzyProposition, p2::AbstractFuzzyProposition) = false
 
 function Base.:(==)(r1::FuzzyRule, r2::FuzzyRule)
     r1.antecedent == r2.antecedent && r1.consequent == r1.consequent

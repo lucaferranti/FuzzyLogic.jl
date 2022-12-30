@@ -5,9 +5,9 @@ using Dictionaries
 
 @testset "test parser" begin
     fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
-        poor = GaussianMF(1.5, 0.0)
-        good = GaussianMF(1.5, 5.0)
-        excellent = GaussianMF(1.5, 10.0)
+        poor = GaussianMF(0.0, 1.5)
+        good = GaussianMF(5.0, 1.5)
+        excellent = GaussianMF(10.0, 1.5)
 
         rancid = TrapezoidalMF(-2, 0, 1, 3)
         delicious = TrapezoidalMF(7, 9, 10, 12)
@@ -45,9 +45,9 @@ using Dictionaries
                          :generous,
                      ],
                      [
-                         GaussianMF(1.5, 0.0),
-                         GaussianMF(1.5, 5.0),
-                         GaussianMF(1.5, 10.0),
+                         GaussianMF(0.0, 1.5),
+                         GaussianMF(5.0, 1.5),
+                         GaussianMF(10.0, 1.5),
                          TrapezoidalMF(-2, 0, 1, 3),
                          TrapezoidalMF(7, 9, 10, 12),
                          TriangularMF(0, 5, 10),

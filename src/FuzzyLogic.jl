@@ -8,6 +8,7 @@ include("rules.jl")
 include("options.jl")
 include("InferenceSystem.jl")
 include("parser.jl")
+include("evaluation.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
        SigmoidMF, TrapezoidalMF, TriangularMF,

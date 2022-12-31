@@ -14,9 +14,6 @@ low(d::Domain) = d.low
 high(d::Domain) = d.high
 Base.in(x::Number, d::Domain) = low(d) <= x <= high(d)
 
-"""
-Abstract type for membership functions.
-"""
 abstract type AbstractMembershipFunction end
 
 @doc raw"""

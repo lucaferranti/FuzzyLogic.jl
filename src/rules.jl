@@ -33,10 +33,13 @@ struct FuzzyOr{T <: AbstractFuzzyProposition, S <: AbstractFuzzyProposition} <:
 end
 Base.show(io::IO, fo::FuzzyOr) = print(io, '(', fo.left, " ∨ ", fo.right, ')')
 
+"""
+Describes a fuzzy implication rule IF antecedent THEN consequent.
+"""
 struct FuzzyRule{T <: AbstractFuzzyProposition}
     "premise of the inference rule."
     antecedent::T
-    "consequence of the premise rule."
+    "consequences of the premise rule."
     consequent::Vector{FuzzyRelation}
 end
 Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " => ", r.consequent...)

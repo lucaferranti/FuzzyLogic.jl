@@ -1,9 +1,12 @@
 
 """
+    $(TYPEDSIGNATURES)
+
 Parse julia code into a [`FuzzyInferenceSystem`](@ref).
 
-### Example
+# Extended help
 
+### Example
 ```jldoctest
 fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
     poor = GaussianMF(1.5, 0.0)
@@ -61,15 +64,15 @@ service is good => tip is average
 
 Settings:
 ---------
-FuzzyLogic.ProdAnd()
+ProdAnd()
 
-FuzzyLogic.ProbSumOr()
+ProbSumOr()
 
-FuzzyLogic.ProdImplication()
+ProdImplication()
 
-FuzzyLogic.ProbSumAggregator()
+ProbSumAggregator()
 
-FuzzyLogic.BisectorDefuzzifier()
+BisectorDefuzzifier(100)
 ```
 """
 macro fis(ex::Expr)

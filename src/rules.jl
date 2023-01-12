@@ -42,7 +42,7 @@ struct FuzzyRule{T <: AbstractFuzzyProposition}
     "consequences of the premise rule."
     consequent::Vector{FuzzyRelation}
 end
-Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " => ", r.consequent...)
+Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", r.consequent...)
 
 # comparisons (for testing)
 

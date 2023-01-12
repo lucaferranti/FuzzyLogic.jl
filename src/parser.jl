@@ -8,17 +8,26 @@ Parse julia code into a [`FuzzyInferenceSystem`](@ref).
 
 ### Example
 ```jldoctest
-fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
-    poor = GaussianMF(1.5, 0.0)
-    good = GaussianMF(1.5, 5.0)
-    excellent = GaussianMF(1.5, 10.0)
+fis = @fis function tipper(service, food)::tip
+    service := begin
+      domain = 0:10
+      poor = GaussianMF(0.0, 1.5)
+      good = GaussianMF(5.0, 1.5)
+      excellent = GaussianMF(10.0, 1.5)
+    end
 
-    rancid = TrapezoidalMF(-2, 0, 1, 3)
-    delicious = TrapezoidalMF(7, 9, 10, 12)
+    food := begin
+      domain = 0:10
+      rancid = TrapezoidalMF(-2, 0, 1, 3)
+      delicious = TrapezoidalMF(7, 9, 10, 12)
+    end
 
-    cheap = TriangularMF(0, 5, 10)
-    average = TriangularMF(10, 15, 20)
-    generous = TriangularMF(20, 25, 30)
+    tip := begin
+      domain = 0:30
+      cheap = TriangularMF(0, 5, 10)
+      average = TriangularMF(10, 15, 20)
+      generous = TriangularMF(20, 25, 30)
+    end
 
     and = ProdAnd
     or = ProbSumOr
@@ -38,29 +47,23 @@ tipper
 
 Inputs:
 -------
-service ∈ [0, 10]
-food ∈ [0, 10]
+service ∈ [0, 10] with membership function
+    poor = GaussianMF{Float64}(0.0, 1.5)
+    good = GaussianMF{Float64}(5.0, 1.5)
+    excellent = GaussianMF{Float64}(10.0, 1.5)
+
+food ∈ [0, 10] with membership function
+    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
+    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+
 
 Outputs:
 --------
-tip ∈ [0, 30]
+tip ∈ [0, 30] with membership function
+    cheap = TriangularMF{Int64}(0, 5, 10)
+    average = TriangularMF{Int64}(10, 15, 20)
+    generous = TriangularMF{Int64}(20, 25, 30)
 
-Membership functions
---------------------
-poor = GaussianMF{Float64}(1.5, 0.0)
-good = GaussianMF{Float64}(1.5, 5.0)
-excellent = GaussianMF{Float64}(1.5, 10.0)
-rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
-delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
-cheap = TriangularMF{Int64}(0, 5, 10)
-average = TriangularMF{Int64}(10, 15, 20)
-generous = TriangularMF{Int64}(20, 25, 30)
-
-Inference rules:
-----------------
-(service is poor ∨ food is rancid) => tip is cheap
-service is good => tip is average
-(service is excellent ∨ food is delicious) => tip is generous
 
 Settings:
 ---------
@@ -82,48 +85,57 @@ end
 const fis_settings = (:and, :or, :implication, :aggregator, :defuzzifier)
 
 function _fis(ex::Expr)
-    @capture ex function name_(argsin__)::{argsout__}
+    @capture ex function name_(argsin__)::({argsout__} | argsout__)
         body_
     end
-    inputs = parse_variables(argsin)
-    outputs = parse_variables(argsout)
-    kwargs = parse_body(body)
+    inputs, outputs, opts, rules = parse_body(body, argsin, argsout)
 
     fis = :(FuzzyInferenceSystem(; name = $(QuoteNode(name)), inputs = $inputs,
-                                 outputs = $outputs))
-    append!(fis.args[2].args, kwargs)
+                                 outputs = $outputs, rules = $rules))
+    append!(fis.args[2].args, opts)
     return fis
 end
 
-function parse_variables(args)
-    map(args) do arg
-        @capture(arg, varname_ in low_:high_) ||
-            throw(ArgumentError("Invalid input $arg"))
-        varname => Domain(low, high)
-    end |> dictionary
+function parse_variable(var, args)
+    mfs = :(dictionary([]))
+    ex = :(Variable())
+    for arg in args
+        if @capture(arg, domain=low_:high_)
+            push!(ex.args, :(Domain($low, $high)))
+        elseif @capture(arg, mfname_=mfex_)
+            push!(mfs.args[2].args, :($(QuoteNode(mfname)) => $mfex))
+        else
+            throw(ArgumentError("Invalid expression $arg"))
+        end
+    end
+    push!(ex.args, mfs)
+    return :($(QuoteNode(var)) => $ex)
 end
 
-function parse_body(body)
-    mfnames = Symbol[]
-    mfs = Expr(:vect)
-    kwargs = Expr[]
-    rules = Expr(:vect)
+function parse_body(body, argsin, argsout)
+    opts = Expr[]
+    rules = :(FuzzyRule[])
+    inputs = :(dictionary([]))
+    outputs = :(dictionary([]))
     for line in body.args
         line isa LineNumberNode && continue
-        if @capture(line, var_=value_)
-            if var in fis_settings # algorithm setting
-                push!(kwargs, Expr(:kw, var, value isa Symbol ? :($value()) : value))
-            else # membership function definition
-                push!(mfnames, var)
-                push!(mfs.args, value)
+        if @capture(line, var_:=begin args__ end)
+            if var in argsin
+                push!(inputs.args[2].args, parse_variable(var, args))
+            elseif var in argsout
+                push!(outputs.args[2].args, parse_variable(var, args))
+            else
+                throw(ArgumentError("Undefined variable $var"))
             end
-        elseif @capture(line, ant_=>(cons__,) | cons__)
+        elseif @capture(line, var_=value_)
+            var in fis_settings ||
+                throw(ArgumentError("Invalid keyword $var in line $line"))
+            push!(opts, Expr(:kw, var, value isa Symbol ? :($value()) : value))
+        elseif @capture(line, ant_-->(cons__,) | cons__)
             push!(rules.args, parse_rule(ant, cons))
         end
     end
-    isempty(mfnames) || push!(kwargs, Expr(:kw, :mfs, :(Dictionary($mfnames, $mfs))))
-    isempty(rules.args) || push!(kwargs, Expr(:kw, :rules, rules))
-    kwargs
+    return inputs, outputs, opts, rules
 end
 
 function parse_rule(ant, cons)

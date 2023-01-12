@@ -1,7 +1,7 @@
 # utilities to evaluate a fuzzy inference system
 
 function (fr::FuzzyRelation)(fis::FuzzyInferenceSystem, inputs)
-    fis.mfs[fr.prop](inputs[fr.subj])
+    memberships(fis.inputs[fr.subj])[fr.prop](inputs[fr.subj])
 end
 
 function (fa::FuzzyAnd)(fis::FuzzyInferenceSystem, inputs)
@@ -14,15 +14,15 @@ end
 
 function (fr::FuzzyRule)(fis::FuzzyInferenceSystem, inputs)
     map(fr.consequent) do c
-        c.subj => y -> fis.implication(fr.antecedent(fis, inputs), fis.mfs[c.prop](y))
+        mf = memberships(fis.outputs[c.subj])[c.prop]
+        c.subj => y -> fis.implication(fr.antecedent(fis, inputs), mf(y))
     end |> dictionary
 end
 
 function (fis::FuzzyInferenceSystem)(; inputs...)
     rules = [rule(fis, inputs) for rule in fis.rules]
-
-    map(pairs(fis.outputs)) do (y, dom)
-        fis.defuzzifier(dom) do x
+    map(pairs(fis.outputs)) do (y, var)
+        fis.defuzzifier(domain(var)) do x
             reduce(fis.aggregator, rule[y](x) for rule in rules if haskey(rule, y))
         end
     end

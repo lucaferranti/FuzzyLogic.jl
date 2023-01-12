@@ -4,6 +4,7 @@ using Dictionaries, DocStringExtensions, MacroTools
 
 include("docstrings.jl")
 include("membership_functions.jl")
+include("variables.jl")
 include("rules.jl")
 include("options.jl")
 include("InferenceSystem.jl")
@@ -15,5 +16,5 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        ProdAnd, MinAnd, ProbSumOr, MaxOr, MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
        FuzzyRule, FuzzyAnd, FuzzyOr, FuzzyRelation,
-       @fis, FuzzyInferenceSystem, Domain
+       @fis, FuzzyInferenceSystem, Domain, Variable
 end

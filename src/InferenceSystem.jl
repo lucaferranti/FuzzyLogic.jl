@@ -10,22 +10,31 @@ The inputs should be given as keyword arguments.
 
 ### Example
 
-```jldoctest
-fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
-    poor = GaussianMF(0.0, 1.5)
-    good = GaussianMF(5.0, 1.5)
-    excellent = GaussianMF(10.0, 1.5)
+```jldoctest; filter=r"Dictionaries\\."
+fis = @fis function tipper(service, food)::tip
+    service := begin
+      domain = 0:10
+      poor = GaussianMF(0.0, 1.5)
+      good = GaussianMF(5.0, 1.5)
+      excellent = GaussianMF(10.0, 1.5)
+    end
 
-    rancid = TrapezoidalMF(-2, 0, 1, 3)
-    delicious = TrapezoidalMF(7, 9, 10, 12)
+    food := begin
+      domain = 0:10
+      rancid = TrapezoidalMF(-2, 0, 1, 3)
+      delicious = TrapezoidalMF(7, 9, 10, 12)
+    end
 
-    cheap = TriangularMF(0, 5, 10)
-    average = TriangularMF(10, 15, 20)
-    generous = TriangularMF(20, 25, 30)
+    tip := begin
+      domain = 0:30
+      cheap = TriangularMF(0, 5, 10)
+      average = TriangularMF(10, 15, 20)
+      generous = TriangularMF(20, 25, 30)
+    end
 
-    service == poor || food == rancid => tip == cheap
-    service == good => tip == average
-    service == excellent || food == delicious => tip == generous
+    service == poor || food == rancid --> tip == cheap
+    service == good --> tip == average
+    service == excellent || food == delicious --> tip == generous
 end
 
 fis(; service=1, food=2)
@@ -43,13 +52,9 @@ Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
     "name of the system."
     name::Symbol
     "input variables and corresponding domain."
-    inputs::Dictionary{Symbol, <:Domain} = Dictionary{Symbol, Domain}()
+    inputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
     "output variables and corresponding domain."
-    outputs::Dictionary{Symbol, <:Domain} = Dictionary{Symbol, Domain}()
-    "membership functions."
-    mfs::Dictionary{Symbol, <:AbstractMembershipFunction} = Dictionary{Symbol,
-                                                                       AbstractMembershipFunction
-                                                                       }()
+    outputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
     "inference rules."
     rules::Vector{FuzzyRule} = FuzzyRule[]
     "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
@@ -70,22 +75,23 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
     print(io, fis.name, "\n")
     if !isempty(fis.inputs)
         print_title(io, "Inputs:")
-        for (name, dom) in pairs(fis.inputs)
-            println(io, name, " ∈ ", dom)
+        for (name, var) in pairs(fis.inputs)
+            println(io, name, " ∈ ", domain(var), " with membership function")
+            for (name, mf) in pairs(memberships(var))
+                println(io, "    ", name, " = ", mf)
+            end
+            println(io)
         end
     end
 
     if !isempty(fis.outputs)
         print_title(io, "Outputs:")
-        for (name, dom) in pairs(fis.outputs)
-            println(io, name, " ∈ ", dom)
-        end
-    end
-
-    if !isempty(fis.mfs)
-        print_title(io, "Membership functions")
-        for (name, mf) in pairs(fis.mfs)
-            println(io, name, " = ", mf)
+        for (name, var) in pairs(fis.outputs)
+            println(io, name, " ∈ ", domain(var), " with membership function")
+            for (name, mf) in pairs(memberships(var))
+                println(io, "    ", name, " = ", mf)
+            end
+            println(io)
         end
     end
 
@@ -94,7 +100,9 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
         for rule in fis.rules
             println(io, rule)
         end
+        println(io)
     end
+
     print_title(io, "Settings:")
     println(io, fis.and)
     println(io, "\n", fis.or)

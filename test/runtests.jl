@@ -4,6 +4,7 @@ testfiles = [
     "test_membership_functions.jl",
     "test_parser.jl",
     "test_evaluation.jl",
+    "test_plotting.jl",
     "test_aqua.jl",
     "test_doctests.jl",
 ]

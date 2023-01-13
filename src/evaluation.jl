@@ -1,6 +1,7 @@
 # utilities to evaluate a fuzzy inference system
 
-function (fr::FuzzyRelation)(fis::FuzzyInferenceSystem, inputs)
+function (fr::FuzzyRelation)(fis::FuzzyInferenceSystem,
+                             inputs::T)::float(eltype(T)) where {T <: NamedTuple}
     memberships(fis.inputs[fr.subj])[fr.prop](inputs[fr.subj])
 end
 
@@ -12,14 +13,16 @@ function (fo::FuzzyOr)(fis::FuzzyInferenceSystem, inputs)
     fis.or(fo.left(fis, inputs), fo.right(fis, inputs))
 end
 
-function (fr::FuzzyRule)(fis::FuzzyInferenceSystem, inputs)
+function (fr::FuzzyRule)(fis::FuzzyInferenceSystem, inputs)::Dictionary{Symbol, Function}
     map(fr.consequent) do c
         mf = memberships(fis.outputs[c.subj])[c.prop]
-        c.subj => y -> fis.implication(fr.antecedent(fis, inputs), mf(y))
+        c.subj => Base.Fix1(fis.implication, fr.antecedent(fis, inputs)) ∘ mf
     end |> dictionary
 end
 
-function (fis::FuzzyInferenceSystem)(; inputs...)
+function (fis::FuzzyInferenceSystem)(inputs::T)::Dictionary{Symbol,
+                                                            float(eltype(T))
+                                                            } where {T <: NamedTuple}
     rules = [rule(fis, inputs) for rule in fis.rules]
     map(pairs(fis.outputs)) do (y, var)
         fis.defuzzifier(domain(var)) do x
@@ -27,3 +30,5 @@ function (fis::FuzzyInferenceSystem)(; inputs...)
         end
     end
 end
+
+(fis::FuzzyInferenceSystem)(; inputs...) = fis(values(inputs))

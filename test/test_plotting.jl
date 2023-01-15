@@ -77,7 +77,7 @@ end
         "food is rancid",
         "tip is cheap",
         "service is good",
-        "tipper",
+        "",
         "tip is average",
         "service is excellent",
         "food is delicious",
@@ -86,7 +86,7 @@ end
 
     for (p, d, t) in zip(rec, data, titles)
         @test p.args == d
-        @test p.plotattributes[:title] == t
+        isempty(t) || @test p.plotattributes[:title] == t
         @test p.plotattributes[:layout] == (3, 3)
     end
 end

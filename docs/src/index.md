@@ -12,7 +12,7 @@ A Julia library to perform Fuzzy inference.
 To install the package, open a Julia session and run
 
 ```julia
-using Pkg; Pkg.add("FuzzyLogic.jl")
+using Pkg; Pkg.add(url="https://github.com/lucaferranti/FuzzyLogic.jl.git")
 ```
 
 the package can then be loaded with

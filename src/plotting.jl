@@ -36,7 +36,7 @@ end
 # plot fis
 
 @recipe function f(fis::FuzzyInferenceSystem)
-    title := string(fis.name)
+    plot_title := string(fis.name)
     nout = length(fis.outputs)
     nin = length(fis.inputs)
     nrules = length(fis.rules)

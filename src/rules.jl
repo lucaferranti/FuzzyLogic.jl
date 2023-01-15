@@ -12,6 +12,8 @@ struct FuzzyRelation <: AbstractFuzzyProposition
     prop::Symbol
 end
 Base.show(io::IO, fr::FuzzyRelation) = print(io, fr.subj, " is ", fr.prop)
+subject(fr::FuzzyRelation) = fr.subj
+predicate(fr::FuzzyRelation) = fr.prop
 
 """
 Describes the conjuction of two propositions.
@@ -56,3 +58,7 @@ Base.:(==)(p1::AbstractFuzzyProposition, p2::AbstractFuzzyProposition) = false
 function Base.:(==)(r1::FuzzyRule, r2::FuzzyRule)
     r1.antecedent == r2.antecedent && r1.consequent == r1.consequent
 end
+
+# utilities
+leaves(fr::FuzzyRelation) = (fr,)
+leaves(fp::AbstractFuzzyProposition) = [leaves(fp.left)..., leaves(fp.right)...]

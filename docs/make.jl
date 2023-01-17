@@ -34,7 +34,9 @@ end
 # Points to local path locally and to nbviewer when deployed.
 notebook_link(file) = content -> notebook_link(file, content)
 function notebook_link(file, content)
-    path = joinpath("@__NBVIEWER_ROOT_URL__", "notebooks", replace(file, ".jl" => ".ipynb"))
+    root = IS_CI ? "@__NBVIEWER_ROOT_URL__" :
+           "https://nbviewer.org/github/lucaferranti/FuzzyLogic.jl/blob/gh-pages/dev"
+    path = joinpath(root, "notebooks", replace(file, ".jl" => ".ipynb"))
     note = """!!! tip "Try it yourself!"\n    Read this as Jupyter notebook [here]($path)"""
     replace(content, "DOWNLOAD_NOTE" => note)
 end

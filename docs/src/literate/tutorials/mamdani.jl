@@ -24,7 +24,7 @@ First, we need to load the library.
 
 using FuzzyLogic
 
-# The mMmdami inference system can be constructed with the [`@fis`](@ref) macro.
+# The Mamdani inference system can be constructed with the [`@fis`](@ref) macro.
 # We will first give a full example and then explain every step.
 
 fis = @fis function tipper(service, food)::tip
@@ -72,11 +72,10 @@ specifies the basic properties of the system, particularly
 
 - the function name `tipper` will be the name of the system
 - the input arguments `service, food` represent the input variables of the system
-- the output type annotation `::tip` represents the output variable of the system.
-If the system has multiple outputs, they should be enclosed in braces, i.e. `::{tip1, tip2}`
+- the output type annotation `::tip` represents the output variable of the system. If the system has multiple outputs, they should be enclosed in braces, i.e. `::{tip1, tip2}`
 
-The next block is the variable specification block, identified by the `:=` operator.
-This block is used to specify the domain and membership functions of the variable, for example
+The next block is the variable specifications block, identified by the `:=` operator.
+This block is used to specify the domain and membership functions of a variable, for example
 
 ```julia
 service := begin
@@ -128,7 +127,7 @@ plot(fis)
 #=
 ## Inference
 
-To perform inference, you can call the above constructed inference system as a function, passing th einput values as parameters.
+To perform inference, you can call the above constructed inference system as a function, passing th input values as parameters.
 Note that the system does not accept positional arguments, but inputs should be passed as name-value pairs.
 For example
 =#
@@ -136,6 +135,6 @@ For example
 res = fis(service = 2, food = 3)
 
 # The result is a Dictionary containing the output value corresponding to each output variable.
-# The value of a specific output value can be extracted as per normal dictionaries.
+# The value of a specific output variable can be extracted using the variable name as key.
 
 res[:tip]

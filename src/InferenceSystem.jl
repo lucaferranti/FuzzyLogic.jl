@@ -1,7 +1,7 @@
 # Fuzzy Inference System
 
 """
-Data structure representing a type-1 Mamdami fuzzy inference system.
+Data structure representing a type-1 Mamdani fuzzy inference system.
 A Fuzzy inference system can be created using [`@fis`](@ref) macro.
 After that it can be called as a function to evaluate the system at a given input.
 The inputs should be given as keyword arguments.

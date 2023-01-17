@@ -2,4 +2,9 @@
 *.jl.cov
 *.jl.mem
 Manifest.toml
+
 /docs/build/
+indigo.css
+/docs/src/tutorials/
+/docs/src/applications/
+/docs/src/notebooks/

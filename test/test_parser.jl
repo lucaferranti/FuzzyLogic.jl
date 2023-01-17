@@ -1,5 +1,5 @@
-using FuzzyLogic, Test
-using Dictionaries
+using Dictionaries, FuzzyLogic, Test
+using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
 
 @testset "test parser" begin
     fis = @fis function tipper(service, food)::tip

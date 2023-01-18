@@ -31,7 +31,7 @@ MinImplication
 ProdImplication
 ```
 
-### AggregationMethod
+### Aggregation methods
 
 ```@docs
 MaxAggregator

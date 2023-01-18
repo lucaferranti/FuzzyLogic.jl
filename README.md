@@ -5,7 +5,7 @@
 |[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|
 |[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|
 
-A Julia library to perform Fuzzy inference.
+A Julia library for fuzzy inference.
 
 ## Installation
 

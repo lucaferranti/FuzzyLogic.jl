@@ -96,7 +96,62 @@ membership function called `poor` with mean ``0.0`` and stanrdard devisation ``1
 A complete list of supported dmembership functions and their parameters can be found in the
 [Membership functions](@ref) section of the API documentation.
 
-TODO: DESCRIBE RULES AND OPTIONS
+Next, we describe rule blocks. A fuzzy relation such as `service is poor` is described with
+the `==` operator, for example `service == poor`.
+The *premise* i.e. left-hand side, of the rule can be any logical proposition connecting
+fuzzy relations with the `&&` (AND) and `||` (OR) operators. The *consequence* i.e. right-hand side,
+of the rule is a fuzzy relation for the output variable. Premise and consequence are connected with
+the `-->` operator. For example, the rule
+
+```julia
+service == poor || food == rancid --> tip == cheap
+```
+
+reads *If the service is poor or the food is rancid, then the tip is cheap*.
+
+Note that in the premise can be any logical proposition, you can have both `&&` and  `||` connectives
+and you can also have nested propositions. For example, the following is a valid rule
+
+```julia
+service == poor || food = rancid && service == good
+```
+
+The connectives follow Julia precedence rules, so `&&` binds stronger than `||`.
+
+If you have multiple outputs, then the consequence should be a tuple, for example
+
+```julia
+service == poor || food == rancid --> (tip1 == cheap, tip2 == cheap)
+```
+
+Finally, assignment lines like
+
+```julia
+and = ProdAnd
+```
+
+are used to set the settings of the inference system. For a Mamdani inference system,
+the following settings are available
+
+- `and`: algorithm to evaluate `&&`. Must be one of the available [Conjuction methods](@ref).
+- `or`: algorithm to evaluate `||`. Must be one of the available [Disjunction methods](@ref).
+- `implication`: algorithm to evalute `-->`. Must be one of the available [Implication methods](@ref).
+- `aggregato`: algorithm to perform outputs aggregation. Must be one of the available [Aggregation methods](@ref).
+- `defuzzifier`: algorithm to perform defuzzification. Must be one of the available [Defuzzification methods](@ref).
+
+Each of the previous settings has a default value that will be used if the setting is not specified.
+The default values are listed in [`FuzzyInferenceSystem`](@ref) documentation.
+
+Some of the above settings may have internal parameters.
+For example, [`CentroidDefuzzifier`](@ref) has an integer parameter `N`, the number of points used to perform numerical integration.
+If the parameter is not specified, as in `defuzzifier = CentroidDefuzzifier`, then the default value for `N` can be used.
+This parameter can be overwritten with custom values, for example
+
+```julia
+defuzzifier = CentroidDefuzzifier(50)
+```
+
+will use ``50`` as value of `N` instead of the default one (``100`` in this case).
 
 ## Visualization
 
@@ -113,12 +168,6 @@ want to visualize, given as a symbol. For example,
 =#
 
 plot(fis, :service)
-
-# The following code plots all three variables in three subplots.
-
-plot(fis, :service; layout = (1, 3))
-plot!(fis, :food)
-plot(fis, :tip)
 
 # Giving only the inference system object to `plot` will plot the inference rules, one per line.
 

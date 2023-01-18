@@ -2,7 +2,7 @@
 
 |**Info**|**Build status**|**Documentation**|**Contributing**|
 |:------:|:--------------:|:---------------:|:--------------:|
-|[![version](https://img.shields.io/github/v/release/lucaferranti/FuzzyLogic.jl)](https://github.com/lucaferranti/FuzzyLogic.jl/releases/latest)|[![CI Status](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml?query=branch%3Amain)|[![Stable docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/stable/)|[![contributing guidelines](https://img.shields.io/badge/Contributor-Guide-important)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing)|
+|![version](https://img.shields.io/badge/lifecycle-maturing-important)|[![CI Status](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml?query=branch%3Amain)|[![Stable docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/stable/)|[![contributing guidelines](https://img.shields.io/badge/Contributor-Guide-important)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing)|
 |[![Licese: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/LICENSE)|[![Coverage](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl)|[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/)|[![SciML Code Style](https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826)](https://github.com/SciML/SciMLStyle)|
 
 A Julia library to perform Fuzzy inference.
@@ -23,7 +23,7 @@ using FuzzyLogic
 
 ## Roadmap
 
-- **Rich!** Mamdami and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
+- **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
 - **Compatible!** Able to read/write your model from/to [IEEE 1855-2016 Fuzzy Markup Language](https://en.wikipedia.org/wiki/Fuzzy_markup_language) and [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm) and Matlab Fuzzy toolbox `.fis` files.
 - **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
 - **Productive!** Several visualization tools to help debug and tune your model.

@@ -29,7 +29,7 @@ using Test
     end
 end
 
-@testset "Plotting Mamdami inference system" begin
+@testset "Plotting Mamdani inference system" begin
     fis = @fis function tipper(service, food)::tip
         service := begin
             domain = 0:10
@@ -65,7 +65,7 @@ end
         (TrapezoidalMF(-2, 0, 1, 3), dom_in),
         (TriangularMF(0, 5, 10), dom_out),
         (GaussianMF(5.0, 1.5), dom_in),
-        (identity,),
+        (),
         (TriangularMF(10, 15, 20), dom_out),
         (GaussianMF(10.0, 1.5), dom_in),
         (TrapezoidalMF(7, 9, 10, 12), dom_in),
@@ -86,7 +86,12 @@ end
 
     for (p, d, t) in zip(rec, data, titles)
         @test p.args == d
-        isempty(t) || @test p.plotattributes[:title] == t
-        @test p.plotattributes[:layout] == (3, 3)
+        if isempty(d)
+            @test p.plotattributes == Dict(:plot_title => "tipper", :grid => false,
+                       :legend => false, :axis => false, :layout => (3, 3))
+        else
+            @test p.plotattributes ==
+                  Dict(:plot_title => "tipper", :title => t, :layout => (3, 3))
+        end
     end
 end

@@ -53,11 +53,10 @@ end
                 title := string(rel)
                 var.mfs[predicate(rel)], var.domain
             else
-                foreground_color_subplot --> :transparent
-                color --> :transparent
                 grid --> false
                 axis --> false
-                identity
+                legend --> false
+                ()
             end
         end
 
@@ -71,11 +70,10 @@ end
                 title := string(rel)
                 var.mfs[predicate(rel)], var.domain
             else
-                foreground_color_subplot --> :transparent
-                color --> :transparent
                 grid --> false
                 axis --> false
-                identity
+                legend --> false
+                ()
             end
         end
     end

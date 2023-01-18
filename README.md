@@ -5,7 +5,7 @@
 |[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|
 |[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|
 
-A Julia library to perform Fuzzy inference.
+A Julia library for fuzzy inference.
 
 ## Installation
 
@@ -23,7 +23,7 @@ using FuzzyLogic
 
 ## Roadmap
 
-- **Rich!** Mamdami and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
+- **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
 - **Compatible!** Able to read/write your model from/to [IEEE 1855-2016 Fuzzy Markup Language](https://en.wikipedia.org/wiki/Fuzzy_markup_language) and [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm) and Matlab Fuzzy toolbox `.fis` files.
 - **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
 - **Productive!** Several visualization tools to help debug and tune your model.

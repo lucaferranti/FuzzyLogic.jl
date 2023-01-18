@@ -86,7 +86,12 @@ end
 
     for (p, d, t) in zip(rec, data, titles)
         @test p.args == d
-        isempty(t) || @test p.plotattributes[:title] == t
-        @test p.plotattributes[:layout] == (3, 3)
+        if isempty(d)
+            @test p.plotattributes == Dict(:plot_title => "tipper", :grid => false,
+                       :legend => false, :axis => false, :layout => (3, 3))
+        else
+            @test p.plotattributes ==
+                  Dict(:plot_title => "tipper", :title => t, :layout => (3, 3))
+        end
     end
 end

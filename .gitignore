@@ -3,8 +3,10 @@
 *.jl.mem
 Manifest.toml
 
+# automatically generated files during docs building
 /docs/build/
 indigo.css
 /docs/src/tutorials/
 /docs/src/applications/
 /docs/src/notebooks/
+/docs/src/api/memberships.md

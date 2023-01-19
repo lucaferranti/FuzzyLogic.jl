@@ -12,7 +12,4 @@ using DocStringExtensions
                 $(TYPEDEF)
 
                 $(DOCSTRING)
-
-                ## Fields
-                $(TYPEDFIELDS)
                 """

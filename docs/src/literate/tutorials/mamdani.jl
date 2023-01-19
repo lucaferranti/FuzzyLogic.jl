@@ -24,10 +24,10 @@ First, we need to load the library.
 
 using FuzzyLogic
 
-# The Mamdani inference system can be constructed with the [`@fis`](@ref) macro.
+# The Mamdani inference system can be constructed with the [`@mamfis`](@ref) macro.
 # We will first give a full example and then explain every step.
 
-fis = @fis function tipper(service, food)::tip
+fis = @mamfis function tipper(service, food)::tip
     service := begin
         domain = 0:10
         poor = GaussianMF(0.0, 1.5)
@@ -61,7 +61,7 @@ fis = @fis function tipper(service, food)::tip
 end
 
 #=
-As you can see, defining a fuzzy inference system with `@fis` looks a lot like writing
+As you can see, defining a fuzzy inference system with `@mamfis` looks a lot like writing
 Julia code. Let us now take a closer look at the components. The first line
 
 ```julia
@@ -133,14 +133,13 @@ and = ProdAnd
 are used to set the settings of the inference system. For a Mamdani inference system,
 the following settings are available
 
-- `and`: algorithm to evaluate `&&`. Must be one of the available [Conjuction methods](@ref).
-- `or`: algorithm to evaluate `||`. Must be one of the available [Disjunction methods](@ref).
-- `implication`: algorithm to evalute `-->`. Must be one of the available [Implication methods](@ref).
-- `aggregato`: algorithm to perform outputs aggregation. Must be one of the available [Aggregation methods](@ref).
-- `defuzzifier`: algorithm to perform defuzzification. Must be one of the available [Defuzzification methods](@ref).
+- `and`: algorithm to evaluate `&&`. Must be one of the available [Conjuction methods](@ref). Default [`MinAnd`](@ref).
+- `or`: algorithm to evaluate `||`. Must be one of the available [Disjunction methods](@ref). Default [`MaxOr`](@ref)
+- `implication`: algorithm to evalute `-->`. Must be one of the available [Implication methods](@ref). Default [`MinImplication`](@ref).
+- `aggregato`: algorithm to perform outputs aggregation. Must be one of the available [Aggregation methods](@ref). Default [`MaxAggregator`](@ref).
+- `defuzzifier`: algorithm to perform defuzzification. Must be one of the available [Defuzzification methods](@ref). Default [`CentroidDefuzzifier`](@ref).
 
-Each of the previous settings has a default value that will be used if the setting is not specified.
-The default values are listed in [`FuzzyInferenceSystem`](@ref) documentation.
+If one of the above settings is not specified, the corresponding default value is used.
 
 Some of the above settings may have internal parameters.
 For example, [`CentroidDefuzzifier`](@ref) has an integer parameter `N`, the number of points used to perform numerical integration.

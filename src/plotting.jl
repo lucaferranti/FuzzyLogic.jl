@@ -25,7 +25,7 @@ end
     nothing
 end
 
-@recipe function f(fis::FuzzyInferenceSystem, varname::Symbol)
+@recipe function f(fis::AbstractFuzzySystem, varname::Symbol)
     if haskey(fis.inputs, varname)
         fis.inputs[varname], varname
     elseif haskey(fis.outputs, varname)
@@ -35,7 +35,7 @@ end
 
 # plot fis
 
-@recipe function f(fis::FuzzyInferenceSystem)
+@recipe function f(fis::AbstractFuzzySystem)
     plot_title := string(fis.name)
     nout = length(fis.outputs)
     nin = length(fis.inputs)

@@ -2,7 +2,7 @@ using Dictionaries, FuzzyLogic, Test
 using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
 
 @testset "test parser" begin
-    fis = @fis function tipper(service, food)::tip
+    fis = @mamfis function tipper(service, food)::tip
         service := begin
             domain = 0:10
             poor = GaussianMF(0.0, 1.5)
@@ -36,8 +36,8 @@ using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
     end
 
     @test fis isa
-          FuzzyInferenceSystem{ProdAnd, ProbSumOr, ProdImplication, ProbSumAggregator,
-                               BisectorDefuzzifier}
+          MamdaniFuzzySystem{ProdAnd, ProbSumOr, ProdImplication, ProbSumAggregator,
+                             BisectorDefuzzifier}
     @test fis.name == :tipper
 
     service = Variable(Domain(0, 10),

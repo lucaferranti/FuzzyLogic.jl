@@ -1,8 +1,10 @@
 # Fuzzy Inference System
 
+abstract type AbstractFuzzySystem end
+
 """
 Data structure representing a type-1 Mamdani fuzzy inference system.
-A Fuzzy inference system can be created using [`@fis`](@ref) macro.
+A Fuzzy inference system can be created using [`@mamfis`](@ref) macro.
 After that it can be called as a function to evaluate the system at a given input.
 The inputs should be given as keyword arguments.
 
@@ -11,7 +13,7 @@ The inputs should be given as keyword arguments.
 ### Example
 
 ```jldoctest; filter=r"Dictionaries\\."
-fis = @fis function tipper(service, food)::tip
+fis = @mamfis function tipper(service, food)::tip
     service := begin
       domain = 0:10
       poor = GaussianMF(0.0, 1.5)
@@ -45,10 +47,11 @@ fis(; service=1, food=2)
  :tip │ 5.558585929783786
 ```
 """
-Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
-                                        Impl <: AbstractImplication,
-                                        Aggr <: AbstractAggregator,
-                                        Defuzz <: AbstractDefuzzifier}
+Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
+                                      Impl <: AbstractImplication,
+                                      Aggr <: AbstractAggregator,
+                                      Defuzz <: AbstractDefuzzifier} <:
+                   AbstractFuzzySystem
     "name of the system."
     name::Symbol
     "input variables and corresponding domain."
@@ -71,7 +74,7 @@ end
 
 print_title(io::IO, s::String) = println(io, "\n$s\n", repeat('-', length(s)))
 
-function Base.show(io::IO, fis::FuzzyInferenceSystem)
+function Base.show(io::IO, fis::AbstractFuzzySystem)
     print(io, fis.name, "\n")
     if !isempty(fis.inputs)
         print_title(io, "Inputs:")
@@ -102,11 +105,14 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
         end
         println(io)
     end
-
-    print_title(io, "Settings:")
-    println(io, fis.and)
-    println(io, "\n", fis.or)
-    println(io, "\n", fis.implication)
-    println(io, "\n", fis.aggregator)
-    println(io, "\n", fis.defuzzifier)
+    settings = setdiff(fieldnames(typeof(fis)), (:name, :inputs, :outputs, :rules))
+    if !isempty(settings)
+        print_title(io, "Settings:")
+        for setting in settings
+            println(io, "- ", getproperty(fis, setting))
+        end
+    end
 end
+
+const SETTINGS = (MamdaniFuzzySystem = (:and, :or, :implication, :aggregator,
+                                        :defuzzifier),)

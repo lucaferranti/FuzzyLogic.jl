@@ -3,8 +3,8 @@
 ## Inference systems
 
 ```@docs
-FuzzyInferenceSystem
-@fis
+MamdaniFuzzySystem
+@mamfis
 ```
 
 

@@ -3,13 +3,13 @@ using MacroTools
 """
     $(TYPEDSIGNATURES)
 
-Parse julia code into a [`FuzzyInferenceSystem`](@ref).
+Parse julia code into a [`MamdaniFuzzySystem`](@ref). See extended help for an example.
 
 # Extended help
 
 ### Example
 ```jldoctest
-fis = @fis function tipper(service, food)::tip
+fis = @mamfis function tipper(service, food)::tip
     service := begin
       domain = 0:10
       poor = GaussianMF(0.0, 1.5)
@@ -34,9 +34,9 @@ fis = @fis function tipper(service, food)::tip
     or = ProbSumOr
     implication = ProdImplication
 
-    service == poor || food == rancid => tip == cheap
-    service == good => tip == average
-    service == excellent || food == delicious => tip == generous
+    service == poor || food == rancid --> tip == cheap
+    service == good --> tip == average
+    service == excellent || food == delicious --> tip == generous
 
     aggregator = ProbSumAggregator
     defuzzifier = BisectorDefuzzifier
@@ -66,33 +66,34 @@ tip ∈ [0, 30] with membership function
     generous = TriangularMF{Int64}(20, 25, 30)
 
 
+Inference rules:
+----------------
+(service is poor ∨ food is rancid) --> tip is cheap
+service is good --> tip is average
+(service is excellent ∨ food is delicious) --> tip is generous
+
+
 Settings:
 ---------
-ProdAnd()
-
-ProbSumOr()
-
-ProdImplication()
-
-ProbSumAggregator()
-
-BisectorDefuzzifier(100)
+- ProdAnd()
+- ProbSumOr()
+- ProdImplication()
+- ProbSumAggregator()
+- BisectorDefuzzifier(100)
 ```
 """
-macro fis(ex::Expr)
-    return _fis(ex)
+macro mamfis(ex::Expr)
+    return _fis(ex, :MamdaniFuzzySystem)
 end
 
-const fis_settings = (:and, :or, :implication, :aggregator, :defuzzifier)
-
-function _fis(ex::Expr)
+function _fis(ex::Expr, type)
     @capture ex function name_(argsin__)::({argsout__} | argsout__)
         body_
     end
-    inputs, outputs, opts, rules = parse_body(body, argsin, argsout)
+    inputs, outputs, opts, rules = parse_body(body, argsin, argsout, type)
 
-    fis = :(FuzzyInferenceSystem(; name = $(QuoteNode(name)), inputs = $inputs,
-                                 outputs = $outputs, rules = $rules))
+    fis = :($type(; name = $(QuoteNode(name)), inputs = $inputs,
+                  outputs = $outputs, rules = $rules))
     append!(fis.args[2].args, opts)
     return fis
 end
@@ -113,7 +114,7 @@ function parse_variable(var, args)
     return :($(QuoteNode(var)) => $ex)
 end
 
-function parse_body(body, argsin, argsout)
+function parse_body(body, argsin, argsout, type)
     opts = Expr[]
     rules = :(FuzzyRule[])
     inputs = :(dictionary([]))
@@ -129,7 +130,7 @@ function parse_body(body, argsin, argsout)
                 throw(ArgumentError("Undefined variable $var"))
             end
         elseif @capture(line, var_=value_)
-            var in fis_settings ||
+            var in SETTINGS[type] ||
                 throw(ArgumentError("Invalid keyword $var in line $line"))
             push!(opts, Expr(:kw, var, value isa Symbol ? :($value()) : value))
         elseif @capture(line, ant_-->(cons__,) | cons__)

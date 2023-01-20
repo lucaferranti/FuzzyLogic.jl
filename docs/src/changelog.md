@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 **initial public release**
 
 - initial domain specific language design and parser
-- initial membership functions: triangular, trapezoidal, gaussian, bell, linear, sigmoid, sum of sigmoids, product of sigmoids.
+- initial membership functions: triangular, trapezoidal, gaussian, bell, linear, sigmoid, sum of sigmoids, product of sigmoids, s-shaped, z-shaped, pi-shaped.
 - initial implementation of Mamdani and Sugeno inference systems (type 1)
   - min, prod and Łukasiewicz t-norms with corresponding conorms
   - min and prod implication

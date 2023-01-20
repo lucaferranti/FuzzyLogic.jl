@@ -78,3 +78,32 @@ end
     @test f(8) == 0
     @test f(9) == 0
 end
+
+@testset "S-shaped MF" begin
+    mf = SShapeMF(1, 8)
+    @test mf(0) == 0
+    @test mf(1) == 0
+    @test mf(4.5) == 0.5
+    @test mf(8) == 1
+    @test mf(9) == 1
+end
+
+@testset "Z-shaped MF" begin
+    mf = ZShapeMF(3, 7)
+    @test mf(2) == 1
+    @test mf(3) == 1
+    @test mf(5) == 0.5
+    @test mf(7) == 0
+    @test mf(9) == 0
+end
+
+@testset "Pi-shaped MF" begin
+    mf = PiShapeMF(1, 4, 5, 10)
+    @test mf(1) == 0
+    @test mf(2.5) == 0.5
+    @test mf(4) == 1
+    @test mf(4.5) == 1
+    @test mf(5) == 1
+    @test mf(7.5) == 0.5
+    @test mf(10) == 0
+end

@@ -13,7 +13,7 @@ include("evaluation.jl")
 include("plotting.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
-       SigmoidMF, TrapezoidalMF, TriangularMF,
+       SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
        ProdAnd, MinAnd, ProbSumOr, MaxOr, MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
        @fis, FuzzyInferenceSystem, Domain, Variable

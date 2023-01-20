@@ -13,6 +13,7 @@ Pkg.add(Pkg.PackageSpec(name = "Documenter", rev = "30baed5")) # TODO remove onc
 
 using Documenter
 using DocThemeIndigo
+using InteractiveUtils
 using FuzzyLogic
 using Literate
 
@@ -52,6 +53,46 @@ for (root, _, files) in walkdir(jldir), file in files
 
     Literate.notebook(ipath, nbdir; execute = IS_CI, credit = false)
 end
+
+###################
+# CREATE API DOCS #
+###################
+
+function generate_memberships()
+    mfs = subtypes(FuzzyLogic.AbstractMembershipFunction)
+    open(joinpath(@__DIR__, "src", "api", "memberships.md"), "w") do f
+        write(f, """```@setup memberships
+        using FuzzyLogic
+        using Plots
+        ```
+
+        # Membership functions
+
+        """)
+        for mf in mfs
+            sec = string(mf)[1:(end - 2)] * " membership function"
+            write(f, """## $sec
+
+            ```@docs
+            $mf
+            ```
+
+            """)
+            docstring = match(r"```julia\nmf = (\w+\(.+\))\n```", string(Docs.doc(mf)))
+            if !isnothing(docstring)
+                mfex = only(docstring.captures)
+                write(f, """
+                ```@example memberships
+                plot($mfex, 0, 10) # hide
+                ```
+
+                """)
+            end
+        end
+    end
+end
+
+generate_memberships()
 
 ###############
 # CREATE HTML #

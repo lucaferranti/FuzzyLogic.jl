@@ -1,7 +1,9 @@
 using Dictionaries, FuzzyLogic, Test
 using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
 
-@testset "test parser" begin
+# TODO: write more low level tests
+
+@testset "test Mamdani parser" begin
     fis = @mamfis function tipper(service, food)::tip
         service := begin
             domain = 0:10
@@ -69,4 +71,46 @@ using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
                           FuzzyRelation(:food, :delicious)),
                   [FuzzyRelation(:tip, :generous)]),
     ]
+end
+
+@testset "test Sugeno parser" begin
+    fis = @sugfis function tipper(service, food)::tip
+        service := begin
+            domain = 0:10
+            poor = GaussianMF(0.0, 1.5)
+            good = GaussianMF(5.0, 1.5)
+            excellent = GaussianMF(10.0, 1.5)
+        end
+
+        food := begin
+            domain = 0:10
+            rancid = TrapezoidalMF(-2, 0, 1, 3)
+            delicious = TrapezoidalMF(7, 9, 10, 12)
+        end
+
+        tip := begin
+            domain = 0:30
+            cheap = 0
+            average = food
+            generous = 2service, food, -2
+        end
+
+        service == poor && food == rancid --> tip == cheap
+        service == good --> tip == average
+        service == excellent || food == delicious --> tip == generous
+    end
+
+    @test fis isa
+          SugenoFuzzySystem{ProdAnd, ProbSumOr}
+
+    @test fis.name == :tipper
+
+    mfs = Dictionary([:cheap, :average, :generous],
+                     [
+                         ConstantSugenoMF(0),
+                         LinearSugenoMF(Dictionary([:service, :food], [0, 1]), 0),
+                         LinearSugenoMF(Dictionary([:service, :food], [2, 1]), -2),
+                     ])
+
+    @test fis.outputs[:tip].mfs == mfs
 end

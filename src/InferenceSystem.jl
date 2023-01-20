@@ -4,8 +4,8 @@ abstract type AbstractFuzzySystem end
 
 """
 Data structure representing a type-1 Mamdani fuzzy inference system.
-A Fuzzy inference system can be created using [`@mamfis`](@ref) macro.
-After that it can be called as a function to evaluate the system at a given input.
+It can be created using the [`@mamfis`](@ref) macro.
+It can be called as a function to evaluate the system at a given input.
 The inputs should be given as keyword arguments.
 
 # Extended help
@@ -39,7 +39,7 @@ fis = @mamfis function tipper(service, food)::tip
     service == excellent || food == delicious --> tip == generous
 end
 
-fis(; service=1, food=2)
+fis(service=1, food=2)
 
 # output
 
@@ -61,16 +61,18 @@ Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
     "inference rules."
     rules::Vector{FuzzyRule} = FuzzyRule[]
     "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
-    and::And = DEFAULT_AND
+    and::And = MinAnd()
     "method used to compute disjunction in rules, default [`MaxOr`](@ref)."
-    or::Or = DEFAULT_OR
+    or::Or = MaxOr()
     "method used to compute implication in rules, default [`MinImplication`](@ref)"
-    implication::Impl = DEFAULT_IMPLICATION
+    implication::Impl = MinImplication()
     "method used to aggregate fuzzy outputs, default [`MaxAggregator`](@ref)."
-    aggregator::Aggr = DEFAULT_AGGREGATOR
+    aggregator::Aggr = MaxAggregator()
     "method used to defuzzify the result, default [`CentroidDefuzzifier`](@ref)."
-    defuzzifier::Defuzz = DEFAULT_DEFUZZIFIER
+    defuzzifier::Defuzz = CentroidDefuzzifier()
 end
+
+implication(fis::MamdaniFuzzySystem) = fis.implication
 
 print_title(io::IO, s::String) = println(io, "\n$s\n", repeat('-', length(s)))
 
@@ -79,7 +81,7 @@ function Base.show(io::IO, fis::AbstractFuzzySystem)
     if !isempty(fis.inputs)
         print_title(io, "Inputs:")
         for (name, var) in pairs(fis.inputs)
-            println(io, name, " ∈ ", domain(var), " with membership function")
+            println(io, name, " ∈ ", domain(var), " with membership functions:")
             for (name, mf) in pairs(memberships(var))
                 println(io, "    ", name, " = ", mf)
             end
@@ -90,7 +92,7 @@ function Base.show(io::IO, fis::AbstractFuzzySystem)
     if !isempty(fis.outputs)
         print_title(io, "Outputs:")
         for (name, var) in pairs(fis.outputs)
-            println(io, name, " ∈ ", domain(var), " with membership function")
+            println(io, name, " ∈ ", domain(var), " with membership functions:")
             for (name, mf) in pairs(memberships(var))
                 println(io, "    ", name, " = ", mf)
             end
@@ -114,5 +116,32 @@ function Base.show(io::IO, fis::AbstractFuzzySystem)
     end
 end
 
+"""
+Data structure representing a type-1 Sugeno fuzzy inference system.
+It can be created using the [`@sugfis`](@ref) macro.
+It can be called as a function to evaluate the system at a given input.
+The inputs should be given as keyword arguments.
+
+$(TYPEDFIELDS)
+"""
+Base.@kwdef struct SugenoFuzzySystem{And <: AbstractAnd, Or <: AbstractOr} <:
+                   AbstractFuzzySystem
+    "name of the system."
+    name::Symbol
+    "input variables and corresponding domain."
+    inputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
+    "output variables and corresponding domain."
+    outputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
+    "inference rules."
+    rules::Vector{FuzzyRule} = FuzzyRule[]
+    "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
+    and::And = ProdAnd()
+    "method used to compute disjunction in rules, default [`MaxOr`](@ref)."
+    or::Or = ProbSumOr()
+end
+
 const SETTINGS = (MamdaniFuzzySystem = (:and, :or, :implication, :aggregator,
-                                        :defuzzifier),)
+                                        :defuzzifier),
+                  SugenoFuzzySystem = (:and, :or))
+
+implication(::SugenoFuzzySystem) = ProdImplication()

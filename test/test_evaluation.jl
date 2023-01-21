@@ -60,4 +60,31 @@ end
         service == excellent || food == delicious --> tip == generous
     end
     @test fis(service = 2, food = 3)[:tip]≈7.478 atol=1e-3
+
+    fis2 = @sugfis function tipper(service, food)::tip
+        service := begin
+            domain = 0:10
+            poor = GaussianMF(0.0, 1.5)
+            good = GaussianMF(5.0, 1.5)
+            excellent = GaussianMF(10.0, 1.5)
+        end
+
+        food := begin
+            domain = 0:10
+            rancid = TrapezoidalMF(-2, 0, 1, 3)
+            delicious = TrapezoidalMF(7, 9, 10, 12)
+        end
+
+        tip := begin
+            domain = 0:30
+            cheap = 5.002
+            average = 15
+            generous = 2service, 0.5food, 5.0
+        end
+
+        service == poor || food == rancid --> tip == cheap
+        service == good --> tip == average
+        service == excellent || food == delicious --> tip == generous
+    end
+    @test fis2(service = 7, food = 8)[:tip]≈19.639 atol=1e-3
 end

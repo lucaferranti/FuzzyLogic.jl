@@ -9,7 +9,7 @@ end
 @recipe f(mf::AbstractMembershipFunction, dom::Domain) = mf, low(dom), high(dom)
 
 # plot sugeno membership functions
-@recipe function f(mf::ConstantSugenoMF, low::Real, high::Real)
+@recipe function f(mf::ConstantSugenoOutput, low::Real, high::Real)
     legend --> nothing
     ylims --> (low, high)
     yticks --> [low, mf.c, high]
@@ -17,7 +17,7 @@ end
     x -> mf(x), low, high
 end
 
-@recipe function f(mf::LinearSugenoMF, low::Real, high::Real)
+@recipe function f(mf::LinearSugenoOutput, low::Real, high::Real)
     legend --> nothing
     line --> :stem
     framestyle --> :origin

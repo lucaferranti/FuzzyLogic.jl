@@ -1,5 +1,5 @@
 using Dictionaries, FuzzyLogic, Test
-using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule
+using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, Domain, Variable
 
 # TODO: write more low level tests
 
@@ -107,9 +107,9 @@ end
 
     mfs = Dictionary([:cheap, :average, :generous],
                      [
-                         ConstantSugenoMF(0),
-                         LinearSugenoMF(Dictionary([:service, :food], [0, 1]), 0),
-                         LinearSugenoMF(Dictionary([:service, :food], [2, 1]), -2),
+                         ConstantSugenoOutput(0),
+                         LinearSugenoOutput(Dictionary([:service, :food], [0, 1]), 0),
+                         LinearSugenoOutput(Dictionary([:service, :food], [2, 1]), -2),
                      ])
 
     @test fis.outputs[:tip].mfs == mfs

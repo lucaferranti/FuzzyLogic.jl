@@ -1,6 +1,6 @@
 # Membership functions
-
-abstract type AbstractMembershipFunction end
+abstract type AbstractPredicate end
+abstract type AbstractMembershipFunction <: AbstractPredicate end
 
 """
 Generalized Bell membership function ``\\frac{1}{1+\\vert\\frac{x-c}{a}\\vert^{2b}}``.
@@ -276,41 +276,4 @@ function (p::PiShapeMF)(x::T) where {T <: Real}
     x <= p.b && return 1 - 2 * ((x - p.b) / (p.b - p.a))^2
     x <= (p.c + p.d) / 2 && return 1 - 2 * ((x - p.c) / (p.d - p.c))^2
     return 2 * ((x - p.d) / (p.d - p.c))^2
-end
-
-struct ConstantSugenoMF{T} <: AbstractMembershipFunction
-    c::T
-end
-(csmf::ConstantSugenoMF)(inputs) = csmf.c
-(csmf::ConstantSugenoMF)(; inputs...) = csmf.c
-Base.show(io::IO, csmf::ConstantSugenoMF) = print(io, csmf.c)
-
-struct LinearSugenoMF{T} <: AbstractMembershipFunction
-    coeffs::Dictionary{Symbol, T}
-    offset::T
-end
-function Base.:(==)(m1::LinearSugenoMF, m2::LinearSugenoMF)
-    m1.offset == m2.offset && m1.coeffs == m2.coeffs
-end
-function (fsmf::LinearSugenoMF)(inputs)
-    sum(val * fsmf.coeffs[name] for (name, val) in pairs(inputs)) + fsmf.offset
-end
-(fsmf::LinearSugenoMF)(; inputs...) = fsmf(inputs)
-
-function Base.show(io::IO, lsmf::LinearSugenoMF)
-    started = false
-    for (var, c) in pairs(lsmf.coeffs)
-        iszero(c) && continue
-        if started
-            print(io, c < 0 ? " - " : " + ", isone(abs(c)) ? "" : abs(c), var)
-        else
-            print(io, isone(c) ? "" : c, var)
-        end
-        started = true
-    end
-    if started
-        iszero(lsmf.offset) || print(io, lsmf.offset < 0 ? " - " : " + ", abs(lsmf.offset))
-    else
-        print(io, lsmf.offset)
-    end
 end

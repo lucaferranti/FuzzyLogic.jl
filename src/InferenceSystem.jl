@@ -2,11 +2,17 @@
 
 abstract type AbstractFuzzySystem end
 
+###########
+# Mamdani #
+###########
+
 """
 Data structure representing a type-1 Mamdani fuzzy inference system.
 It can be created using the [`@mamfis`](@ref) macro.
 It can be called as a function to evaluate the system at a given input.
 The inputs should be given as keyword arguments.
+
+$(TYPEDFIELDS)
 
 # Extended help
 
@@ -116,6 +122,10 @@ function Base.show(io::IO, fis::AbstractFuzzySystem)
     end
 end
 
+##########
+# SUGENO #
+##########
+
 """
 Data structure representing a type-1 Sugeno fuzzy inference system.
 It can be created using the [`@sugfis`](@ref) macro.
@@ -145,3 +155,58 @@ const SETTINGS = (MamdaniFuzzySystem = (:and, :or, :implication, :aggregator,
                   SugenoFuzzySystem = (:and, :or))
 
 implication(::SugenoFuzzySystem) = ProdImplication()
+
+# sugeno output functions
+
+abstract type AbstractSugenoOutputFunction <: AbstractPredicate end
+
+"""
+Represents constant output in Sugeno inference systems.
+
+$(TYPEDFIELDS)
+"""
+struct ConstantSugenoOutput{T <: Real} <: AbstractSugenoOutputFunction
+    "value of the constant output."
+    c::T
+end
+(csmf::ConstantSugenoOutput)(inputs) = csmf.c
+(csmf::ConstantSugenoOutput)(; inputs...) = csmf.c
+Base.show(io::IO, csmf::ConstantSugenoOutput) = print(io, csmf.c)
+
+"""
+Represents an output variable that has a first-order polynomial relation on the inputs.
+Used for Sugeno inference systems.
+
+$(TYPEDFIELDS)
+"""
+struct LinearSugenoOutput{T} <: AbstractSugenoOutputFunction
+    "coefficients associated with each input variable."
+    coeffs::Dictionary{Symbol, T}
+    "offset of the output."
+    offset::T
+end
+function Base.:(==)(m1::LinearSugenoOutput, m2::LinearSugenoOutput)
+    m1.offset == m2.offset && m1.coeffs == m2.coeffs
+end
+function (fsmf::LinearSugenoOutput)(inputs)
+    sum(val * fsmf.coeffs[name] for (name, val) in pairs(inputs)) + fsmf.offset
+end
+(fsmf::LinearSugenoOutput)(; inputs...) = fsmf(inputs)
+
+function Base.show(io::IO, lsmf::LinearSugenoOutput)
+    started = false
+    for (var, c) in pairs(lsmf.coeffs)
+        iszero(c) && continue
+        if started
+            print(io, c < 0 ? " - " : " + ", isone(abs(c)) ? "" : abs(c), var)
+        else
+            print(io, isone(c) ? "" : c, var)
+        end
+        started = true
+    end
+    if started
+        iszero(lsmf.offset) || print(io, lsmf.offset < 0 ? " - " : " + ", abs(lsmf.offset))
+    else
+        print(io, lsmf.offset)
+    end
+end

@@ -1,4 +1,5 @@
 using FuzzyLogic
+using FuzzyLogic: Domain, Variable
 using RecipesBase
 using Dictionaries
 using Test

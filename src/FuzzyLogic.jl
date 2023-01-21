@@ -16,6 +16,6 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
        ProdAnd, MinAnd, ProbSumOr, MaxOr, MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
-       @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem, Domain, Variable,
-       LinearSugenoMF, ConstantSugenoMF
+       @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem,
+       LinearSugenoOutput, ConstantSugenoOutput
 end

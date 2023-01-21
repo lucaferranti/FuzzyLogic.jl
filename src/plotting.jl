@@ -8,6 +8,25 @@ end
 
 @recipe f(mf::AbstractMembershipFunction, dom::Domain) = mf, low(dom), high(dom)
 
+# plot sugeno membership functions
+@recipe function f(mf::ConstantSugenoMF, low::Real, high::Real)
+    legend --> nothing
+    ylims --> (low, high)
+    yticks --> [low, mf.c, high]
+    xticks --> nothing
+    x -> mf(x), low, high
+end
+
+@recipe function f(mf::LinearSugenoMF, low::Real, high::Real)
+    legend --> nothing
+    line --> :stem
+    framestyle --> :origin
+    x = 1:2:(2 * length(mf.coeffs) + 2)
+    xticks --> (x, push!(collect(keys(mf.coeffs)), :offset))
+    xlims --> (0, x[end] + 1)
+    x, push!(collect(mf.coeffs), mf.offset)
+end
+
 # plot variables
 @recipe function f(var::Variable, varname::Union{Symbol, Nothing} = nothing)
     if !isnothing(varname)

@@ -14,7 +14,7 @@ Base.in(x::Number, d::Domain) = low(d) <= x <= high(d)
 
 struct Variable
     domain::Domain
-    mfs::Dictionary{Symbol, AbstractMembershipFunction}
+    mfs::Dictionary{Symbol, AbstractPredicate}
 end
 Base.:(==)(x::Variable, y::Variable) = x.domain == y.domain && x.mfs == y.mfs
 domain(var::Variable) = var.domain

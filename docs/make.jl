@@ -101,7 +101,7 @@ generate_memberships()
 makedocs(;
          modules = [FuzzyLogic], authors = "Luca Ferranti",
          sitename = "FuzzyLogic.jl",
-         doctest = false,
+         doctest = false, checkdocs = :exports, strict = true,
          format = Documenter.HTML(;
                                   assets = [DocThemeIndigo.install(FuzzyLogic)],
                                   prettyurls = IS_CI, collapselevel = 1,
@@ -110,10 +110,17 @@ makedocs(;
              "Home" => "index.md",
              "Tutorials" => [
                  "Build a Mamdani inference system" => "tutorials/mamdani.md",
+                 "Build a Sugeno inference system" => "tutorials/sugeno.md",
              ],
              "API" => [
-                 "Inference system" => "api/fis.md",
+                 "Inference system API" => [
+                     "Types" => "api/fis.md",
+                     "Logical connectives" => "api/logical.md",
+                     "Aggregation methods" => "api/aggregation.md",
+                     "Defuzzification methods" => "api/defuzzification.md",
+                 ],
                  "Membership functions" => "api/memberships.md",
+                 "Reading/Writing" => "api/readwrite.md",
              ],
              "Contributor's Guide" => "contributing.md",
              "Release notes" => "changelog.md",

@@ -32,7 +32,7 @@ using FuzzyLogic
 ## Quickstart example
 
 ```julia
-fis = @fis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
+fis = @mamfis function tipper(service in 0:10, food in 0:10)::{tip in 0:30}
     poor = GaussianMF(0.0, 1.5)
     good = GaussianMF(5.0, 1.5)
     excellent = GaussianMF(10.0, 1.5)

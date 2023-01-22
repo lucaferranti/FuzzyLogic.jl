@@ -6,26 +6,55 @@ using RecipesBase
     x -> mf(x), low, high
 end
 
-@recipe f(mf::AbstractMembershipFunction, dom::Domain) = mf, low(dom), high(dom)
+@recipe f(mf::AbstractPredicate, dom::Domain) = mf, low(dom), high(dom)
+
+# plot sugeno membership functions
+@recipe function f(mf::ConstantSugenoOutput, low::Real, high::Real)
+    legend --> nothing
+    ylims --> (low, high)
+    yticks --> [low, mf.c, high]
+    xticks --> nothing
+    x -> mf(x), low, high
+end
+
+@recipe function f(mf::LinearSugenoOutput, low::Real, high::Real)
+    legend --> nothing
+    line --> :stem
+    framestyle --> :origin
+    x = 1:2:(2 * length(mf.coeffs) + 2)
+    xticks --> (x, push!(collect(keys(mf.coeffs)), :offset))
+    xlims --> (0, x[end] + 1)
+    x, push!(collect(mf.coeffs), mf.offset)
+end
 
 # plot variables
 @recipe function f(var::Variable, varname::Union{Symbol, Nothing} = nothing)
+    issugeno = first(var.mfs) isa AbstractSugenoOutputFunction
     if !isnothing(varname)
-        title --> string(varname)
+        plot_title --> string(varname)
     end
     dom = domain(var)
     mfs = memberships(var)
-    legend --> true
+    if issugeno
+        legend --> false
+        layout --> (1, length(var.mfs))
+    else
+        legend --> true
+    end
     for (name, mf) in pairs(mfs)
         @series begin
-            label --> string(name)
+            if issugeno
+                title --> string(name)
+            else
+                label --> string(name)
+            end
             mf, dom
         end
     end
     nothing
 end
 
-@recipe function f(fis::FuzzyInferenceSystem, varname::Symbol)
+@recipe function f(fis::AbstractFuzzySystem, varname::Symbol)
     if haskey(fis.inputs, varname)
         fis.inputs[varname], varname
     elseif haskey(fis.outputs, varname)
@@ -35,7 +64,7 @@ end
 
 # plot fis
 
-@recipe function f(fis::FuzzyInferenceSystem)
+@recipe function f(fis::AbstractFuzzySystem)
     plot_title := string(fis.name)
     nout = length(fis.outputs)
     nin = length(fis.inputs)

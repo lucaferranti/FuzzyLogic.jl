@@ -1,17 +1,25 @@
 # Fuzzy Inference System
 
+abstract type AbstractFuzzySystem end
+
+###########
+# Mamdani #
+###########
+
 """
 Data structure representing a type-1 Mamdani fuzzy inference system.
-A Fuzzy inference system can be created using [`@fis`](@ref) macro.
-After that it can be called as a function to evaluate the system at a given input.
+It can be created using the [`@mamfis`](@ref) macro.
+It can be called as a function to evaluate the system at a given input.
 The inputs should be given as keyword arguments.
+
+$(TYPEDFIELDS)
 
 # Extended help
 
 ### Example
 
 ```jldoctest; filter=r"Dictionaries\\."
-fis = @fis function tipper(service, food)::tip
+fis = @mamfis function tipper(service, food)::tip
     service := begin
       domain = 0:10
       poor = GaussianMF(0.0, 1.5)
@@ -37,7 +45,7 @@ fis = @fis function tipper(service, food)::tip
     service == excellent || food == delicious --> tip == generous
 end
 
-fis(; service=1, food=2)
+fis(service=1, food=2)
 
 # output
 
@@ -45,10 +53,11 @@ fis(; service=1, food=2)
  :tip │ 5.558585929783786
 ```
 """
-Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
-                                        Impl <: AbstractImplication,
-                                        Aggr <: AbstractAggregator,
-                                        Defuzz <: AbstractDefuzzifier}
+Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
+                                      Impl <: AbstractImplication,
+                                      Aggr <: AbstractAggregator,
+                                      Defuzz <: AbstractDefuzzifier} <:
+                   AbstractFuzzySystem
     "name of the system."
     name::Symbol
     "input variables and corresponding domain."
@@ -58,25 +67,27 @@ Base.@kwdef struct FuzzyInferenceSystem{And <: AbstractAnd, Or <: AbstractOr,
     "inference rules."
     rules::Vector{FuzzyRule} = FuzzyRule[]
     "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
-    and::And = DEFAULT_AND
+    and::And = MinAnd()
     "method used to compute disjunction in rules, default [`MaxOr`](@ref)."
-    or::Or = DEFAULT_OR
+    or::Or = MaxOr()
     "method used to compute implication in rules, default [`MinImplication`](@ref)"
-    implication::Impl = DEFAULT_IMPLICATION
+    implication::Impl = MinImplication()
     "method used to aggregate fuzzy outputs, default [`MaxAggregator`](@ref)."
-    aggregator::Aggr = DEFAULT_AGGREGATOR
+    aggregator::Aggr = MaxAggregator()
     "method used to defuzzify the result, default [`CentroidDefuzzifier`](@ref)."
-    defuzzifier::Defuzz = DEFAULT_DEFUZZIFIER
+    defuzzifier::Defuzz = CentroidDefuzzifier()
 end
+
+implication(fis::MamdaniFuzzySystem) = fis.implication
 
 print_title(io::IO, s::String) = println(io, "\n$s\n", repeat('-', length(s)))
 
-function Base.show(io::IO, fis::FuzzyInferenceSystem)
+function Base.show(io::IO, fis::AbstractFuzzySystem)
     print(io, fis.name, "\n")
     if !isempty(fis.inputs)
         print_title(io, "Inputs:")
         for (name, var) in pairs(fis.inputs)
-            println(io, name, " ∈ ", domain(var), " with membership function")
+            println(io, name, " ∈ ", domain(var), " with membership functions:")
             for (name, mf) in pairs(memberships(var))
                 println(io, "    ", name, " = ", mf)
             end
@@ -87,7 +98,7 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
     if !isempty(fis.outputs)
         print_title(io, "Outputs:")
         for (name, var) in pairs(fis.outputs)
-            println(io, name, " ∈ ", domain(var), " with membership function")
+            println(io, name, " ∈ ", domain(var), " with membership functions:")
             for (name, mf) in pairs(memberships(var))
                 println(io, "    ", name, " = ", mf)
             end
@@ -102,11 +113,100 @@ function Base.show(io::IO, fis::FuzzyInferenceSystem)
         end
         println(io)
     end
+    settings = setdiff(fieldnames(typeof(fis)), (:name, :inputs, :outputs, :rules))
+    if !isempty(settings)
+        print_title(io, "Settings:")
+        for setting in settings
+            println(io, "- ", getproperty(fis, setting))
+        end
+    end
+end
 
-    print_title(io, "Settings:")
-    println(io, fis.and)
-    println(io, "\n", fis.or)
-    println(io, "\n", fis.implication)
-    println(io, "\n", fis.aggregator)
-    println(io, "\n", fis.defuzzifier)
+##########
+# SUGENO #
+##########
+
+"""
+Data structure representing a type-1 Sugeno fuzzy inference system.
+It can be created using the [`@sugfis`](@ref) macro.
+It can be called as a function to evaluate the system at a given input.
+The inputs should be given as keyword arguments.
+
+$(TYPEDFIELDS)
+"""
+Base.@kwdef struct SugenoFuzzySystem{And <: AbstractAnd, Or <: AbstractOr} <:
+                   AbstractFuzzySystem
+    "name of the system."
+    name::Symbol
+    "input variables and corresponding domain."
+    inputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
+    "output variables and corresponding domain."
+    outputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
+    "inference rules."
+    rules::Vector{FuzzyRule} = FuzzyRule[]
+    "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
+    and::And = ProdAnd()
+    "method used to compute disjunction in rules, default [`MaxOr`](@ref)."
+    or::Or = ProbSumOr()
+end
+
+const SETTINGS = (MamdaniFuzzySystem = (:and, :or, :implication, :aggregator,
+                                        :defuzzifier),
+                  SugenoFuzzySystem = (:and, :or))
+
+implication(::SugenoFuzzySystem) = ProdImplication()
+
+# sugeno output functions
+
+abstract type AbstractSugenoOutputFunction <: AbstractPredicate end
+
+"""
+Represents constant output in Sugeno inference systems.
+
+$(TYPEDFIELDS)
+"""
+struct ConstantSugenoOutput{T <: Real} <: AbstractSugenoOutputFunction
+    "value of the constant output."
+    c::T
+end
+(csmf::ConstantSugenoOutput)(inputs) = csmf.c
+(csmf::ConstantSugenoOutput)(; inputs...) = csmf.c
+Base.show(io::IO, csmf::ConstantSugenoOutput) = print(io, csmf.c)
+
+"""
+Represents an output variable that has a first-order polynomial relation on the inputs.
+Used for Sugeno inference systems.
+
+$(TYPEDFIELDS)
+"""
+struct LinearSugenoOutput{T} <: AbstractSugenoOutputFunction
+    "coefficients associated with each input variable."
+    coeffs::Dictionary{Symbol, T}
+    "offset of the output."
+    offset::T
+end
+function Base.:(==)(m1::LinearSugenoOutput, m2::LinearSugenoOutput)
+    m1.offset == m2.offset && m1.coeffs == m2.coeffs
+end
+function (fsmf::LinearSugenoOutput)(inputs)
+    sum(val * fsmf.coeffs[name] for (name, val) in pairs(inputs)) + fsmf.offset
+end
+(fsmf::LinearSugenoOutput)(; inputs...) = fsmf(inputs)
+
+function Base.show(io::IO, lsmf::LinearSugenoOutput)
+    started = false
+    for (var, c) in pairs(lsmf.coeffs)
+        iszero(c) && continue
+        if started
+            print(io, c < 0 ? " - " : " + ", isone(abs(c)) ? "" : abs(c), var)
+        else
+            print(io, isone(c) ? "" : c, var)
+        end
+        started = true
+    end
+    if started
+        iszero(lsmf.offset) || print(io, lsmf.offset < 0 ? " - " : " + ", abs(lsmf.offset))
+    else
+        print(io, lsmf.offset)
+    end
 end

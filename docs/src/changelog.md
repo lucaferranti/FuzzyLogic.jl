@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - min and prod implication
   - max and probabilistic sum aggregation method
   - centroid and bisector defuzzifier
+  - linear and constant output for Sugeno
 - initial plotting functionalities
   - plotting variables and membership functions
   - plotting rules of fuzzy inference system

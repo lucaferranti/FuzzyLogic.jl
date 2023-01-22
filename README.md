@@ -32,7 +32,7 @@ using FuzzyLogic
 ## Quickstart example
 
 ```julia
-fis = @fis function tipper(service, food)::tip
+fis = @mamfis function tipper(service, food)::tip
     service := begin
       domain = 0:10
       poor = GaussianMF(0.0, 1.5)

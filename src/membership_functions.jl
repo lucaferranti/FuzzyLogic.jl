@@ -1,6 +1,6 @@
 # Membership functions
-
-abstract type AbstractMembershipFunction end
+abstract type AbstractPredicate end
+abstract type AbstractMembershipFunction <: AbstractPredicate end
 
 """
 Generalized Bell membership function ``\\frac{1}{1+\\vert\\frac{x-c}{a}\\vert^{2b}}``.

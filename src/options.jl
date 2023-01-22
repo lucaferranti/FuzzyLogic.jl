@@ -130,11 +130,3 @@ end
 function _trapz(f, a, b, N)
     (b - a) / N * (sum(f(xi) for xi in LinRange(a, b, N + 1)) + (f(a) + f(b)) / 2)
 end
-
-## Defaults
-
-const DEFAULT_AND = MinAnd()
-const DEFAULT_OR = MaxOr()
-const DEFAULT_IMPLICATION = MinImplication()
-const DEFAULT_AGGREGATOR = MaxAggregator()
-const DEFAULT_DEFUZZIFIER = CentroidDefuzzifier()

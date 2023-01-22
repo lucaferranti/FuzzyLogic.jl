@@ -16,6 +16,19 @@ subject(fr::FuzzyRelation) = fr.subj
 predicate(fr::FuzzyRelation) = fr.prop
 
 """
+Describes a fuzzy relation like "food is good".
+"""
+struct FuzzyNegation <: AbstractFuzzyProposition
+    "subject of the relation."
+    subj::Symbol
+    "property of the relation."
+    prop::Symbol
+end
+Base.show(io::IO, fr::FuzzyNegation) = print(io, fr.subj, " is not ", fr.prop)
+subject(fr::FuzzyNegation) = fr.subj
+predicate(fr::FuzzyNegation) = fr.prop
+
+"""
 Describes the conjuction of two propositions.
 """
 struct FuzzyAnd{T <: AbstractFuzzyProposition, S <: AbstractFuzzyProposition} <:
@@ -60,5 +73,5 @@ function Base.:(==)(r1::FuzzyRule, r2::FuzzyRule)
 end
 
 # utilities
-leaves(fr::FuzzyRelation) = (fr,)
+leaves(fr::Union{FuzzyNegation, FuzzyRelation}) = (fr,)
 leaves(fp::AbstractFuzzyProposition) = [leaves(fp.left)..., leaves(fp.right)...]

@@ -80,7 +80,13 @@ end
             @series if length(idx) == 1
                 rel = ants[first(idx)]
                 title := string(rel)
-                var.mfs[predicate(rel)], var.domain
+                # TODO: use own recipes for negation and relation
+                if rel isa FuzzyNegation
+                    legend --> false
+                    x -> 1 - var.mfs[predicate(rel)](x), low(var.domain), high(var.domain)
+                else
+                    var.mfs[predicate(rel)], var.domain
+                end
             else
                 grid --> false
                 axis --> false

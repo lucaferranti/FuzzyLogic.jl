@@ -236,6 +236,8 @@ function parse_antecedent(ant)
         return Expr(:call, :FuzzyOr, parse_antecedent(left), parse_antecedent(right))
     elseif @capture(ant, subj_==prop_)
         return Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+    elseif @capture(ant, subj_!=prop_)
+        return Expr(:call, :FuzzyNegation, QuoteNode(subj), QuoteNode(prop))
     else
         throw(ArgumentError("Invalid premise $ant"))
     end

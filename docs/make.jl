@@ -112,6 +112,9 @@ makedocs(;
                  "Build a Mamdani inference system" => "tutorials/mamdani.md",
                  "Build a Sugeno inference system" => "tutorials/sugeno.md",
              ],
+             "Applications" => [
+                 "Edge detection" => "applications/edge_detector.md",
+             ],
              "API" => [
                  "Inference system API" => [
                      "Types" => "api/fis.md",

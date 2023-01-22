@@ -5,6 +5,11 @@ function (fr::FuzzyRelation)(fis::AbstractFuzzySystem,
     memberships(fis.inputs[fr.subj])[fr.prop](inputs[fr.subj])
 end
 
+function (fr::FuzzyNegation)(fis::AbstractFuzzySystem,
+                             inputs::T)::float(eltype(T)) where {T <: NamedTuple}
+    1 - memberships(fis.inputs[fr.subj])[fr.prop](inputs[fr.subj])
+end
+
 function (fa::FuzzyAnd)(fis::AbstractFuzzySystem, inputs)
     fis.and(fa.left(fis, inputs), fa.right(fis, inputs))
 end

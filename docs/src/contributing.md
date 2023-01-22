@@ -27,12 +27,20 @@ All contributions should go through git branches. If you are not familiar with g
 **1.** Clone the repository
 
 ```
-git clone 
+git clone https://github.com/lucaferranti/FuzzyLogic.jl.git
 ```
+and enter it with
+
+```
+cd FuzzyLogic.jl
+```
+
+!!! warning "Warning"
+    From now on, these instructions assume you are in the `FuzzyLogic.jl` folder
 
 **2.** [Fork the repository](https://github.com/lucaferranti/FuzzyLogic.jl).
 
-**3.** Add your for as remote with
+**3.** Add your fork as remote with
 
 ```
 git remote add $new_remote_name $your_fork_link
@@ -84,6 +92,25 @@ git switch -c $new-branch-name
 ## Coding guideline
 
 * The package follows [SciMLStyle](https://github.com/sciml/SciMLStyle).
+* You can run the tests locally from the Julia REPL with
+
+```julia
+include("test/runtests.jl")
+```
+
+* Each test file is stand-alone, hence you can also run individual files, e.g. `include("test/test_parser.jl")`
+
+* To make finding tests easier, the test folder structure should (roughly) reflect the structure of the `src` folder.
+
+## Working on the documentation
+
+* You can build the documentation locally with
+
+```
+julia --project=docs docs/make.jl
+```
+
+* Tutorials and applications are written using [Literate.jl](https://github.com/fredrikekre/Literate.jl), hence if working on those, you should edit the source file under the `literate` folder and not directly the markdown.
 
 ## Further reading
 

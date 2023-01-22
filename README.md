@@ -1,5 +1,7 @@
 # FuzzyLogic.jl
 
+[![Join the chat at https://gitter.im/FuzzyLogic-jl/community](https://badges.gitter.im/FuzzyLogic-jl/community.svg)](https://gitter.im/FuzzyLogic-jl/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 |**Info**|**Build status**|**Documentation**|**Contributing**|
 |:------:|:--------------:|:---------------:|:--------------:|
 |[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|

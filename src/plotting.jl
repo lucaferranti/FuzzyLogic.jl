@@ -6,7 +6,7 @@ using RecipesBase
     x -> mf(x), low, high
 end
 
-@recipe f(mf::AbstractMembershipFunction, dom::Domain) = mf, low(dom), high(dom)
+@recipe f(mf::AbstractPredicate, dom::Domain) = mf, low(dom), high(dom)
 
 # plot sugeno membership functions
 @recipe function f(mf::ConstantSugenoOutput, low::Real, high::Real)
@@ -29,15 +29,25 @@ end
 
 # plot variables
 @recipe function f(var::Variable, varname::Union{Symbol, Nothing} = nothing)
+    issugeno = first(var.mfs) isa AbstractSugenoOutputFunction
     if !isnothing(varname)
-        title --> string(varname)
+        plot_title --> string(varname)
     end
     dom = domain(var)
     mfs = memberships(var)
-    legend --> true
+    if issugeno
+        legend --> false
+        layout --> (1, length(var.mfs))
+    else
+        legend --> true
+    end
     for (name, mf) in pairs(mfs)
         @series begin
-            label --> string(name)
+            if issugeno
+                title --> string(name)
+            else
+                label --> string(name)
+            end
             mf, dom
         end
     end

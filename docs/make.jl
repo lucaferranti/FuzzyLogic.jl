@@ -110,6 +110,7 @@ makedocs(;
              "Home" => "index.md",
              "Tutorials" => [
                  "Build a Mamdani inference system" => "tutorials/mamdani.md",
+                 "Build a Sugeno inference system" => "tutorials/sugeno.md",
              ],
              "API" => [
                  "Inference system API" => [

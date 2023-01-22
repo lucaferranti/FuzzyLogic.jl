@@ -25,7 +25,7 @@ using Test
     @test length(rec) == 2
     for i in 1:2
         @test rec[i].plotattributes ==
-              Dict(:legend => true, :label => string(mfnames[i]), :title => "var")
+              Dict(:legend => true, :label => string(mfnames[i]), :plot_title => "var")
         @test rec[i].args == (mfs[i], dom)
     end
 end
@@ -94,5 +94,20 @@ end
             @test p.plotattributes ==
                   Dict(:plot_title => "tipper", :title => t, :layout => (3, 3))
         end
+    end
+end
+
+@testset "Plotting sugeno output variables" begin
+    mfnames = [:average, :generous]
+    mfs = [
+        ConstantSugenoOutput(15),
+        LinearSugenoOutput(Dictionary([:service, :food], [2.0, 0.5]), 5.0),
+    ]
+    var = Variable(Domain(0, 30), Dictionary(mfnames, mfs))
+    plts = RecipesBase.apply_recipe(Dict{Symbol, Any}(), var, :tip)
+    for (plt, mfname, mf) in zip(plts, mfnames, mfs)
+        @test plt.args == (mf, Domain(0, 30))
+        @test plt.plotattributes == Dict(:plot_title => "tip", :legend => false,
+                   :title => string(mfname), :layout => (1, 2))
     end
 end

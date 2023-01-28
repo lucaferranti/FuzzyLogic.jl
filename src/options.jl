@@ -160,9 +160,9 @@ struct CentroidDefuzzifier <: AbstractDefuzzifier
     N::Int
 end
 CentroidDefuzzifier() = CentroidDefuzzifier(100)
-function (cd::CentroidDefuzzifier)(f::Function, dom::Domain{T})::float(T) where {T}
-    l, h = low(dom), high(dom)
-    (_trapz(x -> x * f(x), l, h, cd.N) / _trapz(f, l, h, cd.N))
+function (cd::CentroidDefuzzifier)(y, dom::Domain{T}, N::Int)::float(T) where {T}
+    dx = (high(dom) - low(dom)) / N
+    _trapz(dx, LinRange(low(dom), high(dom), N) .* y) / _trapz(dx, y)
 end
 
 @doc raw"""
@@ -199,6 +199,8 @@ function (bd::BisectorDefuzzifier)(f::Function, dom::Domain{T})::float(T) where 
     end
     (f(cand - h) + f(cand)) * h / 2 >= area_left - area_right ? cand : cand - h
 end
+
+_trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2
 
 function _trapz(f, a, b, N)
     (b - a) / N * (sum(f(xi) for xi in LinRange(a, b, N + 1)) + (f(a) + f(b)) / 2)

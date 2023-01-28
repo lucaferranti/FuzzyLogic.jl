@@ -18,22 +18,34 @@ function (fo::FuzzyOr)(fis::AbstractFuzzySystem, inputs)
     fis.or(fo.left(fis, inputs), fo.right(fis, inputs))
 end
 
-function (fr::FuzzyRule)(fis::AbstractFuzzySystem, inputs)::Dictionary{Symbol, Function}
+function (fr::FuzzyRule)(fis::AbstractFuzzySystem, inputs;
+                         N = 100)
     map(fr.consequent) do c
-        mf = memberships(fis.outputs[c.subj])[c.prop]
-        c.subj => Base.Fix1(implication(fis), fr.antecedent(fis, inputs)) ∘ mf
-    end |> dictionary
+        l, h = low(fis.outputs[c.sub].domain), high(fis.outputs[c.sub].domain)
+        mf = broadcast(memberships(fis.outputs[c.subj])[c.prop], LinRange(l, h, N))
+        broadcast(implication(fis), fr.antecedent(fis, inputs), mf)
+    end
 end
 
-function (fis::MamdaniFuzzySystem)(inputs::T)::Dictionary{Symbol,
-                                                          float(eltype(T))
-                                                          } where {T <: NamedTuple}
-    rules = [rule(fis, inputs) for rule in fis.rules]
-    map(pairs(fis.outputs)) do (y, var)
-        fis.defuzzifier(domain(var)) do x
-            reduce(fis.aggregator, rule[y](x) for rule in rules if haskey(rule, y))
+function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
+    N = fis.defuzzifier.N
+    S = float(eltype(T))
+    res = Dictionary{Symbol, Vector{S}}(keys(fis.outputs),
+                                        [zeros(S, N) for _ in 1:length(fis.outputs)])
+    @inbounds for rule in fis.rules
+        w = rule.antecedent(fis, inputs)::S
+        for con in rule.consequent
+            var = fis.outputs[con.subj]
+            l, h = low(var.domain), high(var.domain)
+            mf = map(var.mfs[con.prop], LinRange(l, h, N))
+            ruleres = broadcast(implication(fis), w, mf)
+            res[con.subj] = broadcast(fis.aggregator, res[con.subj], ruleres)
         end
     end
+
+    Dictionary(keys(fis.outputs), map(zip(res, fis.outputs)) do (y, var)
+                   fis.defuzzifier(y, var.domain, N)
+               end)
 end
 
 (fis::MamdaniFuzzySystem)(; inputs...) = fis(values(inputs))

@@ -50,7 +50,7 @@ fis(service=1, food=2)
 # output
 
 1-element Dictionaries.Dictionary{Symbol, Float64}
- :tip │ 5.558585929783786
+ :tip │ 5.545767871220519
 ```
 """
 Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,

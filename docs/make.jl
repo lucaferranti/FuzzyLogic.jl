@@ -92,7 +92,50 @@ function generate_memberships()
     end
 end
 
+function generate_norms()
+    connectives = [
+        subtypes(FuzzyLogic.AbstractAnd),
+        subtypes(FuzzyLogic.AbstractOr),
+        subtypes(FuzzyLogic.AbstractImplication),
+    ]
+    titles = ["Conjuction", "Disjunction", "Implication"]
+    open(joinpath(@__DIR__, "src", "api", "logical.md"), "w") do f
+        write(f, """```@setup logicals
+        using FuzzyLogic
+        using Plots
+        ```
+
+        # Logical connectives
+        """)
+        for (t, c) in zip(titles, connectives)
+            write(f, """
+            ## $t methods
+
+            """)
+
+            for ci in c
+                write(f, """
+                ### $(nameof(ci))
+
+                ```@docs
+                $ci
+                ```
+
+                ```@example logicals
+                x = y = 0:0.01:1 # hide
+                contourf(x, y, (x, y) -> $ci()(x, y)) # hide
+                ```
+                """)
+            end
+        end
+    end
+end
+
+# Logical connectives
+
 generate_memberships()
+
+generate_norms()
 
 ###############
 # CREATE HTML #

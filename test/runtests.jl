@@ -2,6 +2,7 @@ using SafeTestsets, Test
 
 testfiles = [
     "test_membership_functions.jl",
+    "test_settings.jl",
     "test_parser.jl",
     "test_evaluation.jl",
     "test_plotting.jl",

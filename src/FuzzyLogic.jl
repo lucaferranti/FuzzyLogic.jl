@@ -14,7 +14,9 @@ include("plotting.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
        SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
-       ProdAnd, MinAnd, ProbSumOr, MaxOr, MinImplication, ProdImplication,
+       ProdAnd, MinAnd, LukasiewiczAnd, DrasticAnd, NilpotentAnd, HamacherAnd,
+       ProbSumOr, MaxOr, BoundedSumOr, DrasticOr, NilpotentOr, EinsteinOr,
+       MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem,
        LinearSugenoOutput, ConstantSugenoOutput

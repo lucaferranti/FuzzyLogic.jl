@@ -17,6 +17,45 @@ Product T-norm defining conjuction as ``A ∧ B = AB``.
 struct ProdAnd <: AbstractAnd end
 (pa::ProdAnd)(x, y) = x * y
 
+"""
+Lukasiewicz T-norm defining conjuction as ``A ∧ B = \\max(0, A + B - 1)``.
+"""
+struct LukasiewiczAnd <: AbstractAnd end
+(la::LukasiewiczAnd)(x, y) = max(0, x + y - 1)
+
+"""
+Drastic T-norm defining conjuction as ``A ∧ B = \\min(A, B)`` is ``A = 1`` or ``B = 1`` and
+``A ∧ B = 0`` otherwise.
+"""
+struct DrasticAnd <: AbstractAnd end
+function (da::DrasticAnd)(x::T, y::S) where {T <: Real, S <: Real}
+    TS = promote_type(T, S)
+    isone(x) && return TS(y)
+    isone(y) && return TS(x)
+    zero(TS)
+end
+
+"""
+Nilpotent T-norm defining conjuction as ``A ∧ B = \\min(A, B)`` when ``A + B > 1`` and
+``A ∧ B = 0`` otherwise.
+"""
+struct NilpotentAnd <: AbstractAnd end
+function (na::NilpotentAnd)(x::T, y::S) where {T <: Real, S <: Real}
+    m = min(x, y)
+    x + y > 1 && return m
+    return zero(m)
+end
+
+"""
+Hamacher T-norm defining conjuction as ``A ∧ B = \\frac{AB}{A + B - AB}`` if ``A ≂̸ 0 ≂̸ B``
+and ``A ∧ B = 0`` otherwise.
+"""
+struct HamacherAnd <: AbstractAnd end
+function (ha::HamacherAnd)(x::T, y::S) where {T <: Real, S <: Real}
+    iszero(x) && iszero(y) && return zero(float(promote_type(T, S)))
+    (x * y) / (x + y - x * y)
+end
+
 ## S-Norms
 
 abstract type AbstractOr <: AbstractFISSetting end
@@ -32,6 +71,40 @@ Probabilistic sum S-norm defining disjunction as ``A ∨ B = A + B - AB``.
 """
 struct ProbSumOr <: AbstractOr end
 (pso::ProbSumOr)(x, y) = x + y - x * y
+
+"""
+Bounded sum S-norm defining disjunction as ``A ∨ B = \\min(1, A + B)``.
+"""
+struct BoundedSumOr <: AbstractOr end
+(la::BoundedSumOr)(x, y) = min(1, x + y)
+
+"""
+Drastic S-norm defining disjunction as ``A ∨ B = \\min(1, A + B)``.
+"""
+struct DrasticOr <: AbstractOr end
+function (da::DrasticOr)(x::T, y::S) where {T <: Real, S <: Real}
+    TS = promote_type(T, S)
+    iszero(x) && return TS(y)
+    iszero(y) && return TS(x)
+    one(TS)
+end
+
+"""
+Nilpotent S-norm defining disjunction as ``A ∨ B = \\max(A, B)`` when ``A + B < 1`` and
+``A ∧ B = 1`` otherwise.
+"""
+struct NilpotentOr <: AbstractOr end
+function (na::NilpotentOr)(x::T, y::S) where {T <: Real, S <: Real}
+    m = max(x, y)
+    x + y < 1 && return m
+    return one(m)
+end
+
+"""
+Einstein S-norm defining disjunction as ``A ∨ B = \\frac{A + B}{1 + AB}``.
+"""
+struct EinsteinOr <: AbstractOr end
+(ha::EinsteinOr)(x, y) = (x + y) / (1 + x * y)
 
 ## Implication
 

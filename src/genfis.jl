@@ -20,6 +20,7 @@ Performs fuzzy clustering on th data `X` using `N` clusters.
 """
 function fuzzy_cmeans(X::Matrix{T}, N::Int; m = 2.0, maxiter = 100,
                       tol = 1e-5) where {T <: Real}
+    m > 1 || throw(ArgumentError("m must be greater than 1"))
     e = 1 / (m - 1)
     M = size(X, 2)
     U = rand(float(T), M, N)

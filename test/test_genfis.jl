@@ -1,12 +1,9 @@
 using FuzzyLogic, Test
 
 @testset "fuzzy c-means" begin
-    data = zeros(2, 1500)
-    for (i, line) in enumerate(eachline(joinpath(@__DIR__, "data", "cmeans_data.txt")))
-        data[:, i] = parse.(Float64, split(line, ","))
-    end
-
-    C, U = fuzzy_cmeans(data, 3; m = 3)
-
-    @test sortslices(C; dims = 2)≈[-9.89855 5.03523 14.9183; 5.05589 4.88728 14.9307] atol=1e-3
+    X = [-3 -3 -3 -2 -2 -2 -1 0 1 2 2 2 3 3 3;
+         -2 0 2 -1 0 1 0 0 0 -1 0 1 -2 0 2]
+    C, U = fuzzy_cmeans(X, 2; m = 3)
+    @test sortslices(C; dims = 2)≈[-2.02767 2.02767; 0 0] atol=1e-3
+    @test_throws ArgumentError fuzzy_cmeans(X, 3; m = 1)
 end

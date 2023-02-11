@@ -11,6 +11,7 @@ include("InferenceSystem.jl")
 include("parser.jl")
 include("evaluation.jl")
 include("plotting.jl")
+include("genfis.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
        SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
@@ -19,5 +20,6 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem,
-       LinearSugenoOutput, ConstantSugenoOutput
+       LinearSugenoOutput, ConstantSugenoOutput,
+       fuzzy_cmeans
 end

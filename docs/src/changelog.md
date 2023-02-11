@@ -4,7 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## unreleased
 
-- added support Lukasiewicz, drastic, nilpotent and Hamacher T-norms and corresponding S-norms.
+- ![][badge-feature] Added fuzzy c-means
+- ![][badge-enhancement] added support Lukasiewicz, drastic, nilpotent and Hamacher T-norms and corresponding S-norms.
 
 ## v0.1.0 -- 2023-01-10
 
@@ -23,3 +24,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - initial plotting functionalities
   - plotting variables and membership functions
   - plotting rules of fuzzy inference system
+
+[badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
+[badge-deprecation]: https://img.shields.io/badge/deprecation-orange.svg
+[badge-feature]: https://img.shields.io/badge/new%20feature-green.svg
+[badge-enhancement]: https://img.shields.io/badge/enhancement-blue.svg
+[badge-bugfix]: https://img.shields.io/badge/bugfix-purple.svg
+[badge-security]: https://img.shields.io/badge/security-black.svg
+[badge-experimental]: https://img.shields.io/badge/experimental-lightgrey.svg
+[badge-maintenance]: https://img.shields.io/badge/maintenance-gray.svg

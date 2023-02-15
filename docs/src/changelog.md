@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - ![][badge-feature] Added fuzzy c-means
 - ![][badge-enhancement] added support Lukasiewicz, drastic, nilpotent and Hamacher T-norms and corresponding S-norms.
+- ![][badge-enhancement] dont build anonymous functions during mamdani inference, but evaluate output directly. Now defuzzifiers don't take a function as input, but an array.
 
 ## v0.1.0 -- 2023-01-10
 

@@ -156,13 +156,13 @@ variable domain ``[a, b]`` the defuzzified output is the centroid computed as
 The integrals are computed numerically using the trapezoidal rule.
 """
 struct CentroidDefuzzifier <: AbstractDefuzzifier
-    "number of subintegrals for integration, default 100."
+    "number of subintervals for integration, default 100."
     N::Int
 end
 CentroidDefuzzifier() = CentroidDefuzzifier(100)
-function (cd::CentroidDefuzzifier)(f::Function, dom::Domain{T})::float(T) where {T}
-    l, h = low(dom), high(dom)
-    (_trapz(x -> x * f(x), l, h, cd.N) / _trapz(f, l, h, cd.N))
+function (cd::CentroidDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
+    dx = (high(dom) - low(dom)) / cd.N
+    _trapz(dx, LinRange(low(dom), high(dom), cd.N + 1) .* y) / _trapz(dx, y)
 end
 
 @doc raw"""
@@ -186,20 +186,19 @@ struct BisectorDefuzzifier <: AbstractDefuzzifier
     N::Int
 end
 BisectorDefuzzifier() = BisectorDefuzzifier(100)
-function (bd::BisectorDefuzzifier)(f::Function, dom::Domain{T})::float(T) where {T}
+function (bd::BisectorDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
     area_left = zero(T)
-    area_right = _trapz(f, low(dom), high(dom), bd.N)
-    cand = low(dom)
     h = (high(dom) - low(dom)) / bd.N
+    area_right = _trapz(h, y)
+    cand = LinRange(low(dom), high(dom), bd.N + 1)
+    i = firstindex(y)
     while area_left < area_right
-        trap = (f(cand) + f(cand + h)) * h / 2
+        trap = (y[i] + y[i + 1]) * h / 2
         area_left += trap
         area_right -= trap
-        cand += h
+        i += 1
     end
-    (f(cand - h) + f(cand)) * h / 2 >= area_left - area_right ? cand : cand - h
+    (y[i - 1] + y[i]) * h / 2 >= area_left - area_right ? cand[i] : cand[i - 1]
 end
 
-function _trapz(f, a, b, N)
-    (b - a) / N * (sum(f(xi) for xi in LinRange(a, b, N + 1)) + (f(a) + f(b)) / 2)
-end
+_trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2

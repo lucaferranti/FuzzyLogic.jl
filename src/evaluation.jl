@@ -28,23 +28,23 @@ function (fr::FuzzyRule)(fis::AbstractFuzzySystem, inputs;
 end
 
 function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
-    N = fis.defuzzifier.N
+    Npoints = fis.defuzzifier.N + 1
     S = float(eltype(T))
     res = Dictionary{Symbol, Vector{S}}(keys(fis.outputs),
-                                        [zeros(S, N) for _ in 1:length(fis.outputs)])
+                                        [zeros(S, Npoints) for _ in 1:length(fis.outputs)])
     @inbounds for rule in fis.rules
         w = rule.antecedent(fis, inputs)::S
         for con in rule.consequent
             var = fis.outputs[con.subj]
             l, h = low(var.domain), high(var.domain)
-            mf = map(var.mfs[con.prop], LinRange(l, h, N))
+            mf = map(var.mfs[con.prop], LinRange(l, h, Npoints))
             ruleres = broadcast(implication(fis), w, mf)
             res[con.subj] = broadcast(fis.aggregator, res[con.subj], ruleres)
         end
     end
 
     Dictionary(keys(fis.outputs), map(zip(res, fis.outputs)) do (y, var)
-                   fis.defuzzifier(y, var.domain, N)
+                   fis.defuzzifier(y, var.domain)
                end)
 end
 

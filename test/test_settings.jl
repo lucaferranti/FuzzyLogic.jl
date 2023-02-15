@@ -52,3 +52,12 @@ end
     @test EinsteinOr()(0.5, 0.5) == 0.8
     @test EinsteinOr()(1.0, 1.0) == 1.0
 end
+
+@testset "test defuzzifiers" begin
+    N = 800
+    mf = TrapezoidalMF(1, 2, 5, 7)
+    x = LinRange(0, 8, N + 1)
+    y = mf.(x)
+    @test BisectorDefuzzifier(N)(y, FuzzyLogic.Domain(0, 8)) ≈ 3.75
+    @test CentroidDefuzzifier(N)(y, FuzzyLogic.Domain(0, 8)) ≈ 3.7777777777777772
+end

@@ -1,6 +1,6 @@
 module FuzzyLogic
 
-using Dictionaries
+using Dictionaries, Reexport
 
 include("docstrings.jl")
 include("membership_functions.jl")
@@ -23,4 +23,11 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem,
        LinearSugenoOutput, ConstantSugenoOutput,
        fuzzy_cmeans
+
+## parsers
+
+include("parsers/fcl.jl")
+
+@reexport using .FCLParser
+
 end

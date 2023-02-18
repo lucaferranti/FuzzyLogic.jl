@@ -308,3 +308,6 @@ function (plmf::PiecewiseLinearMF)(x::Real)
     x2, y2 = plmf.points[idx + 1]
     (y2 - y1) / (x2 - x1) * (x - x1) + y1
 end
+
+# TODO: more robust soultion for all mfs
+Base.:(==)(mf1::PiecewiseLinearMF, mf2::PiecewiseLinearMF) = mf1.points == mf2.points

@@ -5,7 +5,7 @@ using PEG, Dictionaries
 using ..FuzzyLogic
 using ..FuzzyLogic: Variable, Domain
 
-export parse_fcl
+export parse_fcl, @fcl_str
 
 const FCL_JULIA = Dict("COG" => CentroidDefuzzifier(),
                        "COGS" => "COGS", # dummy since hardcoded for sugeno
@@ -110,5 +110,9 @@ ops_pairs(::LukasiewiczAnd) = LukasiewiczAnd(), BoundedSumOr()
 ops_pairs(::MaxOr) = MinAnd(), MaxOr()
 ops_pairs(::ProbSumOr) = ProdAnd(), ProbSumOr()
 ops_pairs(::BoundedSumOr) = LukasiewiczAnd(), BoundedSumOr()
+
+macro fcl_str(s::AbstractString)
+    parse_fcl(s)
+end
 
 end

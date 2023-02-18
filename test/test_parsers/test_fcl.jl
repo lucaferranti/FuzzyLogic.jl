@@ -2,7 +2,7 @@ using Dictionaries, FuzzyLogic, Test
 using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyRule
 
 @testset "Parse Sugeno FIS from FCL" begin
-    s = """
+    fis = fcl"""
     FUNCTION_BLOCK container_crane
 
     VAR_INPUT
@@ -54,8 +54,6 @@ using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyRule
 
     END_FUNCTION_BLOCK
     """
-
-    fis = parse_fcl(s)
 
     @test fis isa SugenoFuzzySystem{MinAnd, MaxOr}
     mfs_dist = Dictionary([:too_far, :zero, :close, :medium, :far],

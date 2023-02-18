@@ -92,7 +92,7 @@ function parse_fcl(s::String)
     varsout = dictionary(first.(outputsmf))
     @assert sort(collect(keys(varsout)))==sort(outputs) "Mismatch between declared and defuzzified output variables."
 
-    @assert allequal(last.(outputsmf)) "All output variables should use the same defuzzification method."
+    @assert all(==(outputsmf[1][2]), last.(outputsmf)) "All output variables should use the same defuzzification method."
     defuzzifier = outputsmf[1][2]
     and, or = ops_pairs(op)
     if defuzzifier == "COGS" # sugeno

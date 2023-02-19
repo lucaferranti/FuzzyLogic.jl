@@ -62,6 +62,7 @@ Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", r.consequent.
 # comparisons (for testing)
 
 Base.:(==)(r1::FuzzyRelation, r2::FuzzyRelation) = r1.subj == r2.subj && r1.prop == r2.prop
+Base.:(==)(r1::FuzzyNegation, r2::FuzzyNegation) = r1.subj == r2.subj && r1.prop == r2.prop
 
 function Base.:(==)(p1::T, p2::T) where {T <: AbstractFuzzyProposition}
     p1.left == p2.left && p1.right == p2.right

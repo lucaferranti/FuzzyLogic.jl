@@ -1,5 +1,25 @@
-using Dictionaries, FuzzyLogic, Test
-using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyRule
+using Dictionaries, FuzzyLogic, PEG, Test
+using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyNegation,
+                  FuzzyRule
+
+@testset "parse propositions" begin
+    s = [
+        "a IS b OR Ix IS black AND th IS NOT red",
+        "(a IS b OR Ix IS black) AND th IS NOT red",
+        "a IS ai AND (b IS bi OR NOT (c IS ci))",
+    ]
+    r = [
+        FuzzyOr(FuzzyRelation(:a, :b),
+                FuzzyAnd(FuzzyRelation(:Ix, :black), FuzzyNegation(:th, :red))),
+        FuzzyAnd(FuzzyOr(FuzzyRelation(:a, :b), FuzzyRelation(:Ix, :black)),
+                 FuzzyNegation(:th, :red)),
+        FuzzyAnd(FuzzyRelation(:a, :ai),
+                 FuzzyOr(FuzzyRelation(:b, :bi), FuzzyNegation(:c, :ci))),
+    ]
+    for (si, ri) in zip(s, r)
+        @test parse_whole(FuzzyLogic.FCLParser.condition, si) == ri
+    end
+end
 
 @testset "Parse Sugeno FIS from FCL" begin
     fis = fcl"""

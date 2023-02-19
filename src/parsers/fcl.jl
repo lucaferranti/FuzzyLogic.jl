@@ -70,18 +70,23 @@ end
 
 @rule rule = r"RULE\s+\d+\s*:\s*IF"p & condition & r"THEN"p & conclusion & r";"p |>
              x -> FuzzyLogic.FuzzyRule(x[2], x[4])
-@rule relation = posrel, negrel
+@rule relation = negrel, posrel
 @rule posrel = id & r"IS"p & id |> x -> FuzzyLogic.FuzzyRelation(x[1], x[3])
 @rule negrel = (id & r"IS\s+NOT"p & id |> x -> FuzzyLogic.FuzzyNegation(x[1], x[3])),
                r"NOT\s*\("p & id & r"IS"p & id & r"\)"p |>
                x -> FuzzyLogic.FuzzyNegation(x[2], x[4])
 @rule conclusion = posrel & (r","p & posrel)[*] |> x -> append!([x[1]], map(last, x[2]))
 
-@rule condition = andcondition, orcondition
-@rule andcondition = relation & (r"AND"p & relation)[*] |>
-                     x -> reduce(FuzzyLogic.FuzzyAnd, append!([x[1]], map(last, x[2])))
-@rule orcondition = relation & (r"OR"p & relation)[*] |>
-                    x -> reduce(FuzzyLogic.FuzzyOr, append!([x[1]], map(last, x[2])))
+@rule condition = orcondition
+@rule orcondition = andcondition & (r"OR"p & andcondition)[*] |>
+                    x -> reduce(FuzzyLogic.FuzzyOr, vcat(x[1], map(last, x[2])))
+@rule andcondition = term & (r"AND"p & term)[*] |>
+                     x -> reduce(FuzzyLogic.FuzzyAnd, vcat(x[1], map(last, x[2])))
+@rule term = relation, r"\("p & condition & r"\)"p |> x -> x[2]
+# @rule andcondition = relation & (r"AND"p & relation)[*] |>
+#                      x -> reduce(FuzzyLogic.FuzzyAnd, vcat(x[1], map(last, x[2])))
+# @rule orcondition = relation & (r"OR"p & relation)[*] |>
+#                     x -> reduce(FuzzyLogic.FuzzyOr, vcat(x[1], map(last, x[2])))
 
 function parse_fcl(s::String)
     name, inputs, outputs, inputsmfs, outputsmf, (op, imp, rules) = parse_whole(function_block,

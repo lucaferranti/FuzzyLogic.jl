@@ -277,3 +277,37 @@ function (p::PiShapeMF)(x::T) where {T <: Real}
     x <= (p.c + p.d) / 2 && return 1 - 2 * ((x - p.c) / (p.d - p.c))^2
     return 2 * ((x - p.d) / (p.d - p.c))^2
 end
+
+"""
+Piecewise linear membership function.
+
+### Fields
+
+$(TYPEDFIELDS)
+
+### Notes
+
+If the input is between two points, its membership degree is computed by linear interpolation.
+If the input is before the first point, it has the same membership degree of the first point.
+If the input is after the last point, it has the same membership degree of the first point.
+
+### Example
+
+```julia
+mf = PiecewiseLinearMF([(1, 0), (2, 1), (3, 0), (4, 0.5), (5, 0), (6, 1)])
+```
+"""
+struct PiecewiseLinearMF{T <: Real, S <: Real} <: AbstractMembershipFunction
+    points::Vector{Tuple{T, S}}
+end
+function (plmf::PiecewiseLinearMF)(x::Real)
+    x <= plmf.points[1][1] && return plmf.points[1][2]
+    x >= plmf.points[end][1] && return plmf.points[end][2]
+    idx = findlast(p -> x >= p[1], plmf.points)
+    x1, y1 = plmf.points[idx]
+    x2, y2 = plmf.points[idx + 1]
+    (y2 - y1) / (x2 - x1) * (x - x1) + y1
+end
+
+# TODO: more robust soultion for all mfs
+Base.:(==)(mf1::PiecewiseLinearMF, mf2::PiecewiseLinearMF) = mf1.points == mf2.points

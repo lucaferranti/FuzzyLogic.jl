@@ -6,3 +6,16 @@
 @mamfis
 @sugfis
 ```
+
+## Read from file
+
+```@docs
+readfis
+```
+
+## Parse FCL
+
+```@docs
+parse_fcl
+@fcl_str
+```

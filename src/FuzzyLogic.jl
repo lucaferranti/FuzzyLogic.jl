@@ -12,6 +12,7 @@ include("parser.jl")
 include("evaluation.jl")
 include("plotting.jl")
 include("genfis.jl")
+include("readwrite.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
        SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
@@ -22,7 +23,8 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem,
        LinearSugenoOutput, ConstantSugenoOutput,
-       fuzzy_cmeans
+       fuzzy_cmeans,
+       readfis
 
 ## parsers
 

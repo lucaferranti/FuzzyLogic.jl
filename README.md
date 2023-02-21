@@ -104,5 +104,4 @@ Contributions are welcome! If you find a bug or want to request a feature, [open
 [style-url]: https://github.com/SciML/SciMLStyle
 
 [chat-img]: https://badges.gitter.im/badge.svg
-[chat-url]: https://gitter.im/FuzzyLogic-jl/dev
-
+[chat-url]: https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im

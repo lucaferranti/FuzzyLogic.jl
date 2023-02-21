@@ -1,4 +1,3 @@
-
 coverage:
   status:
     project:
@@ -7,4 +6,4 @@ coverage:
     patch:
       default:
         informational: true
-comment: false
+comment: true

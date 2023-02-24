@@ -15,6 +15,8 @@ function readfis(file::String, fmt::Union{Symbol, Nothing} = nothing)::AbstractF
         ex = split(file, ".")[end]
         fmt = if ex == "fcl"
             :fcl
+        elseif ex == "fis"
+            :matlab
         else
             throw(ArgumentError("Unrecognized extension $ex."))
         end
@@ -23,6 +25,8 @@ function readfis(file::String, fmt::Union{Symbol, Nothing} = nothing)::AbstractF
     s = read(file, String)
     if fmt === :fcl
         parse_fcl(s)
+    elseif fmt === :matlab
+        parse_matlabfis(s)
     else
         throw(ArgumentError("Unknown format $fmt."))
     end

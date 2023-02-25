@@ -19,3 +19,10 @@ readfis
 parse_fcl
 @fcl_str
 ```
+
+## Parse Matlab
+
+```@docs
+parse_matlabfis
+@matlabfis_str
+```

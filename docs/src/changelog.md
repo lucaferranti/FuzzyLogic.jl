@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ![](https://img.shields.io/badge/enhancement-blue.svg) added Lukasiewicz, drastic, nilpotent and Hamacher T-norms and corresponding S-norms.
 - ![](https://img.shields.io/badge/enhancement-blue.svg) dont build anonymous functions during mamdani inference, but evaluate output directly. Now defuzzifiers don't take a function as input, but an array.
 - ![](https://img.shields.io/badge/enhancement-blue.svg) added piecewise linear membership function
-![](https://img.shields.io/badge/new%20feature-green.svg) added parser for Fuzzy Control Language and matlab fis.
+- ![](https://img.shields.io/badge/new%20feature-green.svg) added parser for Fuzzy Control Language and matlab fis.
+
 ## v0.1.0 -- 2023-01-10
 
 **initial public release**

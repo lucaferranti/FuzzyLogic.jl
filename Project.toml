@@ -1,7 +1,7 @@
 name = "FuzzyLogic"
 uuid = "271df9f8-4390-4196-9d4f-bdd0b67035b3"
 authors = ["Luca Ferranti"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Dictionaries = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"

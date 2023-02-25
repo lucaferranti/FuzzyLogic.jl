@@ -48,16 +48,38 @@ struct FuzzyOr{T <: AbstractFuzzyProposition, S <: AbstractFuzzyProposition} <:
 end
 Base.show(io::IO, fo::FuzzyOr) = print(io, '(', fo.left, " ∨ ", fo.right, ')')
 
+abstract type AbstractRule end
+
 """
 Describes a fuzzy implication rule IF antecedent THEN consequent.
 """
-struct FuzzyRule{T <: AbstractFuzzyProposition}
+struct FuzzyRule{T <: AbstractFuzzyProposition} <: AbstractRule
     "premise of the inference rule."
     antecedent::T
-    "consequences of the premise rule."
+    "consequences of the inference rule."
     consequent::Vector{FuzzyRelation}
 end
 Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", r.consequent...)
+
+"""
+Weighted fuzzy rule. In Mamdani systems, the result of implication is scaled by the weight.
+In Sugeno systems, the result of the antecedent is scaled by the weight.
+"""
+struct FuzzyWeightedRule{T <: AbstractFuzzyProposition, S <: Real} <: AbstractRule
+    "premise of the inference rule."
+    antecedent::T
+    "consequences of the inference rule."
+    consequent::Vector{FuzzyRelation}
+    "weight of the rule."
+    weight::S
+end
+
+function Base.show(io::IO, r::FuzzyWeightedRule)
+    print(io, r.antecedent, " --> ", r.consequent..., " (", r.weight, ")")
+end
+
+@inline scale(w, ::FuzzyRule) = w
+@inline scale(w, r::FuzzyWeightedRule) = w * r.weight
 
 # comparisons (for testing)
 

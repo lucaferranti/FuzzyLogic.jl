@@ -23,6 +23,6 @@ parse_fcl
 ## Parse Matlab
 
 ```@docs
-parse_matlabifs
-@matlabfis
+parse_matlabfis
+@matlabfis_str
 ```

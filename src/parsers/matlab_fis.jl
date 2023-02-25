@@ -47,7 +47,11 @@ function parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
     op = op == "1" ? FuzzyAnd : FuzzyOr
     length(antsidx) == 1 && (op = identity)
     ant = mapreduce(op, enumerate(antsidx)) do (var, mf)
-        FuzzyRelation(inputnames[var], inputmfs[var][mf])
+        if mf > 0
+            FuzzyRelation(inputnames[var], inputmfs[var][mf])
+        else
+            FuzzyNegation(inputnames[var], inputmfs[var][-mf])
+        end
     end
     con = map(enumerate(considx)) do (var, mf)
         FuzzyRelation(outputnames[var], outputmfs[var][mf])
@@ -63,6 +67,11 @@ function parse_rules(lines, inputs, outputs)
     [parse_rule(line, inputnames, outputnames, inputmfs, outputmfs) for line in lines]
 end
 
+"""
+    parse_matlabfis(s::AbstractString)
+
+Parse a fuzzy inference system from a string in Matlab FIS format.
+"""
 function parse_matlabfis(s::AbstractString)
     lines = strip.(split(s, "\n"))
     key = ""
@@ -106,6 +115,9 @@ function parse_matlabfis(s::AbstractString)
     MATLAB_JULIA[sysinfo["Type"]](; opts...)
 end
 
+"""
+String macro to parse Matlab fis formats. See [`parse_matlabfis`](@ref) for more details.
+"""
 macro matlabfis_str(s::AbstractString)
     parse_matlabfis(s)
 end

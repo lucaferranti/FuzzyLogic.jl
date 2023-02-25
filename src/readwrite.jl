@@ -8,7 +8,8 @@ Read a fuzzy system from a file using a specified format.
 
 Supported formats are
 
-- `:fcl` (corresponding file extension `.fcl`)
+- `:fcl` -- Fuzzy Control Language (corresponding file extension `.fcl`)
+- `:matlab` -- Matlab fis (corresponding file extension `.fis`)
 """
 function readfis(file::String, fmt::Union{Symbol, Nothing} = nothing)::AbstractFuzzySystem
     if isnothing(fmt)

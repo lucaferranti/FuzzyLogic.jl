@@ -1,6 +1,6 @@
 using Dictionaries, FuzzyLogic, PEG, Test
 using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyNegation,
-                  FuzzyWeightedRule, FuzzyRule
+                  WeightedFuzzyRule, FuzzyRule
 
 @testset "parse Mamdani infernce system" begin
     fis = readfis(joinpath(@__DIR__, "data", "tipper.fis"))
@@ -135,9 +135,9 @@ end
                      ])
 
     @test fis.rules == [
-        FuzzyWeightedRule(FuzzyRelation(:input, :low), [FuzzyRelation(:output, :line1)],
+        WeightedFuzzyRule(FuzzyRelation(:input, :low), [FuzzyRelation(:output, :line1)],
                           0.5),
-        FuzzyWeightedRule(FuzzyRelation(:input, :high), [FuzzyRelation(:output, :line2)],
+        WeightedFuzzyRule(FuzzyRelation(:input, :high), [FuzzyRelation(:output, :line2)],
                           0.5),
     ]
 end

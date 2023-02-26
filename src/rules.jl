@@ -65,7 +65,7 @@ Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", r.consequent.
 Weighted fuzzy rule. In Mamdani systems, the result of implication is scaled by the weight.
 In Sugeno systems, the result of the antecedent is scaled by the weight.
 """
-struct FuzzyWeightedRule{T <: AbstractFuzzyProposition, S <: Real} <: AbstractRule
+struct WeightedFuzzyRule{T <: AbstractFuzzyProposition, S <: Real} <: AbstractRule
     "premise of the inference rule."
     antecedent::T
     "consequences of the inference rule."
@@ -74,12 +74,12 @@ struct FuzzyWeightedRule{T <: AbstractFuzzyProposition, S <: Real} <: AbstractRu
     weight::S
 end
 
-function Base.show(io::IO, r::FuzzyWeightedRule)
+function Base.show(io::IO, r::WeightedFuzzyRule)
     print(io, r.antecedent, " --> ", r.consequent..., " (", r.weight, ")")
 end
 
 @inline scale(w, ::FuzzyRule) = w
-@inline scale(w, r::FuzzyWeightedRule) = w * r.weight
+@inline scale(w, r::WeightedFuzzyRule) = w * r.weight
 
 # comparisons (for testing)
 
@@ -95,7 +95,7 @@ function Base.:(==)(r1::FuzzyRule, r2::FuzzyRule)
     r1.antecedent == r2.antecedent && r1.consequent == r1.consequent
 end
 
-function Base.:(==)(r1::FuzzyWeightedRule, r2::FuzzyWeightedRule)
+function Base.:(==)(r1::WeightedFuzzyRule, r2::WeightedFuzzyRule)
     r1.antecedent == r2.antecedent && r1.consequent == r1.consequent &&
         r1.weight == r2.weight
 end

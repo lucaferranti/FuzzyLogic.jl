@@ -27,7 +27,7 @@ function parse_rule(x)
     if isempty(x[5])
         FuzzyLogic.FuzzyRule(x[2], x[4])
     else
-        FuzzyLogic.FuzzyWeightedRule(x[2], x[4], x[5][1][2])
+        FuzzyLogic.WeightedFuzzyRule(x[2], x[4], x[5][1][2])
     end
 end
 

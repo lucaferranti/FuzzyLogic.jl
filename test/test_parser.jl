@@ -1,5 +1,5 @@
 using Dictionaries, FuzzyLogic, Test
-using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, FuzzyWeightedRule, Domain,
+using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, WeightedFuzzyRule, Domain,
                   Variable
 
 # TODO: write more low level tests
@@ -66,10 +66,10 @@ using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, FuzzyWeightedRule
 
     @test fis.rules ==
           [
-        FuzzyWeightedRule(FuzzyAnd(FuzzyRelation(:service, :poor),
+        WeightedFuzzyRule(FuzzyAnd(FuzzyRelation(:service, :poor),
                                    FuzzyRelation(:food, :rancid)),
                           [FuzzyRelation(:tip, :cheap)], 0.2),
-        FuzzyWeightedRule(FuzzyRelation(:service, :good),
+        WeightedFuzzyRule(FuzzyRelation(:service, :good),
                           [FuzzyRelation(:tip, :average), FuzzyRelation(:tip, :average)],
                           0.3),
         FuzzyRule(FuzzyOr(FuzzyRelation(:service, :excellent),

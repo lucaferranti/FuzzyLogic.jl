@@ -230,7 +230,7 @@ end
 #################
 
 function parse_rule(ant, cons, w)
-    Expr(:call, :FuzzyWeightedRule, parse_antecedent(ant), parse_consequents(cons), w)
+    Expr(:call, :WeightedFuzzyRule, parse_antecedent(ant), parse_consequents(cons), w)
 end
 
 function parse_rule(ant, cons)

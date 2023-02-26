@@ -3,7 +3,7 @@ module MatlabParser
 using Dictionaries
 using ..FuzzyLogic
 using ..FuzzyLogic: FuzzyAnd, FuzzyOr, FuzzyRule, FuzzyRelation, FuzzyNegation, Domain,
-                    FuzzyWeightedRule, Variable, memberships, AbstractMembershipFunction
+                    WeightedFuzzyRule, Variable, memberships, AbstractMembershipFunction
 
 export parse_matlabfis, @matlabfis_str
 
@@ -79,7 +79,7 @@ function parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
     if isone(w)
         FuzzyRule(ant, con)
     else
-        FuzzyWeightedRule(ant, con, w)
+        WeightedFuzzyRule(ant, con, w)
     end
 end
 

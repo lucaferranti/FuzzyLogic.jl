@@ -1,5 +1,6 @@
 using Dictionaries, FuzzyLogic, Test
-using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, Domain, Variable
+using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, WeightedFuzzyRule, Domain,
+                  Variable
 
 # TODO: write more low level tests
 
@@ -29,9 +30,10 @@ using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, Domain, Variable
         or = ProbSumOr
         implication = ProdImplication
 
-        service == poor && food == rancid --> tip == cheap
-        service == good --> tip == average
+        service == poor && food == rancid --> tip == cheap * 0.2
+        service == good --> (tip == average, tip == average) * 0.3
         service == excellent || food == delicious --> tip == generous
+        service == excellent || food == delicious --> (tip == generous, tip == generous)
 
         aggregator = ProbSumAggregator
         defuzzifier = BisectorDefuzzifier
@@ -64,12 +66,18 @@ using FuzzyLogic: FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyRule, Domain, Variable
 
     @test fis.rules ==
           [
-        FuzzyRule(FuzzyAnd(FuzzyRelation(:service, :poor), FuzzyRelation(:food, :rancid)),
-                  [FuzzyRelation(:tip, :cheap)]),
-        FuzzyRule(FuzzyRelation(:service, :good), [FuzzyRelation(:tip, :average)]),
+        WeightedFuzzyRule(FuzzyAnd(FuzzyRelation(:service, :poor),
+                                   FuzzyRelation(:food, :rancid)),
+                          [FuzzyRelation(:tip, :cheap)], 0.2),
+        WeightedFuzzyRule(FuzzyRelation(:service, :good),
+                          [FuzzyRelation(:tip, :average), FuzzyRelation(:tip, :average)],
+                          0.3),
         FuzzyRule(FuzzyOr(FuzzyRelation(:service, :excellent),
                           FuzzyRelation(:food, :delicious)),
                   [FuzzyRelation(:tip, :generous)]),
+        FuzzyRule(FuzzyOr(FuzzyRelation(:service, :excellent),
+                          FuzzyRelation(:food, :delicious)),
+                  [FuzzyRelation(:tip, :generous), FuzzyRelation(:tip, :generous)]),
     ]
 end
 

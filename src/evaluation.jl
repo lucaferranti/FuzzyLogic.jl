@@ -38,7 +38,7 @@ function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
             var = fis.outputs[con.subj]
             l, h = low(var.domain), high(var.domain)
             mf = map(var.mfs[con.prop], LinRange(l, h, Npoints))
-            ruleres = broadcast(implication(fis), w, mf)
+            ruleres = scale(broadcast(implication(fis), w, mf), rule)
             res[con.subj] = broadcast(fis.aggregator, res[con.subj], ruleres)
         end
     end
@@ -56,7 +56,7 @@ function (fis::SugenoFuzzySystem)(inputs::T) where {T <: NamedTuple}
                                 zeros(float(eltype(T)), length(fis.outputs)))
     weights_sum = zero(S)
     for rule in fis.rules
-        w = rule.antecedent(fis, inputs)::S
+        w = scale(rule.antecedent(fis, inputs), rule)::S
         weights_sum += w
         for con in rule.consequent
             res[con.subj] += w * memberships(fis.outputs[con.subj])[con.prop](inputs)

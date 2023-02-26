@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- ![](https://img.shields.io/badge/new%20feature-green.svg) support for weighted rules.
+
 ## v0.1.1 -- 2023-02-25
 
 [view release on GitHub](https://github.com/lucaferranti/FuzzyLogic.jl/releases/tag/v0.1.1)

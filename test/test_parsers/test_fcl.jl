@@ -1,6 +1,6 @@
 using Dictionaries, FuzzyLogic, PEG, Test
 using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyNegation,
-                  FuzzyRule
+                  FuzzyRule, WeightedFuzzyRule
 
 @testset "parse propositions" begin
     s = [
@@ -144,7 +144,7 @@ end
     RULEBLOCK rules
       OR: ASUM;
       ACT: PROD;
-      RULE 1: IF Ix IS zero AND Iy IS zero THEN Iout IS white;
+      RULE 1: IF Ix IS zero AND Iy IS zero THEN Iout IS white WITH 0.5;
       RULE 2: IF Ix IS NOT zero OR Iy IS NOT zero THEN Iout IS black;
     END_RULEBLOCK
 
@@ -167,8 +167,8 @@ end
                               ]))
 
     @test fis.rules == [
-        FuzzyRule(FuzzyAnd(FuzzyRelation(:Ix, :zero), FuzzyRelation(:Iy, :zero)),
-                  [FuzzyRelation(:Iout, :white)]),
+        WeightedFuzzyRule(FuzzyAnd(FuzzyRelation(:Ix, :zero), FuzzyRelation(:Iy, :zero)),
+                          [FuzzyRelation(:Iout, :white)], 0.5),
         FuzzyRule(FuzzyOr(FuzzyNegation(:Ix, :zero), FuzzyNegation(:Iy, :zero)),
                   [FuzzyRelation(:Iout, :black)]),
     ]

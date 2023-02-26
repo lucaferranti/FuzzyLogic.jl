@@ -166,12 +166,36 @@ function _fis(ex::Expr, type)
     @capture ex function name_(argsin__)::({argsout__} | argsout__)
         body_
     end
+    argsin, argsout = process_args(argsin), process_args(argsout)
     inputs, outputs, opts, rules = parse_body(body, argsin, argsout, type)
 
     fis = :($type(; name = $(QuoteNode(name)), inputs = $inputs,
                   outputs = $outputs, rules = $rules))
     append!(fis.args[2].args, opts)
     return fis
+end
+
+process_args(x::Symbol) = [x]
+function process_args(ex::Expr)
+    if @capture(ex, x_[start_:stop_])
+        [Symbol(x, i) for i in start:stop]
+    else
+        throw(ArgumentError("invalid expression $ex"))
+    end
+end
+process_args(v::Vector) = mapreduce(process_args, vcat, v)
+
+"""
+convert a symbol or expression to variable name. A symbol is returned as such.
+An expression in the form `:(x[i])` is converted to a symbol `:xi`.
+"""
+to_var_name(ex::Symbol) = ex
+function to_var_name(ex::Expr)
+    if @capture(ex, x_[i_])
+        return Symbol(x, eval(i))
+    else
+        throw(ArgumentError("Invalid variable name $ex"))
+    end
 end
 
 function parse_variable(var, args)
@@ -197,32 +221,46 @@ function parse_body(body, argsin, argsout, type)
     outputs = :(dictionary([]))
     for line in body.args
         line isa LineNumberNode && continue
-        if @capture(line, var_:=begin args__ end)
-            if var in argsin
-                push!(inputs.args[2].args, parse_variable(var, args))
-            elseif var in argsout
-                # TODO: makes this more scalable
-                push!(outputs.args[2].args,
-                      type == :SugenoFuzzySystem ? parse_sugeno_output(var, args, argsin) :
-                      parse_variable(var, args))
-            else
-                throw(ArgumentError("Undefined variable $var"))
-            end
-        elseif @capture(line, var_=value_)
-            var in SETTINGS[type] ||
-                throw(ArgumentError("Invalid keyword $var in line $line"))
-            push!(opts, Expr(:kw, var, value isa Symbol ? :($value()) : value))
-        elseif @capture(line, ant_-->(cons__,) * w_Number)
-            push!(rules.args, parse_rule(ant, cons, w))
-        elseif @capture(line, ant_-->p_ == q_ * w_Number)
-            push!(rules.args, parse_rule(ant, [:($p == $q)], w))
-        elseif @capture(line, ant_-->(cons__,) | cons__)
-            push!(rules.args, parse_rule(ant, cons))
-        else
-            throw(ArgumentError("Invalid expression $line"))
-        end
+        parse_line!(inputs, outputs, rules, opts, line, argsin, argsout, type)
     end
     return inputs, outputs, opts, rules
+end
+
+function parse_line!(inputs, outputs, rules, opts, line, argsin, argsout, type)
+    if @capture(line, var_:=begin args__ end)
+        var = to_var_name(var)
+        if var in argsin
+            push!(inputs.args[2].args, parse_variable(var, args))
+        elseif var in argsout
+            # TODO: makes this more scalable
+            push!(outputs.args[2].args,
+                  type == :SugenoFuzzySystem ? parse_sugeno_output(var, args, argsin) :
+                  parse_variable(var, args))
+        else
+            throw(ArgumentError("Undefined variable $var"))
+        end
+    elseif @capture(line, for i_ in start_:stop_
+                        sts__
+                    end)
+        for j in start:stop
+            for st in sts
+                ex = MacroTools.postwalk(x -> x == i ? j : x, st)
+                parse_line!(inputs, outputs, rules, opts, ex, argsin, argsout, type)
+            end
+        end
+    elseif @capture(line, var_=value_)
+        var in SETTINGS[type] ||
+            throw(ArgumentError("Invalid keyword $var in line $line"))
+        push!(opts, Expr(:kw, var, value isa Symbol ? :($value()) : value))
+    elseif @capture(line, ant_-->(cons__,) * w_Number)
+        push!(rules.args, parse_rule(ant, cons, w))
+    elseif @capture(line, ant_-->p_ == q_ * w_Number)
+        push!(rules.args, parse_rule(ant, [:($p == $q)], w))
+    elseif @capture(line, ant_-->(cons__,) | cons__)
+        push!(rules.args, parse_rule(ant, cons))
+    else
+        throw(ArgumentError("Invalid expression $line"))
+    end
 end
 
 #################
@@ -243,9 +281,11 @@ function parse_antecedent(ant)
     elseif @capture(ant, left_||right_)
         return Expr(:call, :FuzzyOr, parse_antecedent(left), parse_antecedent(right))
     elseif @capture(ant, subj_==prop_)
-        return Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+        return Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
+                    QuoteNode(to_var_name(prop)))
     elseif @capture(ant, subj_!=prop_)
-        return Expr(:call, :FuzzyNegation, QuoteNode(subj), QuoteNode(prop))
+        return Expr(:call, :FuzzyNegation, QuoteNode(to_var_name(subj)),
+                    QuoteNode(to_var_name(prop)))
     else
         throw(ArgumentError("Invalid premise $ant"))
     end
@@ -254,7 +294,8 @@ end
 function parse_consequents(cons)
     newcons = map(cons) do c
         @capture(c, subj_==prop_) || throw(ArgumentError("Invalid consequence $c"))
-        Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+        Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
+             QuoteNode(to_var_name(prop)))
     end
     return Expr(:vect, newcons...)
 end

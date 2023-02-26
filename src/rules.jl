@@ -59,7 +59,7 @@ struct FuzzyRule{T <: AbstractFuzzyProposition} <: AbstractRule
     "consequences of the inference rule."
     consequent::Vector{FuzzyRelation}
 end
-Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", r.consequent...)
+Base.show(io::IO, r::FuzzyRule) = print(io, r.antecedent, " --> ", join(r.consequent, ", "))
 
 """
 Weighted fuzzy rule. In Mamdani systems, the result of implication is scaled by the weight.
@@ -75,7 +75,7 @@ struct WeightedFuzzyRule{T <: AbstractFuzzyProposition, S <: Real} <: AbstractRu
 end
 
 function Base.show(io::IO, r::WeightedFuzzyRule)
-    print(io, r.antecedent, " --> ", r.consequent..., " (", r.weight, ")")
+    print(io, r.antecedent, " --> ", join(r.consequent, ", "), " (", r.weight, ")")
 end
 
 @inline scale(w, ::FuzzyRule) = w

@@ -56,8 +56,8 @@ fis(service=1, food=2)
 Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
                                       Impl <: AbstractImplication,
                                       Aggr <: AbstractAggregator,
-                                      Defuzz <: AbstractDefuzzifier} <:
-                   AbstractFuzzySystem
+                                      Defuzz <: AbstractDefuzzifier,
+                                      R <: AbstractRule} <: AbstractFuzzySystem
     "name of the system."
     name::Symbol
     "input variables and corresponding domain."
@@ -65,7 +65,7 @@ Base.@kwdef struct MamdaniFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
     "output variables and corresponding domain."
     outputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
     "inference rules."
-    rules::Vector{FuzzyRule} = FuzzyRule[]
+    rules::Vector{R} = FuzzyRule[]
     "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
     and::And = MinAnd()
     "method used to compute disjunction in rules, default [`MaxOr`](@ref)."
@@ -134,8 +134,8 @@ The inputs should be given as keyword arguments.
 
 $(TYPEDFIELDS)
 """
-Base.@kwdef struct SugenoFuzzySystem{And <: AbstractAnd, Or <: AbstractOr} <:
-                   AbstractFuzzySystem
+Base.@kwdef struct SugenoFuzzySystem{And <: AbstractAnd, Or <: AbstractOr,
+                                     R <: AbstractRule} <: AbstractFuzzySystem
     "name of the system."
     name::Symbol
     "input variables and corresponding domain."
@@ -143,7 +143,7 @@ Base.@kwdef struct SugenoFuzzySystem{And <: AbstractAnd, Or <: AbstractOr} <:
     "output variables and corresponding domain."
     outputs::Dictionary{Symbol, Variable} = Dictionary{Symbol, Variable}()
     "inference rules."
-    rules::Vector{FuzzyRule} = FuzzyRule[]
+    rules::Vector{R} = FuzzyRule[]
     "method used to compute conjuction in rules, default [`MinAnd`](@ref)."
     and::And = ProdAnd()
     "method used to compute disjunction in rules, default [`MaxOr`](@ref)."

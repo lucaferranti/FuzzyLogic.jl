@@ -95,6 +95,11 @@ function Base.:(==)(r1::FuzzyRule, r2::FuzzyRule)
     r1.antecedent == r2.antecedent && r1.consequent == r1.consequent
 end
 
+function Base.:(==)(r1::FuzzyWeightedRule, r2::FuzzyWeightedRule)
+    r1.antecedent == r2.antecedent && r1.consequent == r1.consequent &&
+        r1.weight == r2.weight
+end
+
 # utilities
 leaves(fr::Union{FuzzyNegation, FuzzyRelation}) = (fr,)
 leaves(fp::AbstractFuzzyProposition) = [leaves(fp.left)..., leaves(fp.right)...]

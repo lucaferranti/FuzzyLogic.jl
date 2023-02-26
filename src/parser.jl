@@ -192,7 +192,7 @@ end
 
 function parse_body(body, argsin, argsout, type)
     opts = Expr[]
-    rules = :(FuzzyRule[])
+    rules = Expr(:vect)
     inputs = :(dictionary([]))
     outputs = :(dictionary([]))
     for line in body.args
@@ -212,6 +212,10 @@ function parse_body(body, argsin, argsout, type)
             var in SETTINGS[type] ||
                 throw(ArgumentError("Invalid keyword $var in line $line"))
             push!(opts, Expr(:kw, var, value isa Symbol ? :($value()) : value))
+        elseif @capture(line, ant_-->(cons__,) * w_Number)
+            push!(rules.args, parse_rule(ant, cons, w))
+        elseif @capture(line, ant_-->p_ == q_ * w_Number)
+            push!(rules.args, parse_rule(ant, [:($p == $q)], w))
         elseif @capture(line, ant_-->(cons__,) | cons__)
             push!(rules.args, parse_rule(ant, cons))
         else
@@ -224,6 +228,10 @@ end
 #################
 # RULES PARSING #
 #################
+
+function parse_rule(ant, cons, w)
+    Expr(:call, :FuzzyWeightedRule, parse_antecedent(ant), parse_consequents(cons), w)
+end
 
 function parse_rule(ant, cons)
     Expr(:call, :FuzzyRule, parse_antecedent(ant), parse_consequents(cons))

@@ -1,6 +1,6 @@
 using Dictionaries, FuzzyLogic, PEG, Test
 using FuzzyLogic: Variable, Domain, FuzzyRelation, FuzzyAnd, FuzzyOr, FuzzyNegation,
-                  FuzzyRule
+                  FuzzyWeightedRule, FuzzyRule
 
 @testset "parse Mamdani infernce system" begin
     fis = readfis(joinpath(@__DIR__, "data", "tipper.fis"))
@@ -122,8 +122,8 @@ end
     MF2='line2':'constant',[0.5]
 
     [Rules]
-    1, 1 (1) : 1
-    2, 2 (1) : 1
+    1, 1 (0.5) : 1
+    2, 2 (0.5) : 1
     """
 
     @test fis isa SugenoFuzzySystem{ProdAnd, ProbSumOr}
@@ -133,4 +133,11 @@ end
                          LinearSugenoOutput(Dictionary([:input], [-1.0]), -1.0),
                          ConstantSugenoOutput(0.5),
                      ])
+
+    @test fis.rules == [
+        FuzzyWeightedRule(FuzzyRelation(:input, :low), [FuzzyRelation(:output, :line1)],
+                          0.5),
+        FuzzyWeightedRule(FuzzyRelation(:input, :high), [FuzzyRelation(:output, :line2)],
+                          0.5),
+    ]
 end

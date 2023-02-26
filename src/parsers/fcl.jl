@@ -23,6 +23,14 @@ function fcl_julia(s::AbstractString)
     haskey(FCL_JULIA, s) ? FCL_JULIA[s] : throw(ArgumentError("Option $s not supported."))
 end
 
+function parse_rule(x)
+    if isempty(x[5])
+        FuzzyLogic.FuzzyRule(x[2], x[4])
+    else
+        FuzzyLogic.FuzzyWeightedRule(x[2], x[4], x[5][1][2])
+    end
+end
+
 @rule id = r"[a-zA-Z_]+[a-zA-z0-9_]*"p |> Symbol
 @rule function_block = r"FUNCTION_BLOCK"p & id & var_input_block & var_output_block &
                        fuzzify_block[1:end] & defuzzify_block[1:end] & rule_block &
@@ -59,7 +67,7 @@ end
 
 @rule rule_block = r"RULEBLOCK"p & id & operator_definition & activation_method[:?] &
                    rule[1:end] & r"END_RULEBLOCK"p |>
-                   x -> (x[3], x[4], Vector{FuzzyLogic.FuzzyRule}(x[5]))
+                   x -> (x[3], x[4], identity.(x[5]))
 
 @rule or_definition = r"OR"p & r":"p & (r"MAX"p, r"ASUM"p, r"BSUM"p) & r";"p
 @rule and_definition = r"AND"p & r":"p & (r"MIN"p, r"PROD"p, r"BDIF"p) & r";"p
@@ -68,8 +76,9 @@ end
 @rule activation_method = r"ACT"p & r":"p & (r"MIN"p, r"PROD"p) & r";"p |>
                           x -> fcl_julia(join([x[1], x[3]]))
 
-@rule rule = r"RULE\s+\d+\s*:\s*IF"p & condition & r"THEN"p & conclusion & r";"p |>
-             x -> FuzzyLogic.FuzzyRule(x[2], x[4])
+@rule rule = r"RULE\s+\d+\s*:\s*IF"p & condition & r"THEN"p & conclusion &
+             (r"WITH"p & numeral)[:?] & r";"p |> parse_rule
+
 @rule relation = negrel, posrel
 @rule posrel = id & r"IS"p & id |> x -> FuzzyLogic.FuzzyRelation(x[1], x[3])
 @rule negrel = (id & r"IS\s+NOT"p & id |> x -> FuzzyLogic.FuzzyNegation(x[1], x[3])),
@@ -97,7 +106,6 @@ Parse a fuzzy inference system from a string representation in Fuzzy Control Lan
 
 The parsers can read FCL comformant to IEC 1131-7, with the following remarks:
 
-- Weighted rules are not supported.
 - Sugeno (system with singleton outputs) shall use COGS as defuzzifier.
 - the `RANGE` keyword is required for both fuzzification and defuzzification blocks.
 - Only the required `MAX` accumulator is supported.

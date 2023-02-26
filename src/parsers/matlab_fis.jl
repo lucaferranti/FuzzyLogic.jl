@@ -3,7 +3,7 @@ module MatlabParser
 using Dictionaries
 using ..FuzzyLogic
 using ..FuzzyLogic: FuzzyAnd, FuzzyOr, FuzzyRule, FuzzyRelation, FuzzyNegation, Domain,
-                    Variable, memberships, AbstractMembershipFunction
+                    FuzzyWeightedRule, Variable, memberships, AbstractMembershipFunction
 
 export parse_matlabfis, @matlabfis_str
 
@@ -58,10 +58,12 @@ function parse_var(var; inputs = nothing)
 end
 
 function parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
-    ants, cons, op = split(line, r"[,:] ")
+    ants, consw, op = split(line, r"[,:] ")
+    consw = split(consw)
+    considx = parse.(Int, consw[1:length(outputnames)])
+    w = parse(Float64, consw[end][2:(end - 1)])
     antsidx = filter!(!iszero, parse.(Int, split(ants)))
-    considx = filter!(!iszero, parse.(Int, split(cons)[1:length(outputnames)]))
-    # TODO: weighted rules
+    filter!(!iszero, considx)
     op = op == "1" ? FuzzyAnd : FuzzyOr
     length(antsidx) == 1 && (op = identity)
     ant = mapreduce(op, enumerate(antsidx)) do (var, mf)
@@ -74,7 +76,11 @@ function parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
     con = map(enumerate(considx)) do (var, mf)
         FuzzyRelation(outputnames[var], outputmfs[var][mf])
     end
-    FuzzyRule(ant, con)
+    if isone(w)
+        FuzzyRule(ant, con)
+    else
+        FuzzyWeightedRule(ant, con, w)
+    end
 end
 
 function parse_rules(lines, inputs, outputs)
@@ -82,8 +88,8 @@ function parse_rules(lines, inputs, outputs)
     outputnames = collect(keys(outputs))
     inputmfs = collect.(keys.(memberships.(collect(inputs))))
     outputmfs = collect.(keys.(memberships.(collect(outputs))))
-    FuzzyRule[parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
-              for line in lines]
+    identity.([parse_rule(line, inputnames, outputnames, inputmfs, outputmfs)
+               for line in lines])
 end
 
 """

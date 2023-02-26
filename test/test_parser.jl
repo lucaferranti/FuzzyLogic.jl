@@ -122,3 +122,48 @@ end
 
     @test fis.outputs[:tip].mfs == mfs
 end
+
+@testset "parse vector-like notation" begin
+    fis = @mamfis function denoise(x[1:3])::y
+        x[1] := begin
+            domain = -1000:1000
+            POS = TriangularMF(-255.0, 255.0, 765.0)
+            NEG = TriangularMF(-765.0, -255.0, 255.0)
+        end
+        x[2] := begin
+            domain = -1000:1000
+            POS = TriangularMF(-255.0, 255.0, 765.0)
+            NEG = TriangularMF(-765.0, -255.0, 255.0)
+        end
+        x[3] := begin
+            domain = -1000:1000
+            POS = TriangularMF(-255.0, 255.0, 765.0)
+            NEG = TriangularMF(-765.0, -255.0, 255.0)
+        end
+
+        y := begin
+            domain = -1000:1000
+            POS = TriangularMF(-255.0, 255.0, 765.0)
+            NEG = TriangularMF(-765.0, -255.0, 255.0)
+        end
+
+        x[1] == POS --> y == POS
+        x[2] == POS && x[3] == NEG --> y == NEG
+    end
+
+    var = Variable(Domain(-1000, 1000),
+                   Dictionary([:POS, :NEG],
+                              [
+                                  TriangularMF(-255.0, 255.0, 765.0),
+                                  TriangularMF(-765.0, -255.0, 255.0),
+                              ]))
+    for x in (:x1, :x2, :x3)
+        @test fis.inputs[x] == var
+    end
+
+    @test fis.rules == [
+        FuzzyRule(FuzzyRelation(:x1, :POS), [FuzzyRelation(:y, :POS)]),
+        FuzzyRule(FuzzyAnd(FuzzyRelation(:x2, :POS), FuzzyRelation(:x3, :NEG)),
+                  [FuzzyRelation(:y, :POS)]),
+    ]
+end

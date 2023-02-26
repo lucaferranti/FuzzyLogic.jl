@@ -166,12 +166,36 @@ function _fis(ex::Expr, type)
     @capture ex function name_(argsin__)::({argsout__} | argsout__)
         body_
     end
+    argsin, argsout = process_args(argsin), process_args(argsout)
     inputs, outputs, opts, rules = parse_body(body, argsin, argsout, type)
 
     fis = :($type(; name = $(QuoteNode(name)), inputs = $inputs,
                   outputs = $outputs, rules = $rules))
     append!(fis.args[2].args, opts)
     return fis
+end
+
+process_args(x::Symbol) = [x]
+function process_args(ex::Expr)
+    if @capture(ex, x_[start_:stop_])
+        [Symbol(x, i) for i in start:stop]
+    else
+        throw(ArgumentError("invalid expression $ex"))
+    end
+end
+process_args(v::Vector) = mapreduce(process_args, vcat, v)
+
+"""
+convert a symbol or expression to variable name. A symbol is returned as such.
+An expression in the form `:(x[i])` is converted to a symbol `:xi`.
+"""
+to_var_name(ex::Symbol) = ex
+function to_var_name(ex::Expr)
+    if @capture(ex, x_[i_])
+        return Symbol(x, i)
+    else
+        throw(ArgumentError("Invalid variable name $ex"))
+    end
 end
 
 function parse_variable(var, args)
@@ -198,6 +222,7 @@ function parse_body(body, argsin, argsout, type)
     for line in body.args
         line isa LineNumberNode && continue
         if @capture(line, var_:=begin args__ end)
+            var = to_var_name(var)
             if var in argsin
                 push!(inputs.args[2].args, parse_variable(var, args))
             elseif var in argsout
@@ -243,9 +268,11 @@ function parse_antecedent(ant)
     elseif @capture(ant, left_||right_)
         return Expr(:call, :FuzzyOr, parse_antecedent(left), parse_antecedent(right))
     elseif @capture(ant, subj_==prop_)
-        return Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+        return Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
+                    QuoteNode(to_var_name(prop)))
     elseif @capture(ant, subj_!=prop_)
-        return Expr(:call, :FuzzyNegation, QuoteNode(subj), QuoteNode(prop))
+        return Expr(:call, :FuzzyNegation, QuoteNode(to_var_name(subj)),
+                    QuoteNode(to_var_name(prop)))
     else
         throw(ArgumentError("Invalid premise $ant"))
     end
@@ -254,7 +281,8 @@ end
 function parse_consequents(cons)
     newcons = map(cons) do c
         @capture(c, subj_==prop_) || throw(ArgumentError("Invalid consequence $c"))
-        Expr(:call, :FuzzyRelation, QuoteNode(subj), QuoteNode(prop))
+        Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
+             QuoteNode(to_var_name(prop)))
     end
     return Expr(:vect, newcons...)
 end

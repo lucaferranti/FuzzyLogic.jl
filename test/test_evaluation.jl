@@ -60,6 +60,7 @@ using FuzzyLogic, Test
     end
 
     @test fis(service = 2, food = 7)[:tip]≈9.36 atol=1e-2
+    @test fis([2, 7])[:tip]≈9.36 atol=1e-2
 end
 
 @testset "test Sugeno evaluation" begin
@@ -116,4 +117,5 @@ end
         service == excellent || food == delicious --> tip == generous
     end
     @test fis2(service = 7, food = 8)[:tip]≈19.639 atol=1e-3
+    @test fis2((7, 8))[:tip]≈19.639 atol=1e-3
 end

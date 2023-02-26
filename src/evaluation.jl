@@ -49,6 +49,9 @@ function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
 end
 
 (fis::MamdaniFuzzySystem)(; inputs...) = fis(values(inputs))
+@inline function (fis::MamdaniFuzzySystem)(inputs::Union{AbstractVector, Tuple})
+    fis((; zip(collect(keys(fis.inputs)), inputs)...))
+end
 
 function (fis::SugenoFuzzySystem)(inputs::T) where {T <: NamedTuple}
     S = float(eltype(T))
@@ -66,3 +69,6 @@ function (fis::SugenoFuzzySystem)(inputs::T) where {T <: NamedTuple}
 end
 
 (fis::SugenoFuzzySystem)(; inputs...) = fis(values(inputs))
+@inline function (fis::SugenoFuzzySystem)(inputs::Union{AbstractVector, Tuple})
+    fis((; zip(collect(keys(fis.inputs)), inputs)...))
+end

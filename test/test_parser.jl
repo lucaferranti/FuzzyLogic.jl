@@ -124,31 +124,30 @@ end
 end
 
 @testset "parse vector-like notation" begin
-    fis = @mamfis function denoise(x[1:3])::y
-        x[1] := begin
-            domain = -1000:1000
-            POS = TriangularMF(-255.0, 255.0, 765.0)
-            NEG = TriangularMF(-765.0, -255.0, 255.0)
+    fis = @mamfis function denoise(x[1:3])::y[1:2]
+        for i in 1:3
+            x[i] := begin
+                domain = -1000:1000
+                POS = TriangularMF(-255.0, 255.0, 765.0)
+                NEG = TriangularMF(-765.0, -255.0, 255.0)
+            end
         end
-        x[2] := begin
-            domain = -1000:1000
-            POS = TriangularMF(-255.0, 255.0, 765.0)
-            NEG = TriangularMF(-765.0, -255.0, 255.0)
-        end
-        x[3] := begin
+
+        y1 := begin
             domain = -1000:1000
             POS = TriangularMF(-255.0, 255.0, 765.0)
             NEG = TriangularMF(-765.0, -255.0, 255.0)
         end
 
-        y := begin
+        y2 := begin
             domain = -1000:1000
             POS = TriangularMF(-255.0, 255.0, 765.0)
             NEG = TriangularMF(-765.0, -255.0, 255.0)
         end
 
-        x[1] == POS --> y == POS
-        x[2] == POS && x[3] == NEG --> y == NEG
+        for i in 1:2
+            x[i] == POS && x[i + 1] == NEG --> (y[i] == POS, y[i % 2 + 1] == NEG)
+        end
     end
 
     var = Variable(Domain(-1000, 1000),
@@ -161,9 +160,14 @@ end
         @test fis.inputs[x] == var
     end
 
+    for y in (:y1, :y2)
+        @test fis.outputs[y] == var
+    end
+
     @test fis.rules == [
-        FuzzyRule(FuzzyRelation(:x1, :POS), [FuzzyRelation(:y, :POS)]),
+        FuzzyRule(FuzzyAnd(FuzzyRelation(:x1, :POS), FuzzyRelation(:x2, :NEG)),
+                  [FuzzyRelation(:y1, :POS), FuzzyRelation(:y2, :NEG)]),
         FuzzyRule(FuzzyAnd(FuzzyRelation(:x2, :POS), FuzzyRelation(:x3, :NEG)),
-                  [FuzzyRelation(:y, :POS)]),
+                  [FuzzyRelation(:y2, :POS), FuzzyRelation(:y1, :NEG)]),
     ]
 end

@@ -311,3 +311,24 @@ end
 
 # TODO: more robust soultion for all mfs
 Base.:(==)(mf1::PiecewiseLinearMF, mf2::PiecewiseLinearMF) = mf1.points == mf2.points
+
+"""
+A membership function scaled by a parameter ``0 ≤ w ≤ 1``.
+
+$(TYPEDFIELDS)
+
+### Example
+
+```julia
+mf = 0.5 * TriangularMF(1, 2, 3)
+"""
+struct WeightedMF{MF <: AbstractMembershipFunction, T <: Real} <: AbstractMembershipFunction
+    "membership function."
+    mf::MF
+    "scaling factor."
+    w::T
+end
+(wmf::WeightedMF)(x) = wmf.w * wmf.mf(x)
+
+Base.:*(w::Real, mf::AbstractMembershipFunction) = WeightedMF(mf, w)
+Base.:*(mf::AbstractMembershipFunction, w::Real) = WeightedMF(mf, w)

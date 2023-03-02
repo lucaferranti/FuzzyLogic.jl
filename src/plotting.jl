@@ -6,6 +6,21 @@ using RecipesBase
     x -> mf(x), low, high
 end
 
+@recipe function f(mf::Type2MF, low::Real, high::Real)
+    legend --> nothing
+    fillrange := x -> mf.hi(x)
+    fillalpha --> 0.25
+    @series begin
+        lw --> 3
+        mf.lo, low, high
+    end
+    @series begin
+        lw --> 3
+        mf.hi, low, high
+    end
+    x -> mf.lo(x), low, high
+end
+
 @recipe f(mf::AbstractPredicate, dom::Domain) = mf, low(dom), high(dom)
 
 # plot sugeno membership functions

@@ -230,12 +230,12 @@ Base.@kwdef struct KarnikMendelDefuzzifier <: Type2Defuzzifier
 end
 
 function (kmd::KarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
-    x = LinRange(low(dom), high(dom), kmd.N + 1)
+    x = LinRange(low(dom), high(dom), length(w))
     m = map(mid, w)
     x0 = sum(xi * mi for (xi, mi) in zip(x, m)) / sum(m)
     xl = x0
     xr = x0
-    idx = findfirst(<(x0), x)
+    idx = searchsortedlast(x, x0)
     @inbounds for _ in 1:(kmd.maxiter)
         num = zero(eltype(m))
         den = zero(eltype(m))
@@ -254,7 +254,7 @@ function (kmd::KarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
             break
         end
         xl = cand
-        idx = findfirst(<(xl), x)
+        idx = searchsortedlast(x, xl)
     end
 
     @inbounds for _ in 1:(kmd.maxiter)
@@ -275,7 +275,53 @@ function (kmd::KarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
             break
         end
         xr = cand
-        idx = findfirst(<(xr), x)
+        idx = searchsortedlast(x, xr)
     end
     return (xl + xr) / 2
+end
+
+"""
+Enhanced Karnik-Mendel type-reduction/defuzzification algorithm for Type-2 fuzzy systems.
+
+### Parameters
+
+$(TYPEDFIELDS)
+"""
+Base.@kwdef struct EnhancedKarnikMendelDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+    "maximum number of iterations, default 100."
+    maxiter::Int = 100
+end
+
+function (ekmd::EnhancedKarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    Np = length(w)
+    x = LinRange(low(dom), high(dom), Np)
+    k = round(Int, Np / 2.4)
+    a = sum(x[i] * sup(w[i]) for i in 1:k) + sum(x[i] * inf(w[i]) for i in (k + 1):Np)
+    b = sum(sup(w[i]) for i in 1:k) + sum(inf(w[i]) for i in (k + 1):Np)
+    yl = a / b
+    @inbounds for _ in 1:(ekmd.maxiter)
+        knew = searchsortedlast(x, yl)
+        k == knew && break
+        s = sign(knew - k)
+        a += s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        b += s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        yl = a / b
+    end
+
+    k = round(Int, Np / 1.7)
+    a = sum(x[i] * inf(w[i]) for i in 1:k) + sum(x[i] * sup(w[i]) for i in (k + 1):Np)
+    b = sum(inf(w[i]) for i in 1:k) + sum(sup(w[i]) for i in (k + 1):Np)
+    yr = a / b
+    @inbounds for _ in 1:(ekmd.maxiter)
+        knew = searchsortedlast(x, yr)
+        k == knew && break
+        s = sign(knew - k)
+        a -= s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        b -= s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        yr = a / b
+    end
+
+    return (yl + yr) / 2
 end

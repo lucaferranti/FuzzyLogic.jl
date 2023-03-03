@@ -9,6 +9,8 @@ inf(a::Real) = a
 sup(a::Real) = a
 mid(a::Interval) = (a.lo + a.hi) / 2
 mid(a::Real) = a
+diam(a::Interval) = a.hi - a.lo
+diam(x::Real) = zero(x)
 
 Base.convert(::Type{Interval{T}}, x::Real) where {T <: Real} = Interval(T(x), T(x))
 Base.convert(::Type{T}, x::Interval) where {T <: AbstractFloat} = (x.lo + x.hi) / 2

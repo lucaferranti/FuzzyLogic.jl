@@ -148,7 +148,7 @@ end
 
         defuzzifier = KarnikMendelDefuzzifier()
     end
-    @test fis(service = 2, food = 3)[:tip]≈7.217 atol=1e-3
+    @test fis(service = 2, food = 3)[:tip]≈7.439 atol=1e-3
 end
 
 @testset "Type-2 Sugeno" begin

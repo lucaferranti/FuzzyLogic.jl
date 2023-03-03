@@ -202,3 +202,5 @@ function (bd::BisectorDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
 end
 
 _trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2
+
+abstract type Type2Defuzzifier <: AbstractDefuzzifier end

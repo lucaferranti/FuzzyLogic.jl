@@ -78,7 +78,7 @@ function generate_memberships()
             ```
 
             """)
-            docstring = match(r"```julia\nmf = (\w+\(.+\))\n```", string(Docs.doc(mf)))
+            docstring = match(r"```julia\nmf = (.+)\n```", string(Docs.doc(mf)))
             if !isnothing(docstring)
                 mfex = only(docstring.captures)
                 write(f, """

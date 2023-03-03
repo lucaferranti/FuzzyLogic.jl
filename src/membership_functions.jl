@@ -311,3 +311,51 @@ end
 
 # TODO: more robust soultion for all mfs
 Base.:(==)(mf1::PiecewiseLinearMF, mf2::PiecewiseLinearMF) = mf1.points == mf2.points
+
+"""
+A membership function scaled by a parameter ``0 ≤ w ≤ 1``.
+
+$(TYPEDFIELDS)
+
+### Example
+
+```julia
+mf = 0.5 * TriangularMF(1, 2, 3)
+```
+"""
+struct WeightedMF{MF <: AbstractMembershipFunction, T <: Real} <: AbstractMembershipFunction
+    "membership function."
+    mf::MF
+    "scaling factor."
+    w::T
+end
+(wmf::WeightedMF)(x) = wmf.w * wmf.mf(x)
+
+Base.show(io::IO, wmf::WeightedMF) = print(io, wmf.w, wmf.mf)
+
+Base.:*(w::Real, mf::AbstractMembershipFunction) = WeightedMF(mf, w)
+Base.:*(mf::AbstractMembershipFunction, w::Real) = WeightedMF(mf, w)
+
+"""
+A type-2 membership function.
+
+$(TYPEDFIELDS)
+
+### Example
+
+```julia
+mf = 0.7 * TriangularMF(3, 5, 7) .. TriangularMF(1, 5, 9)
+```
+"""
+struct Type2MF{MF1 <: AbstractMembershipFunction, MF2 <: AbstractMembershipFunction} <:
+       AbstractMembershipFunction
+    "lower membership function."
+    lo::MF1
+    "upper membership function."
+    hi::MF2
+end
+(mf2::Type2MF)(x) = Interval(mf2.lo(x), mf2.hi(x))
+
+..(mf1::AbstractMembershipFunction, mf2::AbstractMembershipFunction) = Type2MF(mf1, mf2)
+
+Base.show(io::IO, mf2::Type2MF) = print(io, mf2.lo, " .. ", mf2.hi)

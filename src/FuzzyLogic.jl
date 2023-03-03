@@ -22,7 +22,7 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        ProbSumOr, MaxOr, BoundedSumOr, DrasticOr, NilpotentOr, EinsteinOr,
        MinImplication, ProdImplication,
        MaxAggregator, ProbSumAggregator, CentroidDefuzzifier, BisectorDefuzzifier,
-       KarnikMendelDefuzzifier, EnhancedKarnikMendelDefuzzifier,
+       KarnikMendelDefuzzifier, EKMDefuzzifier, IASCDefuzzifier, EIASCDefuzzifier,
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem, set,
        LinearSugenoOutput, ConstantSugenoOutput,
        fuzzy_cmeans,

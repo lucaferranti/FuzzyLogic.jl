@@ -24,7 +24,8 @@ using FuzzyLogic
 
 ## Features
 
-- **Rich!** Mamdani and Sugeno Type-1 inference systems, several membership functions and algoritms options available.
+- **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
+- **Compatible!** Read your models from [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm) and Matlab Fuzzy toolbox `.fis` files.
 - **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
 - **Productive!** Several visualization tools to help debug and tune your model.
 

@@ -143,13 +143,17 @@ struct ProbSumAggregator <: AbstractAggregator end
 
 abstract type AbstractDefuzzifier <: AbstractFISSetting end
 
-@doc raw"""
+"""
 Centroid defuzzifier. Given the aggregated output function ``f`` and the output
 variable domain ``[a, b]`` the defuzzified output is the centroid computed as
 
 ```math
-\frac{∫_a^bxf(x)\textrm{d}x}{∫_a^bf(x)\textrm{d}x}.
+\\frac{∫_a^bxf(x)\\textrm{d}x}{∫_a^bf(x)\\textrm{d}x}.
 ```
+
+### Parameters
+
+$(TYPEDFIELDS)
 
 ## Algorithm
 
@@ -165,14 +169,18 @@ function (cd::CentroidDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
     _trapz(dx, LinRange(low(dom), high(dom), cd.N + 1) .* y) / _trapz(dx, y)
 end
 
-@doc raw"""
+"""
 Bisector defuzzifier. Given the aggregated output function ``f`` and the output
 variable domain ``[a, b]`` the defuzzified output is the value ``t ∈ [a, b]`` that divides
 the area under ``f`` into two equal parts. That is
 
 ```math
-∫_a^tf(x)\textrm{d}x = ∫_t^af(x)\textrm{d}x.
+∫_a^tf(x)\\textrm{d}x = ∫_t^af(x)\\textrm{d}x.
 ```
+
+### Parameters
+
+$(TYPEDFIELDS)
 
 ## Algorithm
 
@@ -204,3 +212,70 @@ end
 _trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2
 
 abstract type Type2Defuzzifier <: AbstractDefuzzifier end
+
+"""
+Karnik-Mendel type-reduction/defuzzification algorithm for Type-2 fuzzy systems.
+
+### Parameters
+
+$(TYPEDFIELDS)
+"""
+Base.@kwdef struct KarnikMendelDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+    "maximum number of iterations, default 100."
+    maxiter::Int = 100
+    "absolute tolerance for stopping iterations"
+    atol::Float64 = 1e-6
+end
+
+function (kmd::KarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    x = LinRange(low(dom), high(dom), kmd.N + 1)
+    m = map(mid, w)
+    x0 = sum(xi * mi for (xi, mi) in zip(x, m)) / sum(m)
+    xl = x0
+    xr = x0
+    idx = findfirst(<(x0), x)
+    @inbounds for _ in 1:(kmd.maxiter)
+        num = zero(eltype(m))
+        den = zero(eltype(m))
+        for i in firstindex(x):idx
+            den += sup(w[i])
+            num += sup(w[i]) * x[i]
+        end
+        for i in (idx + 1):length(x)
+            den += inf(w[i])
+            num += inf(w[i]) * x[i]
+        end
+
+        cand = num / den
+        if abs(cand - xl) <= kmd.atol
+            xl = cand
+            break
+        end
+        xl = cand
+        idx = findfirst(<(xl), x)
+    end
+
+    @inbounds for _ in 1:(kmd.maxiter)
+        num = zero(eltype(m))
+        den = zero(eltype(m))
+        for i in firstindex(x):idx
+            den += inf(w[i])
+            num += inf(w[i]) * x[i]
+        end
+        for i in (idx + 1):length(x)
+            den += sup(w[i])
+            num += sup(w[i]) * x[i]
+        end
+
+        cand = num / den
+        if abs(cand - xr) <= kmd.atol
+            xr = cand
+            break
+        end
+        xr = cand
+        idx = findfirst(<(xr), x)
+    end
+    return (xl + xr) / 2
+end

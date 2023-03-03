@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - ![](https://img.shields.io/badge/new%20feature-green.svg) support for weighted rules.
 - ![](https://img.shields.io/badge/new%20feature-green.svg) allow to specify input and output variables as vectors (e.g. `x[1:10]`) and support for loops to avoid repetitive code.
+- ![](https://img.shields.io/badge/new%20feature-green.svg) added support for type-2 membership functions and type-2 systems.
 
 ## v0.1.1 -- 2023-02-25
 

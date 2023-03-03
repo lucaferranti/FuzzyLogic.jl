@@ -120,6 +120,37 @@ end
     @test fis2((7, 8))[:tip]≈19.639 atol=1e-3
 end
 
+@testset "Type-2 Mamdani" begin
+    fis = @mamfis function tipper(service, food)::tip
+        service := begin
+            domain = 0:10
+            poor = 0.9 * GaussianMF(0.0, 1.2) .. GaussianMF(0.0, 1.5)
+            good = 0.9 * GaussianMF(5.0, 1.2) .. GaussianMF(5.0, 1.5)
+            excellent = 0.9 * GaussianMF(10.0, 1.2) .. GaussianMF(10.0, 1.5)
+        end
+
+        food := begin
+            domain = 0:10
+            rancid = 0.9 * TrapezoidalMF(-1.8, 0.0, 1.0, 2.8) .. TrapezoidalMF(-2, 0, 1, 3)
+            delicious = 0.9 * TrapezoidalMF(8, 9, 10, 12) .. TrapezoidalMF(7, 9, 10, 12)
+        end
+
+        tip := begin
+            domain = 0:30
+            cheap = 0.9 * TriangularMF(1, 5, 9) .. TriangularMF(0, 5, 10)
+            average = 0.9 * TriangularMF(11, 15, 19) .. TriangularMF(10, 15, 20)
+            generous = 0.9 * TriangularMF(22, 25, 29) .. TriangularMF(20, 25, 30)
+        end
+
+        service == poor || food == rancid --> tip == cheap
+        service == good --> tip == average
+        service == excellent || food == delicious --> tip == generous
+
+        defuzzifier = KarnikMendelDefuzzifier()
+    end
+    @test fis(service = 2, food = 3)[:tip]≈7.217 atol=1e-3
+end
+
 @testset "Type-2 Sugeno" begin
     fis = @sugfis function tipper(service, food)::tip
         service := begin

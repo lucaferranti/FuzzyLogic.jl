@@ -38,7 +38,7 @@ function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
             var = fis.outputs[con.subj]
             l, h = low(var.domain), high(var.domain)
             mf = map(var.mfs[con.prop], LinRange(l, h, Npoints))
-            ruleres = scale(broadcast(implication(fis), w, mf), rule)
+            ruleres = scale(map(Base.Fix1(implication(fis), w), mf), rule)
             res[con.subj] = broadcast(fis.aggregator, res[con.subj], ruleres)
         end
     end

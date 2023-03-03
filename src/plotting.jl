@@ -10,14 +10,7 @@ end
     legend --> nothing
     fillrange := x -> mf.hi(x)
     fillalpha --> 0.25
-    @series begin
-        lw --> 3
-        mf.lo, low, high
-    end
-    @series begin
-        lw --> 3
-        mf.hi, low, high
-    end
+    lw --> 3
     x -> mf.lo(x), low, high
 end
 

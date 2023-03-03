@@ -10,7 +10,6 @@ end
     legend --> nothing
     fillrange := x -> mf.hi(x)
     fillalpha --> 0.25
-    lw --> 3
     x -> mf.lo(x), low, high
 end
 

@@ -59,7 +59,7 @@ function (fis::SugenoFuzzySystem)(inputs::T) where {T <: NamedTuple}
                                 zeros(float(eltype(T)), length(fis.outputs)))
     weights_sum = zero(S)
     for rule in fis.rules
-        w = scale(rule.antecedent(fis, inputs), rule)::S
+        w = scale(rule.antecedent(fis, inputs), rule)
         weights_sum += w
         for con in rule.consequent
             res[con.subj] += w * memberships(fis.outputs[con.subj])[con.prop](inputs)

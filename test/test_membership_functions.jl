@@ -1,4 +1,5 @@
 using FuzzyLogic, Test
+using FuzzyLogic: Interval
 
 @testset "Difference of sigmoids MF" begin
     f = DifferenceSigmoidMF(5, 2, 5, 7)
@@ -83,7 +84,9 @@ end
     mf = SShapeMF(1, 8)
     @test mf(0) == 0
     @test mf(1) == 0
+    @test mf(2.75) == 0.125
     @test mf(4.5) == 0.5
+    @test mf(6.25) == 0.875
     @test mf(8) == 1
     @test mf(9) == 1
 end
@@ -92,7 +95,9 @@ end
     mf = ZShapeMF(3, 7)
     @test mf(2) == 1
     @test mf(3) == 1
+    @test mf(4) == 0.875
     @test mf(5) == 0.5
+    @test mf(6) == 0.125
     @test mf(7) == 0
     @test mf(9) == 0
 end
@@ -105,5 +110,38 @@ end
     @test mf(4.5) == 1
     @test mf(5) == 1
     @test mf(7.5) == 0.5
+    @test mf(8.75) == 0.125
     @test mf(10) == 0
+end
+
+@testset "Piecewise linear Membership function" begin
+    mf = PiecewiseLinearMF([(1, 0), (2, 1), (3, 0), (4, 0.5), (5, 0), (6, 1)])
+    @test mf(0.0) == 0
+    @test mf(1.0) == 0
+    @test mf(1.5) == 0.5
+    @test mf(2) == 1
+    @test mf(3.5) == 0.25
+    @test mf(7) == 1
+end
+
+@testset "Weighted Membership function" begin
+    mf = TriangularMF(1, 2, 3)
+    mf1 = 0.5 * mf
+    mf2 = mf * 0.5
+    @test mf1(1) == mf2(1) == 0
+    @test mf1(3) == mf2(3) == 0
+    @test mf1(2) == mf2(2) == 0.5
+    @test mf1(0.3) == mf2(0.3) == 0.5 * mf(0.3)
+end
+
+@testset "Type-2 membership function" begin
+    mf = 0.5 * TriangularMF(1, 2, 3) .. TriangularMF(0, 2, 4)
+    @test mf(-1) == Interval(0.0, 0.0)
+    @test mf(0) == Interval(0.0, 0.0)
+    @test mf(1) == Interval(0.0, 0.5)
+    @test mf(1.5) == Interval(0.25, 0.75)
+    @test mf(2) == Interval(0.5, 1.0)
+    @test mf(3) == Interval(0.0, 0.5)
+    @test mf(4) == Interval(0.0, 0.0)
+    @test mf(5) == Interval(0.0, 0.0)
 end

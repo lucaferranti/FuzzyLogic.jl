@@ -3,8 +3,8 @@ module FuzzyLogic
 using Dictionaries, Reexport
 
 include("docstrings.jl")
-include("membership_functions.jl")
 include("intervals.jl")
+include("membership_functions.jl")
 include("variables.jl")
 include("rules.jl")
 include("options.jl")

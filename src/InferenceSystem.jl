@@ -154,8 +154,6 @@ const SETTINGS = (MamdaniFuzzySystem = (:and, :or, :implication, :aggregator,
                                         :defuzzifier),
                   SugenoFuzzySystem = (:and, :or))
 
-implication(::SugenoFuzzySystem) = ProdImplication()
-
 # sugeno output functions
 
 abstract type AbstractSugenoOutputFunction <: AbstractPredicate end

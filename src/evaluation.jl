@@ -18,15 +18,6 @@ function (fo::FuzzyOr)(fis::AbstractFuzzySystem, inputs)
     fis.or(fo.left(fis, inputs), fo.right(fis, inputs))
 end
 
-function (fr::FuzzyRule)(fis::AbstractFuzzySystem, inputs;
-                         N = 100)
-    map(fr.consequent) do c
-        l, h = low(fis.outputs[c.sub].domain), high(fis.outputs[c.sub].domain)
-        mf = broadcast(memberships(fis.outputs[c.subj])[c.prop], LinRange(l, h, N))
-        broadcast(implication(fis), fr.antecedent(fis, inputs), mf)
-    end
-end
-
 function (fis::MamdaniFuzzySystem)(inputs::T) where {T <: NamedTuple}
     Npoints = fis.defuzzifier.N + 1
     S = outputtype(typeof(fis.defuzzifier), T)

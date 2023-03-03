@@ -1,5 +1,5 @@
 using FuzzyLogic, Test
-using FuzzyLogic: Interval, inf, sup, mid
+using FuzzyLogic: Interval, inf, sup, mid, diam
 
 @testset "interval operations" begin
     a = Interval(0.1, 1.0)
@@ -9,6 +9,8 @@ using FuzzyLogic: Interval, inf, sup, mid
     @test sup(a) == 1.0
     @test mid(a) ≈ 0.55
     @test inf(0.1) == sup(0.1) == mid(0.1) == 0.1
+    @test diam(a) ≈ 0.9
+    @test diam(0.1) == 0.0
 
     @test Interval(1.0, 2.0) ≈ Interval(nextfloat(1.0), prevfloat(2.0))
     @test +a == a

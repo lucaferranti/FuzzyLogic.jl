@@ -2,6 +2,24 @@
 
 abstract type AbstractFuzzySystem end
 
+"""
+Create a copy of the given fuzzy systems, but with the new settings as specified in the
+keyword arguments.
+
+### Inputs
+
+- `fis::AbstractFuzzySystem` -- input fuzzy system
+
+### Keyword arguments
+
+- `kwargs...` -- new settings of the inference system to be tuned
+
+"""
+function set(fis::AbstractFuzzySystem; kwargs...)
+    typeof(fis).name.wrapper(NamedTuple(f => get(kwargs, f, getproperty(fis, f))
+                                        for f in fieldnames(typeof(fis)))...)
+end
+
 ###########
 # Mamdani #
 ###########

@@ -1,6 +1,48 @@
 using FuzzyLogic
 using Test
 
+@testset "update fuzzy systems" begin
+    fis = @mamfis function tipper(service, food)::tip
+        service := begin
+            domain = 0:10
+            poor = GaussianMF(0.0, 1.5)
+            good = GaussianMF(5.0, 1.5)
+            excellent = GaussianMF(10.0, 1.5)
+        end
+
+        food := begin
+            domain = 0:10
+            rancid = TrapezoidalMF(-2, 0, 1, 3)
+            delicious = TrapezoidalMF(7, 9, 10, 12)
+        end
+
+        tip := begin
+            domain = 0:30
+            cheap = TriangularMF(0, 5, 10)
+            average = TriangularMF(10, 15, 20)
+            generous = TriangularMF(20, 25, 30)
+        end
+
+        and = ProdAnd
+        or = ProbSumOr
+        implication = ProdImplication
+
+        service == poor && food == rancid --> tip == cheap * 0.2
+        service == good --> (tip == average, tip == average) * 0.3
+        service == excellent || food == delicious --> tip == generous
+        service == excellent || food == delicious --> (tip == generous, tip == generous)
+
+        aggregator = ProbSumAggregator
+        defuzzifier = BisectorDefuzzifier
+    end
+
+    fis2 = set(fis; name = :tipper2, defuzzifier = CentroidDefuzzifier())
+    @test fis2.name == :tipper2
+    @test fis2 isa
+          MamdaniFuzzySystem{ProdAnd, ProbSumOr, ProdImplication, ProbSumAggregator,
+                             CentroidDefuzzifier}
+end
+
 @testset "test T--norms" begin
     @test MinAnd()(0.4, 0.2) == 0.2
     @test MinAnd()(1.0, 1.0) == 1.0
@@ -53,7 +95,7 @@ end
     @test EinsteinOr()(1.0, 1.0) == 1.0
 end
 
-@testset "test defuzzifiers" begin
+@testset "test type-1 defuzzifiers" begin
     N = 800
     mf = TrapezoidalMF(1, 2, 5, 7)
     x = LinRange(0, 8, N + 1)

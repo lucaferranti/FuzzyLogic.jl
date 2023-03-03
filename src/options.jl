@@ -308,6 +308,7 @@ function (ekmd::EnhancedKarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) wh
         a += s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
         b += s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
         yl = a / b
+        k = knew
     end
 
     k = round(Int, Np / 1.7)
@@ -321,6 +322,7 @@ function (ekmd::EnhancedKarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) wh
         a -= s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
         b -= s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
         yr = a / b
+        k = knew
     end
 
     return (yl + yr) / 2

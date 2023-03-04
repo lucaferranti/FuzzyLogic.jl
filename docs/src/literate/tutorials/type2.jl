@@ -12,7 +12,7 @@ DOWNLOAD_NOTE
 
 While a normal membership function associates each element of a fuzzy set ot a membership
 degree $\mu \in [0, 1]$, an interval membership function associates each element to an
-*interval membership degeee* $\overbar{\mu}\subseteq[0, 1]$.
+*interval membership degeee* $\overline{\mu}\subseteq[0, 1]$.
 
 The following example shows how to contruct an interval membership function in the library
 and displays the result.

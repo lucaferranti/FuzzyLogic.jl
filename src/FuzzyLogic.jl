@@ -32,7 +32,9 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
 
 include("parsers/fcl.jl")
 include("parsers/matlab_fis.jl")
+include("parsers/fml.jl")
 @reexport using .FCLParser
 @reexport using .MatlabParser
+@reexport using .FMLParser
 
 end

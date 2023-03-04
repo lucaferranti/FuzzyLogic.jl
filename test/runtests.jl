@@ -10,6 +10,7 @@ testfiles = [
     "test_genfis.jl",
     "test_parsers/test_fcl.jl",
     "test_parsers/test_matlab.jl",
+    "test_parsers/test_fml.jl",
     "test_aqua.jl",
     "test_doctests.jl",
 ]

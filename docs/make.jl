@@ -154,6 +154,7 @@ makedocs(;
              "Tutorials" => [
                  "Build a Mamdani inference system" => "tutorials/mamdani.md",
                  "Build a Sugeno inference system" => "tutorials/sugeno.md",
+                 "Build a type-2 inference system" => "tutorials/type2.md",
              ],
              "Applications" => [
                  "Edge detection" => "applications/edge_detector.md",

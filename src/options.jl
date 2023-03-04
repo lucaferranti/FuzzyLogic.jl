@@ -143,13 +143,17 @@ struct ProbSumAggregator <: AbstractAggregator end
 
 abstract type AbstractDefuzzifier <: AbstractFISSetting end
 
-@doc raw"""
+"""
 Centroid defuzzifier. Given the aggregated output function ``f`` and the output
 variable domain ``[a, b]`` the defuzzified output is the centroid computed as
 
 ```math
-\frac{∫_a^bxf(x)\textrm{d}x}{∫_a^bf(x)\textrm{d}x}.
+\\frac{∫_a^bxf(x)\\textrm{d}x}{∫_a^bf(x)\\textrm{d}x}.
 ```
+
+### Parameters
+
+$(TYPEDFIELDS)
 
 ## Algorithm
 
@@ -165,14 +169,18 @@ function (cd::CentroidDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
     _trapz(dx, LinRange(low(dom), high(dom), cd.N + 1) .* y) / _trapz(dx, y)
 end
 
-@doc raw"""
+"""
 Bisector defuzzifier. Given the aggregated output function ``f`` and the output
 variable domain ``[a, b]`` the defuzzified output is the value ``t ∈ [a, b]`` that divides
 the area under ``f`` into two equal parts. That is
 
 ```math
-∫_a^tf(x)\textrm{d}x = ∫_t^af(x)\textrm{d}x.
+∫_a^tf(x)\\textrm{d}x = ∫_t^af(x)\\textrm{d}x.
 ```
+
+### Parameters
+
+$(TYPEDFIELDS)
 
 ## Algorithm
 
@@ -204,3 +212,220 @@ end
 _trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2
 
 abstract type Type2Defuzzifier <: AbstractDefuzzifier end
+
+"""
+Karnik-Mendel type-reduction/defuzzification algorithm for Type-2 fuzzy systems.
+
+### Parameters
+
+$(TYPEDFIELDS)
+
+# Extended help
+
+The algorithm was introduced in
+
+- Karnik, Nilesh N., and Jerry M. Mendel. ‘Centroid of a Type-2 Fuzzy Set’. Information Sciences 132, no. 1–4 (February 2001): 195–220
+"""
+Base.@kwdef struct KarnikMendelDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+    "maximum number of iterations, default 100."
+    maxiter::Int = 100
+    "absolute tolerance for stopping iterations"
+    atol::Float64 = 1e-6
+end
+
+function (kmd::KarnikMendelDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    x = LinRange(low(dom), high(dom), length(w))
+    m = map(mid, w)
+    x0 = sum(xi * mi for (xi, mi) in zip(x, m)) / sum(m)
+    xl = x0
+    xr = x0
+    idx = searchsortedlast(x, x0)
+    @inbounds for _ in 1:(kmd.maxiter)
+        num = zero(eltype(m))
+        den = zero(eltype(m))
+        for i in firstindex(x):idx
+            den += sup(w[i])
+            num += sup(w[i]) * x[i]
+        end
+        for i in (idx + 1):length(x)
+            den += inf(w[i])
+            num += inf(w[i]) * x[i]
+        end
+
+        cand = num / den
+        if abs(cand - xl) <= kmd.atol
+            xl = cand
+            break
+        end
+        xl = cand
+        idx = searchsortedlast(x, xl)
+    end
+
+    @inbounds for _ in 1:(kmd.maxiter)
+        num = zero(eltype(m))
+        den = zero(eltype(m))
+        for i in firstindex(x):idx
+            den += inf(w[i])
+            num += inf(w[i]) * x[i]
+        end
+        for i in (idx + 1):length(x)
+            den += sup(w[i])
+            num += sup(w[i]) * x[i]
+        end
+
+        cand = num / den
+        if abs(cand - xr) <= kmd.atol
+            xr = cand
+            break
+        end
+        xr = cand
+        idx = searchsortedlast(x, xr)
+    end
+    return (xl + xr) / 2
+end
+
+"""
+Enhanced Karnik-Mendel type-reduction/defuzzification algorithm for Type-2 fuzzy systems.
+
+### Parameters
+
+$(TYPEDFIELDS)
+
+# Extended help
+
+The algorithm was introduced in
+
+- Wu, D. and J.M. Mendel, "Enhanced Karnik-Mendel algorithms," IEEE Transactions on Fuzzy Systems, vol. 17, pp. 923-934. (2009)
+"""
+Base.@kwdef struct EKMDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+    "maximum number of iterations, default 100."
+    maxiter::Int = 100
+end
+
+function (ekmd::EKMDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    Np = length(w)
+    x = LinRange(low(dom), high(dom), Np)
+    k = round(Int, Np / 2.4)
+    a = sum(x[i] * sup(w[i]) for i in 1:k) + sum(x[i] * inf(w[i]) for i in (k + 1):Np)
+    b = sum(sup(w[i]) for i in 1:k) + sum(inf(w[i]) for i in (k + 1):Np)
+    yl = a / b
+    @inbounds for _ in 1:(ekmd.maxiter)
+        knew = searchsortedlast(x, yl)
+        k == knew && break
+        s = sign(knew - k)
+        a += s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        b += s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        yl = a / b
+        k = knew
+    end
+
+    k = round(Int, Np / 1.7)
+    a = sum(x[i] * inf(w[i]) for i in 1:k) + sum(x[i] * sup(w[i]) for i in (k + 1):Np)
+    b = sum(inf(w[i]) for i in 1:k) + sum(sup(w[i]) for i in (k + 1):Np)
+    yr = a / b
+    @inbounds for _ in 1:(ekmd.maxiter)
+        knew = searchsortedlast(x, yr)
+        k == knew && break
+        s = sign(knew - k)
+        a -= s * sum(x[i] * diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        b -= s * sum(diam(w[i]) for i in (min(k, knew) + 1):max(k, knew))
+        yr = a / b
+        k = knew
+    end
+
+    return (yl + yr) / 2
+end
+
+"""
+Defuzzifier for type-2 inference systems using Iterative Algorithm with Stopping Condition (IASC).
+
+### PARAMETERS
+
+$(TYPEDFIELDS)
+
+# Extended help
+
+The algorithm was introduced in
+
+- Duran, K., H. Bernal, and M. Melgarejo, "Improved iterative algorithm for computing the generalized centroid of an interval type-2 fuzzy set," Annual Meeting of the North American Fuzzy Information Processing Society, pp. 190-194. (2008)
+"""
+Base.@kwdef struct IASCDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+end
+function (iasc::IASCDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    Np = length(w)
+    x = LinRange(low(dom), high(dom), Np)
+    a = sum(xi * inf(wi) for (xi, wi) in zip(x, w))
+    b = sum(inf, w)
+    yl = last(x)
+    @inbounds for (xi, wi) in zip(x, w)
+        a += xi * diam(wi)
+        b += diam(wi)
+        c = a / b
+        c > yl && break
+        yl = c
+    end
+
+    a = sum(xi * sup(wi) for (xi, wi) in zip(x, w))
+    b = sum(sup, w)
+    yr = first(x)
+    @inbounds for (xi, wi) in zip(x, w)
+        a -= xi * diam(wi)
+        b -= diam(wi)
+        c = a / b
+        c < yr && break
+        yr = c
+    end
+
+    return (yl + yr) / 2
+end
+
+"""
+Defuzzifier for type-2 inference systems using Iterative Algorithm with Stopping Condition (IASC).
+
+### PARAMETERS
+
+$(TYPEDFIELDS)
+
+# Extended help
+
+The algorithm was introduced in
+
+- Wu, D. and M. Nie, "Comparison and practical implementations of type-reduction algorithms for type-2 fuzzy sets and systems," Proceedings of FUZZ-IEEE, pp. 2131-2138 (2011)
+"""
+Base.@kwdef struct EIASCDefuzzifier <: Type2Defuzzifier
+    "number of subintervals for integration, default 100."
+    N::Int = 100
+end
+function (eiasc::EIASCDefuzzifier)(w, dom::Domain{T})::float(T) where {T}
+    Np = length(w)
+    x = LinRange(low(dom), high(dom), Np)
+    a = sum(xi * inf(wi) for (xi, wi) in zip(x, w))
+    b = sum(inf, w)
+    yl = last(x)
+    @inbounds for (xi, wi) in zip(x, w)
+        a += xi * diam(wi)
+        b += diam(wi)
+        c = a / b
+        c > yl && break
+        yl = c
+    end
+
+    a = sum(xi * inf(wi) for (xi, wi) in zip(x, w))
+    b = sum(inf, w)
+    yr = first(x)
+    @inbounds for i in reverse(eachindex(x))
+        a += x[i] * diam(w[i])
+        b += diam(w[i])
+        c = a / b
+        c < yr && break
+        yr = c
+    end
+
+    return (yl + yr) / 2
+end

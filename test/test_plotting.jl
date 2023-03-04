@@ -116,6 +116,6 @@ end
     mf = 0.5 * TriangularMF(1, 2, 3) .. TriangularMF(0, 2, 4)
     plt = RecipesBase.apply_recipe(Dict{Symbol, Any}(), mf, 0, 4) |> only
     @test plt.args[1](0.0) == mf.lo(0.0)
-    @test keys(plt.plotattributes) == Set([:fillrange, :legend, :fillalpha, :lw])
+    @test keys(plt.plotattributes) == Set([:fillrange, :legend, :fillalpha])
     @test plt.plotattributes[:fillrange](0.0) == mf.hi(0.0)
 end

@@ -13,3 +13,9 @@ SugenoFuzzySystem
 ConstantSugenoOutput
 LinearSugenoOutput
 ```
+
+## General functions
+
+```@docs
+set
+```

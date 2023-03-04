@@ -26,8 +26,18 @@ XML_JULIA = Dict("mamdaniRuleBase" => MamdaniFuzzySystem,
                  "ACCMAX" => MaxAggregator(),
                  "andMIN" => MinAnd(),
                  "andPROD" => ProdAnd(),
+                 "andBDIF" => LukasiewiczAnd(),
+                 "andDRP" => DrasticAnd(),
+                 "andHPROD" => HamacherAnd(),
+                 "andEPROD" => EinsteinAnd(),
+                 "andNILMIN" => DrasticAnd(),
                  "orMAX" => MaxOr(),
                  "orPROBOR" => ProbSumOr(),
+                 "orBSUM" => BoundedSumOr(),
+                 "orDRS" => DrasticOr(),
+                 "orNILMAX" => NilpotentOr(),
+                 "orESUM" => EinsteinOr(),
+                 "orHSUM" => HamacherOr(),
                  "impMIN" => MinImplication(),
                  "and" => FuzzyAnd,
                  "or" => FuzzyOr)
@@ -158,13 +168,13 @@ function get_rulebase(f)
 end
 
 """
-parse_fml(s::String)::AbstractFuzzySystem
+    parse_fml(s::String)::AbstractFuzzySystem
 
 Parse a fuzzy inference system from a string representation in Fuzzy Markup Language (FML).
 
 ### Inputs
 
-- `s::String` -- string describing a fuzzy system in FCL conformant to the IEEE 1855-2016 standard.
+- `s::String` -- string describing a fuzzy system in FML conformant to the IEEE 1855-2016 standard.
 
 ### Notes
 

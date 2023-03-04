@@ -67,6 +67,10 @@ end
     @test HamacherAnd()(0.0, 0.0) == 0.0
     @test HamacherAnd()(0.4, 0.2) ≈ 0.15384615384615388
     @test HamacherAnd()(1.0, 1.0) == 1.0
+
+    @test EinsteinAnd()(0.0, 0.0) == 0.0
+    @test EinsteinAnd()(1.0, 0.0) == 0.0
+    @test EinsteinAnd()(0.5, 0.5) ≈ 0.2
 end
 
 @testset "test S-norms" begin
@@ -93,6 +97,10 @@ end
     @test EinsteinOr()(0.0, 0.0) == 0.0
     @test EinsteinOr()(0.5, 0.5) == 0.8
     @test EinsteinOr()(1.0, 1.0) == 1.0
+
+    @test HamacherOr()(0.0, 0.0) == 0.0
+    @test HamacherOr()(0.5, 0.5) ≈ 2 / 3
+    @test HamacherOr()(1.0, 1.0) == 1.0
 end
 
 @testset "test type-1 defuzzifiers" begin

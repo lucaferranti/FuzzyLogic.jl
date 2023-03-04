@@ -47,7 +47,7 @@ function (na::NilpotentAnd)(x::T, y::S) where {T <: Real, S <: Real}
 end
 
 """
-Hamacher T-norm defining conjuction as ``A ∧ B = \\frac{AB}{A + B - AB}`` if ``A ≂̸ 0 ≂̸ B``
+Hamacher T-norm defining conjuction as ``A ∧ B = \\frac{AB}{A + B - AB}`` if ``A \\neq 0 \\neq B``
 and ``A ∧ B = 0`` otherwise.
 """
 struct HamacherAnd <: AbstractAnd end
@@ -55,6 +55,12 @@ function (ha::HamacherAnd)(x::T, y::S) where {T <: Real, S <: Real}
     iszero(x) && iszero(y) && return zero(float(promote_type(T, S)))
     (x * y) / (x + y - x * y)
 end
+
+"""
+Einstein T-norm defining conjuction as ``A ∧ B = \\frac{AB}{2 - A - B + AB}``.
+"""
+struct EinsteinAnd <: AbstractAnd end
+(ha::EinsteinAnd)(x::Real, y::Real) = (x * y) / (2 - x - y + x * y)
 
 ## S-Norms
 
@@ -105,6 +111,16 @@ Einstein S-norm defining disjunction as ``A ∨ B = \\frac{A + B}{1 + AB}``.
 """
 struct EinsteinOr <: AbstractOr end
 (ha::EinsteinOr)(x, y) = (x + y) / (1 + x * y)
+
+"""
+Hamacher S-norm defining conjuction as ``A ∨ B = \\frac{A + B - AB}{1 - AB}`` if ``A \\neq 1 \\neq B``
+and ``A ∨ B = 1`` otherwise.
+"""
+struct HamacherOr <: AbstractOr end
+function (ha::HamacherOr)(x::T, y::S) where {T <: Real, S <: Real}
+    isone(x) && isone(y) && return one(float(promote_type(T, S)))
+    (x + y - 2 * x * y) / (1 - x * y)
+end
 
 ## Implication
 

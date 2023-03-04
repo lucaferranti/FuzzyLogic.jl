@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fuzzySystem name="tipper" networkAddress="127.0.0.1">
+    <knowledgeBase>
+        <fuzzyVariable name="food" domainleft="0.0" domainright="10.0" scale=""
+            type="input">
+            <fuzzyTerm name="rancid" complement="false">
+                <rightLinearShape param1="0.0" param2="5.5" />
+            </fuzzyTerm>
+            <fuzzyTerm name="delicious" complement="false">
+                <leftLinearShape param1="5.5" param2="10.0" />
+            </fuzzyTerm>
+        </fuzzyVariable>
+        <fuzzyVariable name="service" domainleft="0.0" domainright="10.0" scale=""
+            type="input">
+            <fuzzyTerm name="poor" complement="false">
+                <rightGaussianShape param1="0.0" param2="2.0" />
+            </fuzzyTerm>
+            <fuzzyTerm name="good" complement="false">
+                <gaussianShape param1="5.0" param2="2.0" />
+            </fuzzyTerm>
+            <fuzzyTerm name="excellent" complement="false">
+                <leftGaussianShape param1="10.0" param2="2.0" />
+            </fuzzyTerm>
+        </fuzzyVariable>
+        <fuzzyVariable name="tip" domainleft="0.0" domainright="20.0" scale="null"
+            defaultValue="0.0" accumulation="MAX" defuzzifier="COG" type="output">
+            <fuzzyTerm name="cheap" complement="false">
+                <triangularShape param1="0.0" param2="5.0" param3="10.0" />
+            </fuzzyTerm>
+            <fuzzyTerm name="average" complement="false">
+                <triangularShape param1="5.0" param2="10.0" param3="15.0" />
+            </fuzzyTerm>
+            <fuzzyTerm name="generous" complement="false">
+                <triangularShape param1="10.0" param2="15.0" param3="20.0" />
+            </fuzzyTerm>
+        </fuzzyVariable>
+    </knowledgeBase>
+    <mamdaniRuleBase name="rulebase1" andMethod="MIN" orMethod="MAX"
+        activationMethod="MIN">
+        <rule name="reg1" connector="or" orMethod="MAX" weight="1.0">
+            <antecedent>
+                <clause>
+                    <variable>food</variable>
+                    <term>rancid</term>
+                </clause>
+                <clause modifier="very">
+                    <variable>service</variable>
+                    <term>poor</term>
+                </clause>
+            </antecedent>
+            <consequent>
+                <then>
+                    <clause>
+                        <variable>tip</variable>
+                        <term>cheap</term>
+                    </clause>
+                </then>
+            </consequent>
+        </rule>
+        <rule name="reg2" connector="or" orMethod="MAX" weight="1.0">
+            <antecedent>
+                <clause>
+                    <variable>service</variable>
+                    <term>good</term>
+                </clause>
+            </antecedent>
+            <consequent>
+                <then>
+                    <clause>
+                        <variable>tip</variable>
+                        <term>average</term>
+                    </clause>
+                </then>
+            </consequent>
+        </rule>
+        <rule name="reg3" connector="or" orMethod="MAX" weight="1.0">
+            <antecedent>
+                <clause>
+                    <variable>service</variable>
+                    <term>excellent</term>
+                </clause>
+                <clause>
+                    <variable>food</variable>
+                    <term>delicious</term>
+                </clause>
+            </antecedent>
+            <consequent>
+                <then>
+                    <clause>
+                        <variable>tip</variable>
+                        <term>generous</term>
+                    </clause>
+                </then>
+            </consequent>
+        </rule>
+    </mamdaniRuleBase>
+</fuzzySystem>

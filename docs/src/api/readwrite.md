@@ -20,6 +20,13 @@ parse_fcl
 @fcl_str
 ```
 
+## Parse FML
+
+```@docs
+parse_fml
+@fml_str
+```
+
 ## Parse Matlab
 
 ```@docs

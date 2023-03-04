@@ -47,7 +47,7 @@ function (na::NilpotentAnd)(x::T, y::S) where {T <: Real, S <: Real}
 end
 
 """
-Hamacher T-norm defining conjuction as ``A ∧ B = \\frac{AB}{A + B - AB}`` if ``A ≂̸ 0 ≂̸ B``
+Hamacher T-norm defining conjuction as ``A ∧ B = \\frac{AB}{A + B - AB}`` if ``A \\neq 0 \\neq B``
 and ``A ∧ B = 0`` otherwise.
 """
 struct HamacherAnd <: AbstractAnd end
@@ -107,13 +107,13 @@ function (na::NilpotentOr)(x::T, y::S) where {T <: Real, S <: Real}
 end
 
 """
-Hamacher S-norm defining disjunction as ``A ∨ B = \\frac{A + B}{1 + AB}``.
+Einstein S-norm defining disjunction as ``A ∨ B = \\frac{A + B}{1 + AB}``.
 """
 struct EinsteinOr <: AbstractOr end
 (ha::EinsteinOr)(x, y) = (x + y) / (1 + x * y)
 
 """
-Hamacher S-norm defining conjuction as ``A ∨ B = \\frac{A + B - AB}{1 - AB}`` if ``A ≂̸ 1 ≂̸ B``
+Hamacher S-norm defining conjuction as ``A ∨ B = \\frac{A + B - AB}{1 - AB}`` if ``A \\neq 1 \\neq B``
 and ``A ∨ B = 1`` otherwise.
 """
 struct HamacherOr <: AbstractOr end

@@ -7,6 +7,12 @@
 @sugfis
 ```
 
+## Generate Julia code
+
+```@docs
+compilefis
+```
+
 ## Read from file
 
 ```@docs

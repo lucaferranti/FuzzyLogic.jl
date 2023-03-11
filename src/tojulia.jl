@@ -1,11 +1,27 @@
-@inline compilefis(fis::AbstractFuzzySystem, name::Symbol = fis.name) = to_expr(fis, name)
 
+"""
+Compile the fuzzy inference system into stand-alone Julia code.
+If the first argument is a string, it write the code in the given file, otherwise it returns
+the Julia expression of the code.
+
+### Inputs
+
+- `fname::AbstractString` -- file where to write
+- `fis::AbstractFuzzySystem` -- fuzzy system to compile
+- `name::Symbol` -- name of the generated function, default `fis.name`
+
+!!! Note
+    Only type-1 inference systems are supported
+
+"""
 function compilefis(fname::AbstractString, fis::AbstractFuzzySystem,
                     name::Symbol = fis.name)
     open(fname, "w") do io
-        write(io, string(compile(fis, name)))
+        write(io, string(to_expr(fis, name)))
     end
 end
+
+@inline compilefis(fis::AbstractFuzzySystem, name::Symbol = fis.name) = to_expr(fis, name)
 
 function to_expr(fis::MamdaniFuzzySystem, name::Symbol = fis.name)
     body = quote end
@@ -49,7 +65,7 @@ function to_expr(fis::MamdaniFuzzySystem, name::Symbol = fis.name)
             end
         end
 
-        defuzz = to_expr(fis.defuzzifier, var.domain, Symbol(varname, :_agg)) # defuzzifier
+        defuzz = to_expr(fis.defuzzifier, Symbol(varname, :_agg), var.domain) # defuzzifier
 
         ex = quote
             @inbounds for (i, x) in enumerate($varagg)
@@ -62,10 +78,10 @@ function to_expr(fis::MamdaniFuzzySystem, name::Symbol = fis.name)
         push!(body.args, ex)
     end
 
-    pretify(:(function $name($(collect(keys(fis.inputs))...))
-                  $body
-                  return $(keys(fis.outputs)...)
-              end))
+    prettify(:(function $name($(collect(keys(fis.inputs))...))
+                   $body
+                   return $(keys(fis.outputs)...)
+               end))
 end
 
 ########################################
@@ -96,14 +112,6 @@ end
 
 function to_expr(mf::ProductSigmoidMF, x = :x)
     :(1 / ((1 + exp(-$(mf.a1) * ($x - $(mf.c1)))) * (1 + exp(-$(mf.a2) * ($x - $(mf.c2))))))
-end
-
-function to_expr(mf::GeneralizedBellMF, x = :x)
-    :(1 / (1 + abs(($x - $(mf.c)) / $(mf.a))^$(2mf.b)))
-end
-
-function to_expr(mf::GeneralizedBellMF, x = :x)
-    :(1 / (1 + abs(($x - $(mf.c)) / $(mf.a))^$(2mf.b)))
 end
 
 function to_expr(mf::GeneralizedBellMF, x = :x)
@@ -224,7 +232,16 @@ function to_expr(fis::MamdaniFuzzySystem, rule::FuzzyRule; antidx = nothing)
     res
 end
 
+function to_expr(fis::MamdaniFuzzySystem, rule::WeightedFuzzyRule; antidx = nothing)
+    res = to_expr(fis, FuzzyRule(rule.antecedent, rule.consequent); antidx)
+    for (var, ex) in res
+        res[var] = :($(rule.weight) * $ex)
+    end
+    res
+end
+
 to_expr(::AbstractFuzzySystem, r::FuzzyRelation) = r.prop
+to_expr(::AbstractFuzzySystem, r::FuzzyNegation) = :(1 - $(r.prop))
 
 function to_expr(fis::AbstractFuzzySystem, r::FuzzyAnd)
     to_expr(fis.and, to_expr(fis, r.left), to_expr(fis, r.right))

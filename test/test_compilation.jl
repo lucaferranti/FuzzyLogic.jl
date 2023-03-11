@@ -29,6 +29,8 @@ using FuzzyLogic, MacroTools, Test
 
     fis_ex = compilefis(fis)
 
+    # construct output range outside, since LinRange repr changed between 1.6 and 1.8
+    out_dom = LinRange(0.0, 30.0, 101)
     ref_ex = prettify(:(function tipper(service, food)
                             poor = exp(-((service - 0.0)^2) / 4.5)
                             good = exp(-((service - 5.0)^2) / 4.5)
@@ -38,7 +40,7 @@ using FuzzyLogic, MacroTools, Test
                             ant1 = max(poor, rancid)
                             ant2 = min(good, 1 - rancid)
                             ant3 = max(excellent, delicious)
-                            tip_agg = collect(LinRange{Float64}(0.0, 30.0, 101))
+                            tip_agg = collect($out_dom)
                             @inbounds for (i, x) in enumerate(tip_agg)
                                 cheap = max(min((x - 0) / 5, (10 - x) / 5), 0)
                                 average = max(min((x - 10) / 5, (20 - x) / 5), 0)
@@ -49,9 +51,7 @@ using FuzzyLogic, MacroTools, Test
                             end
                             tip = ((2 *
                                     sum((mfi * xi
-                                         for (mfi, xi) in zip(tip_agg,
-                                                              LinRange{Float64}(0.0, 30.0,
-                                                                                101)))) -
+                                         for (mfi, xi) in zip(tip_agg, $out_dom))) -
                                     first(tip_agg) * 0) - last(tip_agg) * 30) /
                                   ((2 * sum(tip_agg) - first(tip_agg)) - last(tip_agg))
                             return tip
@@ -60,7 +60,6 @@ using FuzzyLogic, MacroTools, Test
     @test string(fis_ex) == string(ref_ex)
 
     fname = joinpath(tempdir(), "tmp.jl")
-    @show fname
     compilefis(fname, fis, :tipper2)
     include(fname)
 

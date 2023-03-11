@@ -84,6 +84,53 @@ function to_expr(fis::MamdaniFuzzySystem, name::Symbol = fis.name)
                end))
 end
 
+function to_expr(fis::SugenoFuzzySystem, name::Symbol = fis.name)
+    body = quote end
+    for (varname, var) in pairs(fis.inputs)
+        for (mfname, mf) in pairs(var.mfs)
+            push!(body.args, :($mfname = $(to_expr(mf, varname))))
+        end
+    end
+
+    # parse rules. Antecedents are stored in local variables, which can be useful if one has
+    # multiple outputs. Each rule is converted to a dictionary indexed by output variable.
+    rules = Vector{Dict{Symbol, Expr}}(undef, length(fis.rules))
+    for (i, rule) in enumerate(fis.rules)
+        ant_name = Symbol(:ant, i)
+        ant_body = to_expr(fis, rule.antecedent)
+        push!(body.args, :($ant_name = $ant_body))
+        rules[i] = to_expr(fis, rule; antidx = i)
+    end
+
+    # construct expression that computes each output
+    for (varname, var) in pairs(fis.outputs)
+        varagg = Symbol(varname, :_agg)
+        out_dom = LinRange(low(var.domain), high(var.domain), fis.defuzzifier.N + 1)
+        push!(body.args, :($varagg = collect($out_dom))) # vector for aggregated output
+
+        # evaluate output membership functions.
+        rule_eval = quote end
+        for (mfname, mf) in pairs(var.mfs)
+            push!(rule_eval.args, :($mfname = $(to_expr(mf))))
+        end
+
+        ex = quote
+            @inbounds for (i, x) in enumerate($varagg)
+                $rule_eval
+                $varagg[i] = $agg
+            end
+            $varname = $defuzz
+        end
+
+        push!(body.args, ex)
+    end
+
+    prettify(:(function $name($(collect(keys(fis.inputs))...))
+                   $body
+                   return $(keys(fis.outputs)...)
+               end))
+end
+
 ########################################
 # MEMBERSHIP FUNCTIONS CODE GENERATION #
 ########################################

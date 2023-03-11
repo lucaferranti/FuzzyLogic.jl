@@ -75,3 +75,12 @@ Like the Mamdani case, we can plot the whole system.
 =#
 
 plot(fis)
+
+# Similarly to Mamdani, we can also generate stand-alone Julia code
+
+fis_ex = compilefis(fis)
+
+#
+
+eval(fis_ex)
+tipper(2, 3)

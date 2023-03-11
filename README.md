@@ -28,6 +28,8 @@ using FuzzyLogic
 - **Compatible!** Read your models from [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm), [IEEE 1855-2016 Fuzzy Markup Language](https://en.wikipedia.org/wiki/Fuzzy_markup_language) and Matlab Fuzzy toolbox `.fis` files.
 - **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
 - **Productive!** Several visualization tools to help debug and tune your model.
+- **Portable!** Compile your final model to Julia or C/C++ code.
+
 ## Quickstart example
 
 ```julia

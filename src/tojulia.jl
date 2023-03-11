@@ -10,9 +10,9 @@ the Julia expression of the code.
 - `fis::AbstractFuzzySystem` -- fuzzy system to compile
 - `name::Symbol` -- name of the generated function, default `fis.name`
 
-!!! Note
-    Only type-1 inference systems are supported
+### Notes
 
+Only type-1 inference systems are supported
 """
 function compilefis(fname::AbstractString, fis::AbstractFuzzySystem,
                     name::Symbol = fis.name)
@@ -92,36 +92,27 @@ function to_expr(fis::SugenoFuzzySystem, name::Symbol = fis.name)
         end
     end
 
-    # parse rules. Antecedents are stored in local variables, which can be useful if one has
-    # multiple outputs. Each rule is converted to a dictionary indexed by output variable.
     rules = Vector{Dict{Symbol, Expr}}(undef, length(fis.rules))
+    tot_weight = Expr(:call, :+)
     for (i, rule) in enumerate(fis.rules)
-        ant_name = Symbol(:ant, i)
-        ant_body = to_expr(fis, rule.antecedent)
-        push!(body.args, :($ant_name = $ant_body))
-        rules[i] = to_expr(fis, rule; antidx = i)
+        ant, res = to_expr(fis, rule, i)
+        push!(body.args, ant)
+        push!(tot_weight.args, Symbol(:ant, i))
+        rules[i] = res
     end
+    push!(body.args, :(tot_weight = $tot_weight))
 
-    # construct expression that computes each output
     for (varname, var) in pairs(fis.outputs)
-        varagg = Symbol(varname, :_agg)
-        out_dom = LinRange(low(var.domain), high(var.domain), fis.defuzzifier.N + 1)
-        push!(body.args, :($varagg = collect($out_dom))) # vector for aggregated output
-
-        # evaluate output membership functions.
-        rule_eval = quote end
+        num = Expr(:call, :+)
         for (mfname, mf) in pairs(var.mfs)
-            push!(rule_eval.args, :($mfname = $(to_expr(mf))))
+            push!(body.args, :($mfname = $(to_expr(mf))))
         end
-
-        ex = quote
-            @inbounds for (i, x) in enumerate($varagg)
-                $rule_eval
-                $varagg[i] = $agg
+        for rule in rules
+            if haskey(rule, varname)
+                push!(num.args, rule[varname])
             end
-            $varname = $defuzz
         end
-
+        ex = :($varname = $num / tot_weight)
         push!(body.args, ex)
     end
 
@@ -223,6 +214,16 @@ function to_expr(mf::WeightedMF, x = :x)
     :($(mf.w) * $(to_expr(mf.mf, x)))
 end
 
+to_expr(mf::ConstantSugenoOutput) = mf.c
+
+function to_expr(mf::LinearSugenoOutput)
+    ex = Expr(:call, :+, mf.offset)
+    for (varname, coeff) in pairs(mf.coeffs)
+        push!(ex.args, :($coeff * $varname))
+    end
+    return ex
+end
+
 #####################################
 # LOGICAL OPERATORS CODE GENERATION #
 #####################################
@@ -296,6 +297,20 @@ end
 
 function to_expr(fis::AbstractFuzzySystem, r::FuzzyOr)
     to_expr(fis.or, to_expr(fis, r.left), to_expr(fis, r.right))
+end
+
+function to_expr(fis::SugenoFuzzySystem, rule::AbstractRule, antidx)
+    antbody = to_expr(fis, rule.antecedent)
+    if rule isa WeightedFuzzyRule
+        antbody = :($(rule.weight) * $antbody)
+    end
+    antname = Symbol(:ant, antidx)
+    ant = Expr(:(=), antname, antbody)
+    res = Dict{Symbol, Expr}()
+    for cons in rule.consequent
+        res[cons.subj] = Expr(:call, :*, antname, to_expr(fis, cons))
+    end
+    return ant, res
 end
 
 ################################

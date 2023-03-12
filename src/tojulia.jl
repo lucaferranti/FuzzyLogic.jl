@@ -323,3 +323,25 @@ function to_expr(defuzz::CentroidDefuzzifier, mf, dom::Domain)
        first($mf) * $(low(dom)) - last($mf) * $(high(dom))) /
       (2sum($mf) - first($mf) - last($mf)))
 end
+
+function to_expr(defuzz::BisectorDefuzzifier, mf, dom::Domain{T}) where {T <: Real}
+    area_left = zero(T)
+    h = (high(dom) - low(dom)) / defuzz.N
+    area_right = :((2sum($mf) - first(mf) - last(mf)) * $(h / 2))
+    cand = LinRange(low(dom), high(dom), defuzz.N + 1)
+    :(let
+          mf = $mf
+          area_left = $area_left
+          h = $h
+          area_right = (2sum(mf) - first(mf) - last(mf)) * $(h / 2)
+          cand = $cand
+          i = firstindex(mf)
+          while area_left < area_right
+              trap = (mf[i] + mf[i + 1]) * $(h / 2)
+              area_left += trap
+              area_right -= trap
+              i += 1
+          end
+          (mf[i - 1] + mf[i]) * $(h / 2) >= area_left - area_right ? cand[i] : cand[i - 1]
+      end)
+end

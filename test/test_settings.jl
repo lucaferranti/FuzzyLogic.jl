@@ -111,7 +111,8 @@ end
     x = LinRange(0, 8, N + 1)
     y = mf.(x)
     dom = FuzzyLogic.Domain(0, 8)
-    @test BisectorDefuzzifier(N)(y, dom) ≈ 3.75
+    @test BisectorDefuzzifier(N)(y, dom) ≈ eval(to_expr(BisectorDefuzzifier(N), y, dom)) ≈
+          3.75
     @test CentroidDefuzzifier(N)(y, dom) ≈ eval(to_expr(CentroidDefuzzifier(N), y, dom)) ≈
           3.7777777777777772
 end

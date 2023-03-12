@@ -241,7 +241,7 @@ Base.@kwdef struct LeftMaximumDefuzzifier <: AbstractDefuzzifier
     tol::Float64 = eps(Float64)
 end
 function (lmd::LeftMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
-    res = low(dom)
+    res = float(low(dom))
     maxval = first(y)
     for (xi, yi) in zip(LinRange(low(dom), high(dom), lmd.N + 1), y)
         if yi > maxval + lmd.tol
@@ -294,7 +294,7 @@ Base.@kwdef struct MeanOfMaximaDefuzzifier <: AbstractDefuzzifier
     tol::Float64 = eps(Float64)
 end
 function (lmd::MeanOfMaximaDefuzzifier)(y, dom::Domain{T}) where {T}
-    res = zero(eltype(y))
+    res = zero(float(T))
     maxcnt = 0
     maxval = first(y)
     for (xi, yi) in zip(LinRange(low(dom), high(dom), lmd.N + 1), y)
@@ -302,7 +302,7 @@ function (lmd::MeanOfMaximaDefuzzifier)(y, dom::Domain{T}) where {T}
             res = xi
             maxval = yi
             maxcnt = 1
-        elseif abs(yi - maxval) < lmd.tol
+        elseif abs(yi - maxval) <= lmd.tol
             res += xi
             maxcnt += 1
         end

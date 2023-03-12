@@ -10,6 +10,9 @@ export parse_fcl, @fcl_str
 const FCL_JULIA = Dict("COG" => CentroidDefuzzifier(),
                        "COGS" => "COGS", # dummy since hardcoded for sugeno
                        "COA" => BisectorDefuzzifier(),
+                       "LM" => LeftMaximumDefuzzifier(),
+                       "RM" => RightMaximumDefuzzifier(),
+                       "MOM" => MeanOfMaximaDefuzzifier(),
                        "ANDMIN" => MinAnd(),
                        "ANDPROD" => ProdAnd(),
                        "ANDBDIF" => LukasiewiczAnd(),

@@ -345,3 +345,53 @@ function to_expr(defuzz::BisectorDefuzzifier, mf, dom::Domain{T}) where {T <: Re
           (mf[i - 1] + mf[i]) * $(h / 2) >= area_left - area_right ? cand[i] : cand[i - 1]
       end)
 end
+
+function to_expr(defuzz::LeftMaximumDefuzzifier, mf, dom::Domain{T}) where {T <: Real}
+    :(let
+          res = $(float(low(dom)))
+          y = $mf
+          maxval = first(y)
+          for (xi, yi) in zip($(LinRange(low(dom), high(dom), defuzz.N + 1)), y)
+              if yi > maxval + $(defuzz.tol)
+                  res = xi
+                  maxval = yi
+              end
+          end
+          res
+      end)
+end
+
+function to_expr(defuzz::RightMaximumDefuzzifier, mf, dom::Domain{T}) where {T <: Real}
+    :(let
+          res = $(float(low(dom)))
+          y = $mf
+          maxval = first(y)
+          for (xi, yi) in zip($(LinRange(low(dom), high(dom), defuzz.N + 1)), y)
+              if yi >= maxval - $(defuzz.tol)
+                  res = xi
+                  maxval = yi
+              end
+          end
+          res
+      end)
+end
+
+function to_expr(defuzz::MeanOfMaximaDefuzzifier, mf, dom::Domain{T}) where {T <: Real}
+    :(let
+          res = $(zero(float(T)))
+          y = $mf
+          maxval = first(y)
+          maxcnt = 0
+          for (xi, yi) in zip($(LinRange(low(dom), high(dom), defuzz.N + 1)), y)
+              if yi - maxval > $(defuzz.tol) # reset mean calculation
+                  res = xi
+                  maxval = yi
+                  maxcnt = 1
+              elseif abs(yi - maxval) <= $(defuzz.tol)
+                  res += xi
+                  maxcnt += 1
+              end
+          end
+          res / maxcnt
+      end)
+end

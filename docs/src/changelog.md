@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added support for type-2 membership functions and type-2 systems.
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added parser for Fuzzy Markup Language.
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added generation of native Julia code.
+- ![](https://img.shields.io/badge/enhancement-blue.svg) added left maximum, right maximum and mean of maxima defuzzifiers.
 
 ## v0.1.1 -- 2023-02-25
 

@@ -115,4 +115,7 @@ end
           3.75
     @test CentroidDefuzzifier(N)(y, dom) ≈ eval(to_expr(CentroidDefuzzifier(N), y, dom)) ≈
           3.7777777777777772
+    @test LeftMaximumDefuzzifier(; N)(y, dom) ≈ 2
+    @test RightMaximumDefuzzifier(; N)(y, dom) ≈ 5
+    @test MeanOfMaximaDefuzzifier(; N)(y, dom) ≈ 3.5
 end

@@ -225,6 +225,91 @@ function (bd::BisectorDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
     (y[i - 1] + y[i]) * h / 2 >= area_left - area_right ? cand[i] : cand[i - 1]
 end
 
+"""
+Left maximum defuzzifier. Find the smallest value in the domain for which the membership function
+reaches its maximum.
+
+### Parameters
+
+$(TYPEDFIELDS)
+
+"""
+Base.@kwdef struct LeftMaximumDefuzzifier <: AbstractDefuzzifier
+    "number of subintervals, default 100."
+    N::Int = 100
+    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    tol::Float64 = eps(Float64)
+end
+function (lmd::LeftMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
+    res = low(dom)
+    maxval = first(y)
+    for (xi, yi) in zip(LinRange(low(dom), high(dom), lmd.N + 1), y)
+        if yi > maxval + lmd.tol
+            res = xi
+            maxval = yi
+        end
+    end
+    res
+end
+
+"""
+Right maximum defuzzifier. Find the largest value in the domain for which the membership function
+reaches its maximum.
+
+### Parameters
+
+$(TYPEDFIELDS)
+
+"""
+Base.@kwdef struct RightMaximumDefuzzifier <: AbstractDefuzzifier
+    "number of subintervals, default 100."
+    N::Int = 100
+    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    tol::Float64 = eps(Float64)
+end
+function (lmd::RightMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
+    res = float(low(dom))
+    maxval = first(y)
+    for (xi, yi) in zip(LinRange(low(dom), high(dom), lmd.N + 1), y)
+        if yi >= maxval - lmd.tol
+            res = xi
+            maxval = yi
+        end
+    end
+    res
+end
+"""
+Mean of maxima defuzzifier. Returns the mean of the values in the domain for which the
+membership function reaches its maximum.
+
+### Parameters
+
+$(TYPEDFIELDS)
+
+"""
+Base.@kwdef struct MeanOfMaximaDefuzzifier <: AbstractDefuzzifier
+    "number of subintervals, default 100."
+    N::Int = 100
+    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    tol::Float64 = eps(Float64)
+end
+function (lmd::MeanOfMaximaDefuzzifier)(y, dom::Domain{T}) where {T}
+    res = zero(eltype(y))
+    maxcnt = 0
+    maxval = first(y)
+    for (xi, yi) in zip(LinRange(low(dom), high(dom), lmd.N + 1), y)
+        if yi - maxval > lmd.tol # reset mean calculation
+            res = xi
+            maxval = yi
+            maxcnt = 1
+        elseif abs(yi - maxval) < lmd.tol
+            res += xi
+            maxcnt += 1
+        end
+    end
+    return res / maxcnt
+end
+
 _trapz(dx, y) = (2sum(y) - first(y) - last(y)) * dx / 2
 
 abstract type Type2Defuzzifier <: AbstractDefuzzifier end

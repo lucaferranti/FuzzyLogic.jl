@@ -226,7 +226,7 @@ function (bd::BisectorDefuzzifier)(y, dom::Domain{T})::float(T) where {T}
 end
 
 """
-Left maximum defuzzifier. Find the smallest value in the domain for which the membership function
+Left maximum defuzzifier. Returns the smallest value in the domain for which the membership function
 reaches its maximum.
 
 ### Parameters
@@ -237,7 +237,7 @@ $(TYPEDFIELDS)
 Base.@kwdef struct LeftMaximumDefuzzifier <: AbstractDefuzzifier
     "number of subintervals, default 100."
     N::Int = 100
-    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    "absolute tolerance to determine if a value is maximum, default `eps(Float64)`."
     tol::Float64 = eps(Float64)
 end
 function (lmd::LeftMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
@@ -253,7 +253,7 @@ function (lmd::LeftMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
 end
 
 """
-Right maximum defuzzifier. Find the largest value in the domain for which the membership function
+Right maximum defuzzifier. Returns the largest value in the domain for which the membership function
 reaches its maximum.
 
 ### Parameters
@@ -264,7 +264,7 @@ $(TYPEDFIELDS)
 Base.@kwdef struct RightMaximumDefuzzifier <: AbstractDefuzzifier
     "number of subintervals, default 100."
     N::Int = 100
-    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    "absolute tolerance to determine if a value is maximum, default `eps(Float64)`."
     tol::Float64 = eps(Float64)
 end
 function (lmd::RightMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
@@ -278,6 +278,7 @@ function (lmd::RightMaximumDefuzzifier)(y, dom::Domain{T}) where {T}
     end
     res
 end
+
 """
 Mean of maxima defuzzifier. Returns the mean of the values in the domain for which the
 membership function reaches its maximum.
@@ -285,12 +286,11 @@ membership function reaches its maximum.
 ### Parameters
 
 $(TYPEDFIELDS)
-
 """
 Base.@kwdef struct MeanOfMaximaDefuzzifier <: AbstractDefuzzifier
     "number of subintervals, default 100."
     N::Int = 100
-    "absolute tolerance to determine if a value is maximum (default `eps(Float64)`)"
+    "absolute tolerance to determine if a value is maximum, default `eps(Float64)`."
     tol::Float64 = eps(Float64)
 end
 function (lmd::MeanOfMaximaDefuzzifier)(y, dom::Domain{T}) where {T}

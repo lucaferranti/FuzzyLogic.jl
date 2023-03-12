@@ -32,7 +32,7 @@ using FuzzyLogic, Test
     @test fis(service = 2, food = 7)[:tip]≈7.79 atol=1e-2
     @test fis(service = 3, food = 1)[:tip]≈8.95 atol=1e-2
 
-    # with weighted rule
+    # with weighted rules and negation
     fis = @mamfis function tipper(service, food)::tip
         service := begin
             domain = 0:10
@@ -55,7 +55,7 @@ using FuzzyLogic, Test
         end
 
         service == poor || food == rancid --> tip == cheap * 0.5
-        service == good --> tip == average
+        service == good && food != rancid --> tip == average
         service == excellent || food == delicious --> tip == generous
     end
 

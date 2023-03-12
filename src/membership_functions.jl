@@ -301,8 +301,8 @@ struct PiecewiseLinearMF{T <: Real, S <: Real} <: AbstractMembershipFunction
     points::Vector{Tuple{T, S}}
 end
 function (plmf::PiecewiseLinearMF)(x::Real)
-    x <= plmf.points[1][1] && return plmf.points[1][2]
-    x >= plmf.points[end][1] && return plmf.points[end][2]
+    x <= plmf.points[1][1] && return float(plmf.points[1][2])
+    x >= plmf.points[end][1] && return float(plmf.points[end][2])
     idx = findlast(p -> x >= p[1], plmf.points)
     x1, y1 = plmf.points[idx]
     x2, y2 = plmf.points[idx + 1]

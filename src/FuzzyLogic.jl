@@ -13,6 +13,7 @@ include("parser.jl")
 include("evaluation.jl")
 include("plotting.jl")
 include("genfis.jl")
+include("tojulia.jl")
 include("readwrite.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
@@ -26,6 +27,7 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        @mamfis, MamdaniFuzzySystem, @sugfis, SugenoFuzzySystem, set,
        LinearSugenoOutput, ConstantSugenoOutput,
        fuzzy_cmeans,
+       compilefis,
        readfis
 
 ## parsers

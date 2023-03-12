@@ -57,7 +57,7 @@ fis = @mamfis function tipper(service, food)::tip
     service == excellent || food == delicious --> tip == generous
 
     aggregator = ProbSumAggregator
-    defuzzifier = BisectorDefuzzifier
+    defuzzifier = CentroidDefuzzifier
 end
 
 #=
@@ -186,3 +186,19 @@ res = fis(service = 2, food = 3)
 # The value of a specific output variable can be extracted using the variable name as key.
 
 res[:tip]
+
+#=
+## Code generation
+
+The model can be compiled to native Julia code using the [`compilefis`](@ref) function.
+This produces optimized Julia code independent of the library, that can be executed as
+stand-alone function.
+=#
+
+fis_ex = compilefis(fis)
+
+# The new expression can now be evaluated as normal Julia code. Notice that the generated
+# function uses positional arguments.
+
+eval(fis_ex)
+tipper(2, 3)

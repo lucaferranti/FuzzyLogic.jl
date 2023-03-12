@@ -8,6 +8,7 @@ testfiles = [
     "test_evaluation.jl",
     "test_plotting.jl",
     "test_genfis.jl",
+    "test_compilation.jl",
     "test_parsers/test_fcl.jl",
     "test_parsers/test_matlab.jl",
     "test_parsers/test_fml.jl",

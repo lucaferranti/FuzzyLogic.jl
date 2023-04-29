@@ -146,7 +146,10 @@ makedocs(;
          sitename = "FuzzyLogic.jl",
          doctest = false, checkdocs = :exports, strict = true,
          format = Documenter.HTML(;
-                                  assets = [DocThemeIndigo.install(FuzzyLogic)],
+                                  assets = [
+                                      DocThemeIndigo.install(FuzzyLogic),
+                                      "assets/favicon.ico",
+                                  ],
                                   prettyurls = IS_CI, collapselevel = 1,
                                   canonical = "https://lucaferranti.github.io/FuzzyLogic.jl"),
          pages = [

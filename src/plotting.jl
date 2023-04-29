@@ -8,9 +8,12 @@ end
 
 @recipe function f(mf::Type2MF, low::Real, high::Real)
     legend --> nothing
-    fillrange := x -> mf.hi(x)
-    fillalpha --> 0.25
-    x -> mf.lo(x), low, high
+    @series begin
+        fillrange := x -> mf.hi(x)
+        fillalpha --> 1.0
+        linealpha --> 0
+        x -> mf.lo(x), low, high
+    end
 end
 
 @recipe f(mf::AbstractPredicate, dom::Domain) = mf, low(dom), high(dom)

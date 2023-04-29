@@ -6,7 +6,7 @@
 |[![Licese: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/LICENSE)|[![Coverage](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl)|[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/)|[![SciML Code Style](https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826)](https://github.com/SciML/SciMLStyle)|
 |[![downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/FuzzyLogic&label=downloads)](https://pkgs.genieframework.com/?packages=FuzzyLogic)|[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.html)||[![gitter-chat](https://badges.gitter.im/badge.svg)](https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im)|
 
-A Julia library for fuzzy inference.
+A Julia library for fuzzy logic and applications.
 
 ## Installation
 
@@ -64,4 +64,4 @@ fis(service=1, food=2)
 
 ## Copyright
 
-- Copyright (c) 2022 [Luca Ferranti](https://github.com/lucaferranti)
+- Copyright (c) 2022 [Luca Ferranti](https://github.com/lucaferranti), released under MIT license.

@@ -6,7 +6,11 @@
 |[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|
 |[![downloads][download-img]][download-url]|[![pkgeval-img]][pkgeval-url]||[![gitter-chat][chat-img]][chat-url]|
 
-A Julia library for fuzzy inference.
+<p align="center">
+<img src="./docs/src/assets/logo.svg"/>
+</p>
+
+A Julia library for fuzzy logic and applications.
 
 ## Installation
 
@@ -73,7 +77,7 @@ Contributions are welcome! If you find a bug or want to request a feature, [open
 
 ## Copyright
 
-- Copyright (c) 2022 [Luca Ferranti](https://github.com/lucaferranti)
+- Copyright (c) 2022 [Luca Ferranti](https://github.com/lucaferranti), released under MIT license.
 
 [ver-img]: https://juliahub.com/docs/FuzzyLogic/version.svg
 [ver-url]: https://github.com/lucaferranti/FuzzyLogic.jl/releases/latest

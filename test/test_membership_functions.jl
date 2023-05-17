@@ -117,6 +117,15 @@ end
     @test mf(10) == eval(to_expr(mf, 10)) == 0
 end
 
+@testset "Semi-Elliptic MF" begin
+    mf = SemiEllipticMF(5.0, 4.0)
+    @test mf(0) == 0
+    @test mf(1) == 0
+    @test mf(5) == 1
+    @test mf(9) == 0
+    @test mf(10) == 0
+end
+
 @testset "Piecewise linear Membership function" begin
     mf = PiecewiseLinearMF([(1, 0), (2, 1), (3, 0), (4, 0.5), (5, 0), (6, 1)])
     @test mf(0.0) == eval(to_expr(mf, 0.0)) == 0

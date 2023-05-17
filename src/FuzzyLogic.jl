@@ -18,7 +18,7 @@ include("readwrite.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
        SigmoidMF, TrapezoidalMF, TriangularMF, SShapeMF, ZShapeMF, PiShapeMF,
-       PiecewiseLinearMF, WeightedMF, Type2MF, ..,
+       SemiEllipticMF, PiecewiseLinearMF, WeightedMF, Type2MF, ..,
        ProdAnd, MinAnd, LukasiewiczAnd, DrasticAnd, NilpotentAnd, HamacherAnd, EinsteinAnd,
        ProbSumOr, MaxOr, BoundedSumOr, DrasticOr, NilpotentOr, EinsteinOr, HamacherOr,
        MinImplication, ProdImplication,

@@ -279,6 +279,31 @@ function (p::PiShapeMF)(x::T) where {T <: Real}
 end
 
 """
+Semi-elliptic membership function.
+
+### Fields
+
+$(TYPEDFIELDS)
+
+### Example
+
+```julia
+mf = SemiEllipticMF(5.0, 4.0)
+```
+"""
+struct SemiEllipticMF{T <: Real} <: AbstractMembershipFunction
+    "center."
+    cd::T
+    "semi-axis."
+    rd::T
+end
+function (semf::SemiEllipticMF)(x::Real)
+    cd, rd = semf.cd, semf.rd
+    cd - rd <= x <= cd + rd || return zero(x)
+    sqrt(1 - (cd - x)^2 / rd^2)
+end
+
+"""
 Piecewise linear membership function.
 
 ### Fields

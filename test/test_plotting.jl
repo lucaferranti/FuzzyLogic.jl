@@ -1,5 +1,5 @@
 using FuzzyLogic
-using FuzzyLogic: Domain, Variable
+using FuzzyLogic: Domain, Variable, GenSurf
 using RecipesBase
 using Dictionaries
 using Test
@@ -118,4 +118,67 @@ end
     @test plt.args[1](0.0) == mf.lo(0.0)
     @test keys(plt.plotattributes) == Set([:fillrange, :legend, :fillalpha, :linealpha])
     @test plt.plotattributes[:fillrange](0.0) == mf.hi(0.0)
+end
+
+@testset "Plotting generating surface" begin
+    fis = @mamfis function tipper(service, food)::tip
+        service := begin
+            domain = 0:10
+            poor = GaussianMF(0.0, 1.5)
+            good = GaussianMF(5.0, 1.5)
+            excellent = GaussianMF(10.0, 1.5)
+        end
+
+        food := begin
+            domain = 0:10
+            rancid = TrapezoidalMF(-2, 0, 1, 3)
+            delicious = TrapezoidalMF(7, 9, 10, 12)
+        end
+
+        tip := begin
+            domain = 0:30
+            cheap = TriangularMF(0, 5, 10)
+            average = TriangularMF(10, 15, 20)
+            generous = TriangularMF(20, 25, 30)
+        end
+
+        service == poor || food == rancid --> tip == cheap
+        service == good --> tip == average
+        service == excellent || food == delicious --> tip == generous
+    end
+
+    plt = RecipesBase.apply_recipe(Dict{Symbol, Any}(), GenSurf((fis,)))[1]
+
+    @test plt.args[1] == range(0, 10, 100)
+    @test plt.args[2] == range(0, 10, 100)
+    @test plt.args[3](1, 2) == fis((1, 2))[:tip]
+    @test plt.plotattributes[:seriestype] == :surface
+    @test plt.plotattributes[:xlabel] == :service
+    @test plt.plotattributes[:ylabel] == :food
+    @test plt.plotattributes[:zlabel] == :tip
+
+    fis1 = @mamfis function fis1(x)::y
+        x := begin
+            domain = 0:10
+            low = TriangularMF(0, 2, 4)
+            med = TriangularMF(4, 6, 8)
+            high = TriangularMF(8, 9, 10)
+        end
+
+        y := begin
+            domain = 0:10
+            low = TriangularMF(0, 2, 4)
+            med = TriangularMF(4, 6, 8)
+            high = TriangularMF(8, 9, 10)
+        end
+
+        x == low --> y == low
+        x == med --> y == med
+        x == high --> y == high
+    end
+    plt = RecipesBase.apply_recipe(Dict{Symbol, Any}(), FuzzyLogic.GenSurf((fis1,)))[1]
+    @test plt.args[1] == range(0, 10, 100)
+    @test plt.args[2](2.5) == 2.0
+    @test plt.plotattributes ==
+          Dict{Symbol, Any}(:ylabel => :y, :legend => nothing, :xlabel => :x)
 end

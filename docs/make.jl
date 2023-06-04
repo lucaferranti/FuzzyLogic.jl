@@ -172,6 +172,7 @@ makedocs(;
                  "Membership functions" => "api/memberships.md",
                  "Reading/Writing" => "api/readwrite.md",
                  "Learning fuzzy models" => "api/genfis.md",
+                 "Plotting" => "api/plotting.md",
              ],
              "Contributor's Guide" => "contributing.md",
              "Release notes" => "changelog.md",

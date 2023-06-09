@@ -123,3 +123,47 @@ end
         end
     end
 end
+
+@userplot GenSurf
+@recipe function f(plt::GenSurf;
+                   Npoints = 100)
+    fis = first(plt.args)
+
+    if length(fis.inputs) > 2
+        throw(ArgumentError("Cannot plot generating surface for a system with more than 2 inputs"))
+    end
+
+    if length(fis.outputs) > 1
+        throw(ArgumentError("Cannot plot generating surface for a system with more than one output."))
+    end
+
+    o = first(keys(fis.outputs))
+    if length(fis.inputs) == 2
+        x, y = fis.inputs
+        seriestype := :surface
+        xlabel --> first(keys(fis.inputs))
+        ylabel --> last(keys(fis.inputs))
+        zlabel --> o
+        range(x.domain.low, x.domain.high, Npoints),
+        range(x.domain.low, x.domain.high, Npoints), (x, y) -> fis((x, y))[o]
+    else
+        x = first(fis.inputs)
+        xlabel --> first(keys(fis.inputs))
+        ylabel --> o
+        legend --> nothing
+        range(x.domain.low, x.domain.high, Npoints), x -> fis((x,))[o]
+    end
+end
+
+"""
+    gensurf(fis::AbstractFuzzySystem; Npoints=100)
+
+Plots the generating surface of the given fuzzy inference system.
+The given FIS must have exactly one output and at most two inputs.
+
+### Inputs
+
+- `fis::AbstractFuzzySystem` -- fuzzy inference system to plot
+- `Npoints::Int64 (default 100)` -- number of sample points used for each input to plot the generating surface.
+"""
+gensurf

@@ -172,6 +172,11 @@ plot(fis, :service)
 
 plot(fis)
 
+# If the FIS has at most 2 inputs, we can plot the generating surface of the system using the function [`gensurf`](@ref).
+# This is a surface visualizing how the output changes as a function of the input.
+
+gensurf(fis)
+
 #=
 ## Inference
 

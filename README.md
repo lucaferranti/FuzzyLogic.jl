@@ -73,7 +73,15 @@ fis(service=1, food=2)
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or want to request a feature, [open an issue](https://github.com/lucaferranti/FuzzyLogic.jl/issues). You are also encouraged to send pull requests (PRs). For small changes, it is ok to open a PR directly. For bigger changes, it is advisable to discuss it in an issue first. Before opening a PR, make sure to check the [contributing guidelines](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing).
+Contributions are welcome! Here is a small decision tree with useful links. 
+
+- To chat withe the core dev(s), you can use the [element chat][chat-url]. This is a good entry point for less structured queries.
+
+- If you find a bug or want to request a feature, [open an issue](https://github.com/lucaferranti/FuzzyLogic.jl/issues).
+
+- There is a [discussion section](https://github.com/lucaferranti/FuzzyLogic.jl/discussions) on GitHub. You can use the [helpdesk](https://github.com/lucaferranti/FuzzyLogic.jl/discussions/categories/helpdesk) for asking for help on how to use the software or the [show and tell](https://github.com/lucaferranti/FuzzyLogic.jl/discussions/categories/show-and-tell) to share with the world your work using FuzzyLogic.jl. 
+
+- You are also encouraged to send pull requests (PRs). For small changes, it is ok to open a PR directly. For bigger changes, it is advisable to discuss it in an issue first. Before opening a PR, make sure to check the [contributing guidelines](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing).
 
 ## Copyright
 

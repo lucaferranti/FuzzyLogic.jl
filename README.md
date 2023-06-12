@@ -75,7 +75,7 @@ fis(service=1, food=2)
 
 Contributions are welcome! Here is a small decision tree with useful links. 
 
-- To chat withe the core dev(s), you can use the [element chat][chat-url]. This is a good entry point for less structures queries.
+- To chat withe the core dev(s), you can use the [element chat][chat-url]. This is a good entry point for less structured queries.
 
 - If you find a bug or want to request a feature, [open an issue](https://github.com/lucaferranti/FuzzyLogic.jl/issues).
 

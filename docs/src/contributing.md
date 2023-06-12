@@ -2,7 +2,13 @@
 
 First of all, huge thanks for your interest in the package! ✨
 
-This page has some tips and guidelines on how to contribute.
+This page has some tips and guidelines on how to contribute. For a more unstructured discussion, you can chat with the developers in the [element chat](https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im).
+
+## Discussions
+
+If you are using FuzzyLogic.jl in your work and get stuck, you can use the [helpdesk](https://github.com/lucaferranti/FuzzyLogic.jl/discussions/categories/helpdesk) to ask for help. This is preferable over issues, which are meant for bugs and feature requests, because discussions do not get closed once fixed and remain browsable for others.
+
+There is also a [show and tell](https://github.com/lucaferranti/FuzzyLogic.jl/discussions/categories/show-and-tell) section to share with the world your work using FuzzyLogic.jl. If your work features some new application of FuzzyLogic.jl and you also want it featured in the Applications section in the documentation, let us know (in the elment chat or in an issue). You will get help with the workflow and setup, but you are expected to do the writing 😃 .
 
 ## Opening issues
 

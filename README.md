@@ -1,10 +1,10 @@
 # FuzzyLogic.jl
 
-|**Info**|**Build status**|**Documentation**|**Contributing**|
-|:------:|:--------------:|:---------------:|:--------------:|
-|[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|
-|[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|
-|[![downloads][download-img]][download-url]|[![pkgeval-img]][pkgeval-url]||[![gitter-chat][chat-img]][chat-url]|
+|**Info**|**Build status**|**Documentation**|**Contributing**|**Citation**|
+|:------:|:--------------:|:---------------:|:--------------:|:----------:|
+|[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|[![bibtex][bibtex-img]][bibtex-url]
+|[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|[![paper][paper-img]][paper-url]|
+|[![downloads][download-img]][download-url]|[![pkgeval-img]][pkgeval-url]||[![gitter-chat][chat-img]][chat-url]|[![zenodo][zenodo-img]][zenodo-url]
 
 <p align="center">
 <img src="./docs/src/assets/logo.svg"/>
@@ -119,3 +119,12 @@ Contributions are welcome! Here is a small decision tree with useful links.
 
 [chat-img]: https://badges.gitter.im/badge.svg
 [chat-url]: https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im
+
+[bibtex-img]: https://img.shields.io/badge/BibTeX-citation-orange
+[bibtex-url]: https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/CITATION.bib
+
+[paper-img]: https://img.shields.io/badge/arxiv-paper-blue
+[paper-url]: https://arxiv.org/abs/2306.10316
+
+[zenodo-img]: https://img.shields.io/badge/Zenodo-archive-blue
+[zenodo-url]: https://doi.org/10.5281/zenodo.7570243

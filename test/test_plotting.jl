@@ -89,10 +89,12 @@ end
         @test p.args == d
         if isempty(d)
             @test p.plotattributes == Dict(:plot_title => "tipper", :grid => false,
-                       :legend => false, :axis => false, :layout => (3, 3))
+                       :legend => false, :axis => false, :layout => (3, 3),
+                       :size => (900, 600))
         else
             @test p.plotattributes ==
-                  Dict(:plot_title => "tipper", :title => t, :layout => (3, 3))
+                  Dict(:plot_title => "tipper", :size => (900, 600), :title => t,
+                       :layout => (3, 3))
         end
     end
 end

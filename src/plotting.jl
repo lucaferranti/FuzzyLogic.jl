@@ -80,6 +80,7 @@ end
     nin = length(fis.inputs)
     nrules = length(fis.rules)
     layout := (nrules, nin + nout)
+    size --> (300 * (nin + nout), 200 * nrules)
     for rule in fis.rules
         ants = leaves(rule.antecedent)
         for (varname, var) in pairs(fis.inputs)

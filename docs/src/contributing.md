@@ -110,13 +110,25 @@ include("test/runtests.jl")
 
 ## Working on the documentation
 
-* You can build the documentation locally with
+### Local setup
+The first time you start working on the documentation locally, you will need to install all needed dependencies. To do so, run
 
 ```
-julia --project=docs docs/make.jl
+julia docs/setup.jl
 ```
 
-* Tutorials and applications are written using [Literate.jl](https://github.com/fredrikekre/Literate.jl), hence if working on those, you should edit the source file under the `literate` folder and not directly the markdown.
+This needs to be done only the fist time (if you don't have `docs/Manifest.toml`) or any time the Manifest becomes outdated.
+
+Next, you can build the documentation locally by running
+
+```
+julia docs/liveserver.jl
+```
+
+This will open a preview of the documentation in your browser and watch the documentation source files, meaning the preview will automatically update on every documentation change.
+
+### Working with literate.
+* Tutorials and applications are written using [Literate.jl](https://github.com/fredrikekre/Literate.jl). Hence, do not directly edit the markdown files under `docs/src/tutorials` and `docs/src/applications`, edit instead the corresponding julia files under `docs/src/literate`. 
 
 ## Further reading
 

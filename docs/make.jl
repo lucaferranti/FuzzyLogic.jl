@@ -3,13 +3,7 @@ ENV["GKSwstype"] = "100"
 const IS_CI = get(ENV, "CI", "false") == "true"
 
 import Pkg
-
-if !IS_CI
-    Pkg.activate(@__DIR__)
-    Pkg.instantiate()
-end
-
-Pkg.add(Pkg.PackageSpec(name = "Documenter", rev = "30baed5")) # TODO remove once Documenter 0.28 is released
+Pkg.activate(@__DIR__)
 
 using Documenter
 using DocThemeIndigo
@@ -182,6 +176,4 @@ makedocs(;
 # DEPLOY #
 ##########
 
-if IS_CI
-    deploydocs(; repo = "github.com/lucaferranti/FuzzyLogic.jl", push_preview = true)
-end
+IS_CI && deploydocs(; repo = "github.com/lucaferranti/FuzzyLogic.jl", push_preview = true)

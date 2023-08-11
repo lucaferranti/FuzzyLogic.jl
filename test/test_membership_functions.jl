@@ -60,6 +60,15 @@ end
     @test f(2) == eval(to_expr(f, 2)) == 1 / (1 + exp(4))
 end
 
+@testset "Singleton MF" begin
+    f = SingletonMF(4)
+    @test f(4) === eval(to_expr(f, 4)) === 1
+    @test f(4.0) === eval(to_expr(f, 4.0)) === 1.0
+    @test iszero(f(3))
+    @test iszero(eval(to_expr(f, 3)))
+    @test iszero(f(5))
+end
+
 @testset "Trapezoidal MF" begin
     f = TrapezoidalMF(1, 5, 7, 8)
     @test f(0) == eval(to_expr(f, 0)) == 0
@@ -119,11 +128,11 @@ end
 
 @testset "Semi-Elliptic MF" begin
     mf = SemiEllipticMF(5.0, 4.0)
-    @test mf(0) == 0
-    @test mf(1) == 0
-    @test mf(5) == 1
-    @test mf(9) == 0
-    @test mf(10) == 0
+    @test mf(0) == eval(to_expr(mf, 0)) == 0
+    @test mf(1) == eval(to_expr(mf, 1)) == 0
+    @test mf(5) == eval(to_expr(mf, 5)) == 1
+    @test mf(9) == eval(to_expr(mf, 9)) == 0
+    @test mf(10) == eval(to_expr(mf, 10)) == 0
 end
 
 @testset "Piecewise linear Membership function" begin

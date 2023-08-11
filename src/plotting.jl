@@ -6,6 +6,16 @@ using RecipesBase
     x -> mf(x), low, high
 end
 
+# special case: singleton mf
+@recipe function f(mf::SingletonMF, low::Real, high::Real)
+    legend --> nothing
+    line --> :stem
+    marker --> :circle
+    markersize --> 10
+    xlims --> (low, high)
+    [mf.c], [1]
+end
+
 @recipe function f(mf::Type2MF, low::Real, high::Real)
     legend --> nothing
     @series begin

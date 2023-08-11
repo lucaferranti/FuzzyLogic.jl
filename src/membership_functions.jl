@@ -3,6 +3,26 @@ abstract type AbstractPredicate end
 abstract type AbstractMembershipFunction <: AbstractPredicate end
 
 """
+Singleton membership function. Equal to one at a single point and zero elsewhere.
+
+### Fields
+
+$(TYPEDFIELDS)
+
+### Example
+
+```julia
+mf = SingletonMF(4)
+```
+
+"""
+struct SingletonMF{T <: Real} <: AbstractMembershipFunction
+    "Point at which the membership function has value 1."
+    c::T
+end
+(mf::SingletonMF)(x::Real) = mf.c == x ? one(x) : zero(x)
+
+"""
 Generalized Bell membership function ``\\frac{1}{1+\\vert\\frac{x-c}{a}\\vert^{2b}}``.
 
 ### Fields

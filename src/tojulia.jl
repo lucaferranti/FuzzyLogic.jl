@@ -126,6 +126,8 @@ end
 # MEMBERSHIP FUNCTIONS CODE GENERATION #
 ########################################
 
+to_expr(mf::SingletonMF, x = :x) = :($x == $(mf.c) ? one($x) : zero($x))
+
 to_expr(mf::GaussianMF, x = :x) = :(exp(-($x - $(mf.mu))^2 / $(2 * mf.sig^2)))
 function to_expr(mf::TriangularMF, x = :x)
     :(max(min(($x - $(mf.a)) / $(mf.b - mf.a), ($(mf.c) - $x) / $(mf.c - mf.b)), 0))
@@ -193,6 +195,14 @@ function to_expr(p::PiShapeMF, x = :x)
           1 - $(2 / (p.d - p.c)^2) * ($x - $(p.c))^2
       else
           $(2 / (p.d - p.c)^2) * ($x - $(p.d))^2
+      end)
+end
+
+function to_expr(se::SemiEllipticMF, x = :x)
+    :(if $(se.cd - se.rd) <= $x <= $(se.cd + se.rd)
+          sqrt(1 - ($(se.cd) - $x)^2 / $(se.rd)^2)
+      else
+          zero($x)
       end)
 end
 

@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
-- ![](https://img.shields.io/badge/new%20feature-green.svg) added semi-elliptic membership functions
+- ![](https://img.shields.io/badge/new%20feature-green.svg) added semi-elliptic and singleton membership functions
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added `gensurf` to plot generating surface
 - ![](https://img.shields.io/badge/bugfix-purple.svg) fix plotting of systems with several rules and membership functions.
 

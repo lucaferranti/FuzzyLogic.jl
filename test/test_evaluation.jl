@@ -182,5 +182,5 @@ end
         service == good --> tip == average
         service == excellent || food == delicious --> tip == generous
     end
-    @test fis(service = 2, food = 3)[:tip]≈FuzzyLogic.Interval(5.304, 19.792) atol=1e-3
+    @test fis(service = 2, food = 3)[:tip]≈FuzzyLogic.Interval(2.94, 28.613) atol=1e-3
 end

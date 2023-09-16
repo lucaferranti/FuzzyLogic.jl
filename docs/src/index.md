@@ -3,24 +3,30 @@
 |**Info**|**Build status**|**Documentation**|**Contributing**|**Citation**|
 |:------:|:--------------:|:---------------:|:--------------:|:----------:|
 |[![version](https://juliahub.com/docs/FuzzyLogic/version.svg)](https://github.com/lucaferranti/FuzzyLogic.jl/releases/latest)|[![CI Status](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml?query=branch%3Amain)|[![Stable docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/stable/)|[![contributing guidelines](https://img.shields.io/badge/Contributor-Guide-blueviolet)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/contributing)|[![bibtex](https://img.shields.io/badge/BibTeX-citation-orange)](https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/CITATION.bib)
-|[![Licese: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/LICENSE)|[![Coverage](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl)|[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/)|[![SciML Code Style](https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826)](https://github.com/SciML/SciMLStyle)|[![paper](https://img.shields.io/badge/arxiv-paper-blue)](https://arxiv.org/abs/2306.10316)
-|[![downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/FuzzyLogic&label=downloads)](https://pkgs.genieframework.com/?packages=FuzzyLogic)|[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.html)||[![gitter-chat](https://badges.gitter.im/badge.svg)](https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im)|[![zenodo](https://img.shields.io/badge/Zenodo-archive-blue)](https://doi.org/10.5281/zenodo.7570243)
+|[![Licese: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/LICENSE)|[![Coverage](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/lucaferranti/FuzzyLogic.jl)|[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucaferranti.github.io/FuzzyLogic.jl/dev/)|[![SciML Code Style](https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826)](https://github.com/SciML/SciMLStyle)|[![paper](https://img.shields.io/badge/FUZZIEEE-paper-blue)](https://arxiv.org/abs/2306.10316)
+|[![downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/FuzzyLogic&label=downloads)](https://pkgs.genieframework.com/?packages=FuzzyLogic)|[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/F/FuzzyLogic.html)|[![JuliaCon video](https://img.shields.io/badge/JuliaCon-video-red.svg)](https://www.youtube.com/watch?v=6WfX3e-aOBc)|[![gitter-chat](https://badges.gitter.im/badge.svg)](https://app.gitter.im/#/room/#FuzzyLogic-jl:gitter.im)|[![zenodo](https://img.shields.io/badge/Zenodo-archive-blue)](https://doi.org/10.5281/zenodo.7570243)
 
 A Julia library for fuzzy logic and applications.
 
 ## Installation
 
-To install the package, open a Julia session and run
+1. If you haven't already, install Julia. The easiest way is to install [Juliaup](https://github.com/JuliaLang/juliaup#installation). This allows to easily manage julia versions.
 
-```julia
-using Pkg; Pkg.add("FuzzyLogic")
-```
+2. Open the terminal and start a julia session by simply typing `julia`
 
-the package can then be loaded with
+3. Install the library by typing
 
-```julia
-using FuzzyLogic
-```
+  ```julia
+  using Pkg; Pkg.add("FuzzyLogic")
+  ```
+
+4. The package can now be loaded (in the interactive REPL or in a script file) with the command
+
+  ```julia
+  using FuzzyLogic
+  ```
+
+5. That's it, have fun!
 
 ## Features
 

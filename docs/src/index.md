@@ -36,15 +36,15 @@ If you use this in your research, please cite it as
 
 3. Install the library by typing
 
-  ```julia
-  using Pkg; Pkg.add("FuzzyLogic")
-  ```
+```julia
+using Pkg; Pkg.add("FuzzyLogic")
+```
 
 4. The package can now be loaded (in the interactive REPL or in a script file) with the command
 
-  ```julia
-  using FuzzyLogic
-  ```
+```julia
+using FuzzyLogic
+```
 
 5. That's it, have fun!
 

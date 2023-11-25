@@ -8,6 +8,26 @@
 
 A Julia library for fuzzy logic and applications.
 
+If you use this in your research, please cite it as
+
+```bibtex
+@INPROCEEDINGS{ferranti2023fuzzylogicjl,
+  author={Ferranti, Luca and Boutellier, Jani},
+  booktitle={2023 IEEE International Conference on Fuzzy Systems (FUZZ)}, 
+  title={FuzzyLogic.jl: A Flexible Library for Efficient and Productive Fuzzy Inference}, 
+  year={2023},
+  pages={1-5},
+  doi={10.1109/FUZZ52849.2023.10309777}}
+```
+
+## Features
+
+- **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
+- **Compatible!** Read your models from [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm), [IEEE 1855-2016 Fuzzy Markup Language](https://en.wikipedia.org/wiki/Fuzzy_markup_language) and Matlab Fuzzy toolbox `.fis` files.
+- **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
+- **Productive!** Several visualization tools to help debug and tune your model.
+- **Portable!** Compile your final model to Julia code.
+
 ## Installation
 
 1. If you haven't already, install Julia. The easiest way is to install [Juliaup](https://github.com/JuliaLang/juliaup#installation). This allows to easily manage julia versions.
@@ -27,14 +47,6 @@ A Julia library for fuzzy logic and applications.
   ```
 
 5. That's it, have fun!
-
-## Features
-
-- **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.
-- **Compatible!** Read your models from [IEC 61131-7 Fuzzy Control Language](https://ffll.sourceforge.net/fcl.htm), [IEEE 1855-2016 Fuzzy Markup Language](https://en.wikipedia.org/wiki/Fuzzy_markup_language) and Matlab Fuzzy toolbox `.fis` files.
-- **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
-- **Productive!** Several visualization tools to help debug and tune your model.
-- **Portable!** Compile your final model to Julia code.
 
 ## Quickstart example
 

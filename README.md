@@ -12,6 +12,18 @@
 
 A Julia library for fuzzy logic and applications.
 
+If you use this in your research, please cite it as
+
+```bibtex
+@INPROCEEDINGS{ferranti2023fuzzylogicjl,
+  author={Ferranti, Luca and Boutellier, Jani},
+  booktitle={2023 IEEE International Conference on Fuzzy Systems (FUZZ)}, 
+  title={FuzzyLogic.jl: A Flexible Library for Efficient and Productive Fuzzy Inference}, 
+  year={2023},
+  pages={1-5},
+  doi={10.1109/FUZZ52849.2023.10309777}}
+```
+
 ## Features
 
 - **Rich!** Mamdani and Sugeno inference systems, both Type-1 and Type-2, several [membership functions](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/memberships) and [algoritms options](https://lucaferranti.github.io/FuzzyLogic.jl/stable/api/fis) available.

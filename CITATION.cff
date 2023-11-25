@@ -8,13 +8,14 @@ type: software
 authors:
   - given-names: Luca
     family-names: Ferranti
+    orcid: "https://orcid.org/0000-0001-5588-0920"
 identifiers:
   - type: doi
     value: 10.5281/zenodo.7570243
 repository-code: 'https://github.com/lucaferranti/FuzzyLogic.jl'
 license: MIT
 preferred-citation:
-  type: article
+  type: proceedings
   authors:
   - family-names: "Ferranti"
     given-names: "Luca"
@@ -22,6 +23,7 @@ preferred-citation:
   - family-names: "Boutellier"
     given-names: "Jani"
     orcid: "https://orcid.org/0000-0001-7606-3655"
-  journal: "arxiv:2306.10316"
+  journal: "2023 IEEE International Conference on Fuzzy Systems (FUZZ)"
+  doi: 10.1109/FUZZ52849.2023.10309777
   title: "FuzzyLogic.jl: a Flexible Library for Efficient and Productive Fuzzy Inference"
   year: 2023

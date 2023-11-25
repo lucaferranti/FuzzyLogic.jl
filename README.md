@@ -4,7 +4,7 @@
 |:------:|:--------------:|:---------------:|:--------------:|:----------:|
 |[![version][ver-img]][ver-url]|[![CI Status][ci-img]][ci-url]|[![Stable docs][stable-img]][stable-url]|[![contributing guidelines][contrib-img]][contrib-url]|[![bibtex][bibtex-img]][bibtex-url]
 |[![Licese: MIT][license-img]][license-url]|[![Coverage][cov-img]][cov-url]|[![Dev docs][dev-img]][dev-url]|[![SciML Code Style][style-img]][style-url]|[![paper][paper-img]][paper-url]|
-|[![downloads][download-img]][download-url]|[![pkgeval-img]][pkgeval-url]||[![gitter-chat][chat-img]][chat-url]|[![zenodo][zenodo-img]][zenodo-url]
+|[![downloads][download-img]][download-url]|[![pkgeval-img]][pkgeval-url]|[![JuliaCon video][video-img]][video-url]|[![gitter-chat][chat-img]][chat-url]|[![zenodo][zenodo-img]][zenodo-url]
 
 <p align="center">
 <img src="./docs/src/assets/logo.svg"/>
@@ -12,18 +12,16 @@
 
 A Julia library for fuzzy logic and applications.
 
-## Installation
+If you use this in your research, please cite it as
 
-To install the package, open a Julia session and run
-
-```julia
-using Pkg; Pkg.add("FuzzyLogic")
-```
-
-the package can then be loaded with
-
-```julia
-using FuzzyLogic
+```bibtex
+@INPROCEEDINGS{ferranti2023fuzzylogicjl,
+  author={Ferranti, Luca and Boutellier, Jani},
+  booktitle={2023 IEEE International Conference on Fuzzy Systems (FUZZ)}, 
+  title={FuzzyLogic.jl: A Flexible Library for Efficient and Productive Fuzzy Inference}, 
+  year={2023},
+  pages={1-5},
+  doi={10.1109/FUZZ52849.2023.10309777}}
 ```
 
 ## Features
@@ -33,6 +31,26 @@ using FuzzyLogic
 - **Expressive!** Clear Domain Specific Language to write your model as human readable Julia code
 - **Productive!** Several visualization tools to help debug and tune your model.
 - **Portable!** Compile your final model to Julia code.
+
+## Installation
+
+1. If you haven't already, install Julia. The easiest way is to install [Juliaup](https://github.com/JuliaLang/juliaup#installation). This allows to easily manage julia versions.
+
+2. Open the terminal and start a julia session by simply typing `julia`
+
+3. Install the library by typing
+
+```julia
+using Pkg; Pkg.add("FuzzyLogic")
+```
+
+4. The package can now be loaded (in the interactive REPL or in a script file) with the command
+
+```julia
+using FuzzyLogic
+```
+
+5. That's it, have fun!
 
 ## Quickstart example
 
@@ -71,6 +89,8 @@ fis(service=1, food=2)
 - [**STABLE**][stable-url]: Documentation of the latest release
 - [**DEV**][dev-url]: Documentation of the version on main
 
+[![JuliaCon video](https://img.youtube.com/vi/6WfX3e-aOBc/0.jpg)](https://youtu.be/6WfX3e-aOBc)
+
 ## Contributing
 
 Contributions are welcome! Here is a small decision tree with useful links. 
@@ -102,6 +122,9 @@ Contributions are welcome! Here is a small decision tree with useful links.
 [dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [dev-url]: https://lucaferranti.github.io/FuzzyLogic.jl/dev/
 
+[video-img]: https://img.shields.io/badge/JuliaCon-video-red.svg
+[video-url]: https://www.youtube.com/watch?v=6WfX3e-aOBc
+
 [ci-img]: https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml/badge.svg?branch=main
 [ci-url]: https://github.com/lucaferranti/FuzzyLogic.jl/actions/workflows/CI.yml?query=branch%3Amain
 
@@ -123,7 +146,7 @@ Contributions are welcome! Here is a small decision tree with useful links.
 [bibtex-img]: https://img.shields.io/badge/BibTeX-citation-orange
 [bibtex-url]: https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/CITATION.bib
 
-[paper-img]: https://img.shields.io/badge/arxiv-paper-blue
+[paper-img]: https://img.shields.io/badge/FUZZIEEE-paper-blue
 [paper-url]: https://arxiv.org/abs/2306.10316
 
 [zenodo-img]: https://img.shields.io/badge/Zenodo-archive-blue

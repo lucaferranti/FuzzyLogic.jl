@@ -46,8 +46,9 @@ end
 
 function (fis::SugenoFuzzySystem)(inputs::T) where {T <: NamedTuple}
     S = float(eltype(T))
-    res = Dictionary{Symbol, S}(keys(fis.outputs),
-                                zeros(float(eltype(T)), length(fis.outputs)))
+    res = Dictionary{Symbol, Union{S, Interval{S}}}(keys(fis.outputs),
+                                                    zeros(float(eltype(T)),
+                                                          length(fis.outputs)))
     weights_sum = zero(S)
     for rule in fis.rules
         w = scale(rule.antecedent(fis, inputs), rule)

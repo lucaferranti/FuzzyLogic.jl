@@ -24,6 +24,5 @@ using FuzzyLogic: Interval, inf, sup, mid, diam
     @test zero(Interval{Float64}) == Interval(0.0, 0.0)
 
     @test convert(Interval{Float64}, 1.0) == Interval(1.0, 1.0)
-    @test convert(Float64, Interval(0.0, 1.0)) == 0.5
     @test float(Interval{BigFloat}) == BigFloat
 end

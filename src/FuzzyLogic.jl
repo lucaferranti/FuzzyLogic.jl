@@ -14,6 +14,7 @@ include("evaluation.jl")
 include("plotting.jl")
 include("genfis.jl")
 include("tojulia.jl")
+include("toccode.jl")
 include("readwrite.jl")
 
 export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigmoidMF,
@@ -30,6 +31,7 @@ export DifferenceSigmoidMF, LinearMF, GeneralizedBellMF, GaussianMF, ProductSigm
        LinearSugenoOutput, ConstantSugenoOutput,
        fuzzy_cmeans,
        compilefis,
+       to_c,
        readfis
 
 ## parsers

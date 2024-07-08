@@ -70,7 +70,7 @@ end
         (TriangularMF(10, 15, 20), dom_out),
         (GaussianMF(10.0, 1.5), dom_in),
         (TrapezoidalMF(7, 9, 10, 12), dom_in),
-        (TriangularMF(20, 25, 30), dom_out),
+        (TriangularMF(20, 25, 30), dom_out)
     ]
 
     titles = [
@@ -82,19 +82,19 @@ end
         "tip is average",
         "service is excellent",
         "food is delicious",
-        "tip is generous",
+        "tip is generous"
     ]
 
-    for (p, d, t) in zip(rec, data, titles)
+    for (i, (p, d, t)) in enumerate(zip(rec, data, titles))
         @test p.args == d
         if isempty(d)
             @test p.plotattributes == Dict(:plot_title => "tipper", :grid => false,
-                       :legend => false, :axis => false, :layout => (3, 3),
-                       :size => (900, 600))
+                :legend => false, :axis => false, :layout => (3, 3),
+                :size => (900, 600), :subplot => i)
         else
             @test p.plotattributes ==
                   Dict(:plot_title => "tipper", :size => (900, 600), :title => t,
-                       :layout => (3, 3))
+                :layout => (3, 3), :subplot => i)
         end
     end
 end
@@ -103,23 +103,25 @@ end
     mfnames = [:average, :generous]
     mfs = [
         ConstantSugenoOutput(15),
-        LinearSugenoOutput(Dictionary([:service, :food], [2.0, 0.5]), 5.0),
+        LinearSugenoOutput(Dictionary([:service, :food], [2.0, 0.5]), 5.0)
     ]
     var = Variable(Domain(0, 30), Dictionary(mfnames, mfs))
     plts = RecipesBase.apply_recipe(Dict{Symbol, Any}(), var, :tip)
     for (plt, mfname, mf) in zip(plts, mfnames, mfs)
         @test plt.args == (mf, Domain(0, 30))
         @test plt.plotattributes == Dict(:plot_title => "tip", :legend => false,
-                   :title => string(mfname), :layout => (1, 2))
+            :title => string(mfname), :layout => (1, 2))
     end
 end
 
 @testset "Plotting type-2 membership functions" begin
     mf = 0.5 * TriangularMF(1, 2, 3) .. TriangularMF(0, 2, 4)
-    plt = RecipesBase.apply_recipe(Dict{Symbol, Any}(), mf, 0, 4) |> only
-    @test plt.args[1](0.0) == mf.lo(0.0)
-    @test keys(plt.plotattributes) == Set([:fillrange, :legend, :fillalpha, :linealpha])
-    @test plt.plotattributes[:fillrange](0.0) == mf.hi(0.0)
+    plt = RecipesBase.apply_recipe(Dict{Symbol, Any}(), mf, 0, 4)
+    @test plt[1].args[1](0.0) == mf.lo(0.0)
+    @test keys(plt[1].plotattributes) ==
+          Set([:fillrange, :legend, :fillalpha, :linewidth, :linealpha])
+    @test plt[1].plotattributes[:fillrange](0.0) == mf.hi(0.0)
+    @test plt[2].args[1](2) == 1.0
 end
 
 # @testset "Plotting generating surface" begin

@@ -20,9 +20,15 @@ end
     legend --> nothing
     @series begin
         fillrange := x -> mf.hi(x)
-        fillalpha --> 1.0
-        linealpha --> 0
+        fillalpha --> 0.5
+        linealpha --> 1
+        linewidth --> 2
         x -> mf.lo(x), low, high
+    end
+    @series begin
+        primary := false
+        linewidth --> 2
+        x -> mf.hi(x), low, high
     end
 end
 
@@ -91,9 +97,9 @@ end
     nrules = length(fis.rules)
     layout := (nrules, nin + nout)
     size --> (300 * (nin + nout), 200 * nrules)
-    for rule in fis.rules
+    for (i, rule) in enumerate(fis.rules)
         ants = leaves(rule.antecedent)
-        for (varname, var) in pairs(fis.inputs)
+        for (j, (varname, var)) in enumerate(pairs(fis.inputs))
             idx = findall(x -> subject(x) == varname, ants)
             length(idx) > 1 &&
                 throw(ArgumentError("Cannot plot repeated variables in rules"))
@@ -101,6 +107,7 @@ end
             @series if length(idx) == 1
                 rel = ants[first(idx)]
                 title := string(rel)
+                subplot := (i - 1) * (nin + nout) + j
                 # TODO: use own recipes for negation and relation
                 if rel isa FuzzyNegation
                     legend --> false
@@ -109,6 +116,7 @@ end
                     var.mfs[predicate(rel)], var.domain
                 end
             else
+                subplot := (i - 1) * (nin + nout) + j
                 grid --> false
                 axis --> false
                 legend --> false
@@ -116,16 +124,18 @@ end
             end
         end
 
-        for (varname, var) in pairs(fis.outputs)
+        for (j, (varname, var)) in enumerate(pairs(fis.outputs))
             idx = findall(x -> subject(x) == varname, rule.consequent)
             length(idx) > 1 &&
                 throw(ArgumentError("Cannot plot repeated variables in rules"))
 
             @series if length(idx) == 1
+                subplot := (i - 1) * (nin + nout) + nin + j
                 rel = rule.consequent[first(idx)]
                 title := string(rel)
                 var.mfs[predicate(rel)], var.domain
             else
+                subplot := (i - 1) * (nin + nout) + nin + j
                 grid --> false
                 axis --> false
                 legend --> false
@@ -137,7 +147,7 @@ end
 
 @userplot GenSurf
 @recipe function f(plt::GenSurf;
-                   Npoints = 100)
+        Npoints = 100)
     fis = first(plt.args)
 
     if length(fis.inputs) > 2

@@ -2,6 +2,16 @@
 abstract type AbstractPredicate end
 abstract type AbstractMembershipFunction <: AbstractPredicate end
 
+function Base.show(io::IO, mf::MF) where {MF <: AbstractMembershipFunction}
+    props = [getproperty(mf, x) for x in fieldnames(MF)]
+    print(io, MF.name.name, "(")
+    for (i, p) in enumerate(props)
+        print(io, p)
+        i < length(props) && print(io, ", ")
+    end
+    print(io, ")")
+end
+
 """
 Singleton membership function. Equal to one at a single point and zero elsewhere.
 
@@ -35,13 +45,13 @@ $(TYPEDFIELDS)
 mf = GeneralizedBellMF(2, 4, 5)
 ```
 """
-struct GeneralizedBellMF{T <: Real, S <: Real} <: AbstractMembershipFunction
+struct GeneralizedBellMF{Ta <: Real, Tb <: Real, Tc <: Real} <: AbstractMembershipFunction
     "Width of the curve, the bigger the wider."
-    a::T
+    a::Ta
     "Slope of the curve, the bigger the steeper."
-    b::S
+    b::Tb
     "Center of the curve."
-    c::T
+    c::Tc
 end
 (mf::GeneralizedBellMF)(x) = 1 / (1 + abs((x - mf.c) / mf.a)^(2mf.b))
 
@@ -58,11 +68,11 @@ $(TYPEDFIELDS)
 mf = GaussianMF(5.0, 1.5)
 ```
 """
-struct GaussianMF{T <: Real} <: AbstractMembershipFunction
+struct GaussianMF{Tm <: Real, Ts <: Real} <: AbstractMembershipFunction
     "mean ``μ``."
-    mu::T
+    mu::Tm
     "standard deviation ``σ``."
-    sig::T
+    sig::Ts
 end
 (mf::GaussianMF)(x) = exp(-(x - mf.mu)^2 / (2mf.sig^2))
 
@@ -79,13 +89,13 @@ $(TYPEDFIELDS)
 mf = TriangularMF(3, 5, 7)
 ```
 """
-struct TriangularMF{T <: Real} <: AbstractMembershipFunction
+struct TriangularMF{Ta <: Real, Tb <: Real, Tc <: Real} <: AbstractMembershipFunction
     "left foot."
-    a::T
+    a::Ta
     "peak."
-    b::T
+    b::Tb
     "right foot."
-    c::T
+    c::Tc
 end
 (mf::TriangularMF)(x) = max(min((x - mf.a) / (mf.b - mf.a), (mf.c - x) / (mf.c - mf.b)), 0)
 
@@ -102,15 +112,16 @@ $(TYPEDFIELDS)
 mf = TrapezoidalMF(1, 3, 7, 9)
 ```
 """
-struct TrapezoidalMF{T <: Real} <: AbstractMembershipFunction
+struct TrapezoidalMF{Ta <: Real, Tb <: Real, Tc <: Real, Td <: Real} <:
+       AbstractMembershipFunction
     "left foot."
-    a::T
+    a::Ta
     "left shoulder."
-    b::T
+    b::Tb
     "right shoulder."
-    c::T
+    c::Tc
     "right foot."
-    d::T
+    d::Td
 end
 function (mf::TrapezoidalMF)(x)
     return max(min((x - mf.a) / (mf.b - mf.a), 1, (mf.d - x) / (mf.d - mf.c)), 0)
@@ -130,11 +141,11 @@ $(TYPEDFIELDS)
 mf = LinearMF(2, 8)
 ```
 """
-struct LinearMF{T <: Real} <: AbstractMembershipFunction
+struct LinearMF{Ta <: Real, Tb <: Real} <: AbstractMembershipFunction
     "foot."
-    a::T
+    a::Ta
     "shoulder."
-    b::T
+    b::Tb
 end
 (mf::LinearMF)(x) = max(min((x - mf.a) / (mf.b - mf.a), 1), 0)
 
@@ -151,11 +162,11 @@ $(TYPEDFIELDS)
 mf = SigmoidMF(2, 5)
 ```
 """
-struct SigmoidMF{T <: Real} <: AbstractMembershipFunction
+struct SigmoidMF{Ta <: Real, Tc <: Real} <: AbstractMembershipFunction
     "parameter controlling the slope of the curve."
-    a::T
+    a::Ta
     "center of the slope."
-    c::T
+    c::Tc
 end
 (mf::SigmoidMF)(x) = 1 / (1 + exp(-mf.a * (x - mf.c)))
 
@@ -172,19 +183,22 @@ $(TYPEDFIELDS)
 mf = DifferenceSigmoidMF(5, 2, 5, 7)
 ```
 """
-struct DifferenceSigmoidMF{T <: Real} <: AbstractMembershipFunction
+struct DifferenceSigmoidMF{Ta1 <: Real, Tc1 <: Real, Ta2 <: Real, Tc2 <: Real} <:
+       AbstractMembershipFunction
     "slope of the first sigmoid."
-    a1::T
+    a1::Ta1
     "center of the first sigmoid."
-    c1::T
+    c1::Tc1
     "slope of the second sigmoid."
-    a2::T
+    a2::Ta2
     "center of the second sigmoid."
-    c2::T
+    c2::Tc2
 end
 function (mf::DifferenceSigmoidMF)(x)
-    return max(min(1 / (1 + exp(-mf.a1 * (x - mf.c1))) -
-                   1 / (1 + exp(-mf.a2 * (x - mf.c2))), 1), 0)
+    return max(
+        min(1 / (1 + exp(-mf.a1 * (x - mf.c1))) -
+            1 / (1 + exp(-mf.a2 * (x - mf.c2))), 1),
+        0)
 end
 
 """
@@ -227,11 +241,11 @@ $(TYPEDFIELDS)
 mf = SShapeMF(1, 8)
 ```
 """
-struct SShapeMF{T <: Real} <: AbstractMembershipFunction
+struct SShapeMF{Ta <: Real, Tb <: Real} <: AbstractMembershipFunction
     "foot."
-    a::T
+    a::Ta
     "shoulder."
-    b::T
+    b::Tb
 end
 function (s::SShapeMF)(x::T) where {T <: Real}
     x <= s.a && return zero(float(T))
@@ -253,11 +267,11 @@ $(TYPEDFIELDS)
 mf = ZShapeMF(3, 7)
 ```
 """
-struct ZShapeMF{T <: Real} <: AbstractMembershipFunction
+struct ZShapeMF{Ta <: Real, Tb <: Real} <: AbstractMembershipFunction
     "shoulder."
-    a::T
+    a::Ta
     "foot."
-    b::T
+    b::Tb
 end
 function (z::ZShapeMF)(x::T) where {T <: Real}
     x <= z.a && return one(float(T))
@@ -279,15 +293,16 @@ $(TYPEDFIELDS)
 mf = PiShapeMF(1, 4, 5, 10)
 ```
 """
-struct PiShapeMF{T <: Real} <: AbstractMembershipFunction
+struct PiShapeMF{Ta <: Real, Tb <: Real, Tc <: Real, Td <: Real} <:
+       AbstractMembershipFunction
     "left foot."
-    a::T
+    a::Ta
     "left shoulder."
-    b::T
+    b::Tb
     "right shoulder."
-    c::T
+    c::Tc
     "right foot."
-    d::T
+    d::Td
 end
 function (p::PiShapeMF)(x::T) where {T <: Real}
     (x <= p.a || x >= p.d) && return zero(float(T))
@@ -311,11 +326,11 @@ $(TYPEDFIELDS)
 mf = SemiEllipticMF(5.0, 4.0)
 ```
 """
-struct SemiEllipticMF{T <: Real} <: AbstractMembershipFunction
+struct SemiEllipticMF{Tcd <: Real, Trd <: Real} <: AbstractMembershipFunction
     "center."
-    cd::T
+    cd::Tcd
     "semi-axis."
-    rd::T
+    rd::Trd
 end
 function (semf::SemiEllipticMF)(x::Real)
     cd, rd = semf.cd, semf.rd

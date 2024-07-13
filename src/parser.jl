@@ -49,21 +49,21 @@ tipper
 Inputs:
 -------
 service ∈ [0, 10] with membership functions:
-    poor = GaussianMF{Float64}(0.0, 1.5)
-    good = GaussianMF{Float64}(5.0, 1.5)
-    excellent = GaussianMF{Float64}(10.0, 1.5)
+    poor = GaussianMF(0.0, 1.5)
+    good = GaussianMF(5.0, 1.5)
+    excellent = GaussianMF(10.0, 1.5)
 
 food ∈ [0, 10] with membership functions:
-    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
-    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+    rancid = TrapezoidalMF(-2, 0, 1, 3)
+    delicious = TrapezoidalMF(7, 9, 10, 12)
 
 
 Outputs:
 --------
 tip ∈ [0, 30] with membership functions:
-    cheap = TriangularMF{Int64}(0, 5, 10)
-    average = TriangularMF{Int64}(10, 15, 20)
-    generous = TriangularMF{Int64}(20, 25, 30)
+    cheap = TriangularMF(0, 5, 10)
+    average = TriangularMF(10, 15, 20)
+    generous = TriangularMF(20, 25, 30)
 
 
 Inference rules:
@@ -128,13 +128,13 @@ tipper
 Inputs:
 -------
 service ∈ [0, 10] with membership functions:
-    poor = GaussianMF{Float64}(0.0, 1.5)
-    good = GaussianMF{Float64}(5.0, 1.5)
-    excellent = GaussianMF{Float64}(10.0, 1.5)
+    poor = GaussianMF(0.0, 1.5)
+    good = GaussianMF(5.0, 1.5)
+    excellent = GaussianMF(10.0, 1.5)
 
 food ∈ [0, 10] with membership functions:
-    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
-    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+    rancid = TrapezoidalMF(-2, 0, 1, 3)
+    delicious = TrapezoidalMF(7, 9, 10, 12)
 
 
 Outputs:
@@ -170,7 +170,7 @@ function _fis(ex::Expr, type)
     inputs, outputs, opts, rules = parse_body(body, argsin, argsout, type)
 
     fis = :($type(; name = $(QuoteNode(name)), inputs = $inputs,
-                  outputs = $outputs, rules = $rules))
+        outputs = $outputs, rules = $rules))
     append!(fis.args[2].args, opts)
     return fis
 end
@@ -227,21 +227,23 @@ function parse_body(body, argsin, argsout, type)
 end
 
 function parse_line!(inputs, outputs, rules, opts, line, argsin, argsout, type)
-    if @capture(line, var_:=begin args__ end)
+    if @capture(line, var_:=begin
+        args__
+    end)
         var = to_var_name(var)
         if var in argsin
             push!(inputs.args[2].args, parse_variable(var, args))
         elseif var in argsout
             # TODO: makes this more scalable
             push!(outputs.args[2].args,
-                  type == :SugenoFuzzySystem ? parse_sugeno_output(var, args, argsin) :
-                  parse_variable(var, args))
+                type == :SugenoFuzzySystem ? parse_sugeno_output(var, args, argsin) :
+                parse_variable(var, args))
         else
             throw(ArgumentError("Undefined variable $var"))
         end
     elseif @capture(line, for i_ in start_:stop_
-                        sts__
-                    end)
+        sts__
+    end)
         for j in start:stop
             for st in sts
                 ex = MacroTools.postwalk(x -> x == i ? j : x, st)
@@ -282,10 +284,10 @@ function parse_antecedent(ant)
         return Expr(:call, :FuzzyOr, parse_antecedent(left), parse_antecedent(right))
     elseif @capture(ant, subj_==prop_)
         return Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
-                    QuoteNode(to_var_name(prop)))
+            QuoteNode(to_var_name(prop)))
     elseif @capture(ant, subj_!=prop_)
         return Expr(:call, :FuzzyNegation, QuoteNode(to_var_name(subj)),
-                    QuoteNode(to_var_name(prop)))
+            QuoteNode(to_var_name(prop)))
     else
         throw(ArgumentError("Invalid premise $ant"))
     end
@@ -295,7 +297,7 @@ function parse_consequents(cons)
     newcons = map(cons) do c
         @capture(c, subj_==prop_) || throw(ArgumentError("Invalid consequence $c"))
         Expr(:call, :FuzzyRelation, QuoteNode(to_var_name(subj)),
-             QuoteNode(to_var_name(prop)))
+            QuoteNode(to_var_name(prop)))
     end
     return Expr(:vect, newcons...)
 end

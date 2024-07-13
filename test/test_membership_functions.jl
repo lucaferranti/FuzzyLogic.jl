@@ -166,3 +166,11 @@ end
     @test mf(4) == Interval(0.0, 0.0)
     @test mf(5) == Interval(0.0, 0.0)
 end
+
+@testset "Mixed argument types" begin
+    mf = TriangularMF(1, 2.0, 3.0f0)
+    @test typeof(mf) == TriangularMF{Int64, Float64, Float32}
+
+    mf = TrapezoidalMF(1, 2.0, 3, 4.0)
+    @test typeof(mf) == TrapezoidalMF{Int64, Float64, Int64, Float64}
+end

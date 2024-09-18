@@ -4,8 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
-- ![](https://img.shields.io/badge/BREAKING-red.svg) use a different type parameter for each field of membership functions
-- ![](https://img.shields.io/badge/bugfix-purple.svg) ![](https://img.shields.io/badge/BREAKING-red.svg) disallow implicit conversion from interval to float
+- ![](https://img.shields.io/badge/BREAKING-red.svg) use a different type parameter for each field of membership functions. This allows membership functions to support mixed-type inputs like `GaussianMF(0, 0.1)`.
+
+## v0.1.3 -- 2024-09-18
+
+[view release on GitHub](https://github.com/lucaferranti/FuzzyLogic.jl/releases/tag/v0.1.3)
+
+- ![](https://img.shields.io/badge/bugfix-purple.svg) fix bug in Julia code generation of ZShape and SShape mf
+- ![](https://img.shields.io/badge/bugfix-purple.svg) disallow implicit conversion from interval to float
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added semi-elliptic and singleton membership functions
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added `gensurf` to plot generating surface
 - ![](https://img.shields.io/badge/bugfix-purple.svg) fix plotting of systems with several rules and membership functions.

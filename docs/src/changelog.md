@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+- ![](https://img.shields.io/badge/bugfix-purple.svg) fix bug in Julia code generation of ZShape and SShape mf
 - ![](https://img.shields.io/badge/bugfix-purple.svg) disallow implicit conversion from interval to float
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added semi-elliptic and singleton membership functions
 - ![](https://img.shields.io/badge/new%20feature-green.svg) added `gensurf` to plot generating surface

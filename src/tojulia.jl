@@ -160,7 +160,7 @@ end
 
 function to_expr(s::SShapeMF, x = :x)
     :(if $x <= $(s.a)
-          zero(float($(typeof(x))))
+          zero(float(typeof($x)))
       elseif $x >= $(s.b)
           one(float(typeof($x)))
       elseif $x >= $((s.a + s.b) / 2)
@@ -172,7 +172,7 @@ end
 
 function to_expr(mf::ZShapeMF, x = :x)
     :(if $x <= $(mf.a)
-          one(float($(typeof(x))))
+          one(float(typeof($x)))
       elseif $x >= $(mf.b)
           zero(float(typeof($x)))
       elseif $x >= $((mf.a + mf.b) / 2)

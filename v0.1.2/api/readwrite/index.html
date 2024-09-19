@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Reading/Writing · FuzzyLogic.jl</title><meta name="title" content="Reading/Writing · FuzzyLogic.jl"/><meta property="og:title" content="Reading/Writing · FuzzyLogic.jl"/><meta property="twitter:title" content="Reading/Writing · FuzzyLogic.jl"/><meta name="description" content="Documentation for FuzzyLogic.jl."/><meta property="og:description" content="Documentation for FuzzyLogic.jl."/><meta property="twitter:description" content="Documentation for FuzzyLogic.jl."/><meta property="og:url" content="https://lucaferranti.github.io/FuzzyLogic.jl/api/readwrite/"/><meta property="twitter:url" content="https://lucaferranti.github.io/FuzzyLogic.jl/api/readwrite/"/><link rel="canonical" href="https://lucaferranti.github.io/FuzzyLogic.jl/api/readwrite/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/indigo.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">FuzzyLogic.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox"/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../tutorials/mamdani/">Build a Mamdani inference system</a></li><li><a class="tocitem" href="../../tutorials/sugeno/">Build a Sugeno inference system</a></li><li><a class="tocitem" href="../../tutorials/type2/">Build a type-2 inference system</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Applications</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../applications/edge_detector/">Edge detection</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox" checked/><label class="tocitem" for="menuitem-4"><span class="docs-label">API</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-4-1" type="checkbox"/><label class="tocitem" for="menuitem-4-1"><span class="docs-label">Inference system API</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../fis/">Types</a></li><li><a class="tocitem" href="../logical/">Logical connectives</a></li><li><a class="tocitem" href="../aggregation/">Aggregation methods</a></li><li><a class="tocitem" href="../defuzzification/">Defuzzification methods</a></li></ul></li><li><a class="tocitem" href="../memberships/">Membership functions</a></li><li class="is-active"><a class="tocitem" href>Reading/Writing</a><ul class="internal"><li><a class="tocitem" href="#Parse-Julia-code"><span>Parse Julia code</span></a></li><li><a class="tocitem" href="#Generate-Julia-code"><span>Generate Julia code</span></a></li><li><a class="tocitem" href="#Read-from-file"><span>Read from file</span></a></li><li><a class="tocitem" href="#Parse-FCL"><span>Parse FCL</span></a></li><li><a class="tocitem" href="#Parse-FML"><span>Parse FML</span></a></li><li><a class="tocitem" href="#Parse-Matlab"><span>Parse Matlab</span></a></li></ul></li><li><a class="tocitem" href="../genfis/">Learning fuzzy models</a></li></ul></li><li><a class="tocitem" href="../../contributing/">Contributor&#39;s Guide</a></li><li><a class="tocitem" href="../../changelog/">Release notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">API</a></li><li class="is-active"><a href>Reading/Writing</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Reading/Writing</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/lucaferranti/FuzzyLogic.jl" title="View the repository on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/docs/src/api/readwrite.md" title="Edit source on GitHub"><span class="docs-icon fas"></span></a><a class="docs-settings-button docs-navbar-link fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button docs-navbar-link fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Reading-/-writing-functionalities"><a class="docs-heading-anchor" href="#Reading-/-writing-functionalities">Reading / writing functionalities</a><a id="Reading-/-writing-functionalities-1"></a><a class="docs-heading-anchor-permalink" href="#Reading-/-writing-functionalities" title="Permalink"></a></h1><h2 id="Parse-Julia-code"><a class="docs-heading-anchor" href="#Parse-Julia-code">Parse Julia code</a><a id="Parse-Julia-code-1"></a><a class="docs-heading-anchor-permalink" href="#Parse-Julia-code" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.@mamfis" href="#FuzzyLogic.@mamfis"><code>FuzzyLogic.@mamfis</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>Parse julia code into a <a href="../fis/#FuzzyLogic.MamdaniFuzzySystem"><code>MamdaniFuzzySystem</code></a>. See extended help for an example.</p><p><strong>Extended help</strong></p><p><strong>Example</strong></p><pre><code class="language-julia hljs">fis = @mamfis function tipper(service, food)::tip
+    service := begin
+      domain = 0:10
+      poor = GaussianMF(0.0, 1.5)
+      good = GaussianMF(5.0, 1.5)
+      excellent = GaussianMF(10.0, 1.5)
+    end
+
+    food := begin
+      domain = 0:10
+      rancid = TrapezoidalMF(-2, 0, 1, 3)
+      delicious = TrapezoidalMF(7, 9, 10, 12)
+    end
+
+    tip := begin
+      domain = 0:30
+      cheap = TriangularMF(0, 5, 10)
+      average = TriangularMF(10, 15, 20)
+      generous = TriangularMF(20, 25, 30)
+    end
+
+    and = ProdAnd
+    or = ProbSumOr
+    implication = ProdImplication
+
+    service == poor || food == rancid --&gt; tip == cheap
+    service == good --&gt; tip == average
+    service == excellent || food == delicious --&gt; tip == generous
+
+    aggregator = ProbSumAggregator
+    defuzzifier = BisectorDefuzzifier
+end
+
+# output
+
+tipper
+
+Inputs:
+-------
+service ∈ [0, 10] with membership functions:
+    poor = GaussianMF{Float64}(0.0, 1.5)
+    good = GaussianMF{Float64}(5.0, 1.5)
+    excellent = GaussianMF{Float64}(10.0, 1.5)
+
+food ∈ [0, 10] with membership functions:
+    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
+    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+
+
+Outputs:
+--------
+tip ∈ [0, 30] with membership functions:
+    cheap = TriangularMF{Int64}(0, 5, 10)
+    average = TriangularMF{Int64}(10, 15, 20)
+    generous = TriangularMF{Int64}(20, 25, 30)
+
+
+Inference rules:
+----------------
+(service is poor ∨ food is rancid) --&gt; tip is cheap
+service is good --&gt; tip is average
+(service is excellent ∨ food is delicious) --&gt; tip is generous
+
+
+Settings:
+---------
+- ProdAnd()
+- ProbSumOr()
+- ProdImplication()
+- ProbSumAggregator()
+- BisectorDefuzzifier(100)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parser.jl#L3">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.@sugfis" href="#FuzzyLogic.@sugfis"><code>FuzzyLogic.@sugfis</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>Parse julia code into a <a href="../fis/#FuzzyLogic.SugenoFuzzySystem"><code>SugenoFuzzySystem</code></a>. See extended help for an example.</p><p><strong>Extended help</strong></p><p><strong>Example</strong></p><pre><code class="language-julia hljs">fis = @sugfis function tipper(service, food)::tip
+    service := begin
+        domain = 0:10
+        poor = GaussianMF(0.0, 1.5)
+        good = GaussianMF(5.0, 1.5)
+        excellent = GaussianMF(10.0, 1.5)
+    end
+
+    food := begin
+        domain = 0:10
+        rancid = TrapezoidalMF(-2, 0, 1, 3)
+        delicious = TrapezoidalMF(7, 9, 10, 12)
+    end
+
+    tip := begin
+        domain = 0:30
+        cheap = 0
+        average = food
+        generous = 2service, food, -2
+    end
+
+    service == poor &amp;&amp; food == rancid --&gt; tip == cheap
+    service == good --&gt; tip == average
+    service == excellent || food == delicious --&gt; tip == generous
+end
+
+# output
+
+tipper
+
+Inputs:
+-------
+service ∈ [0, 10] with membership functions:
+    poor = GaussianMF{Float64}(0.0, 1.5)
+    good = GaussianMF{Float64}(5.0, 1.5)
+    excellent = GaussianMF{Float64}(10.0, 1.5)
+
+food ∈ [0, 10] with membership functions:
+    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
+    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+
+
+Outputs:
+--------
+tip ∈ [0, 30] with membership functions:
+    cheap = 0
+    average = food
+    generous = 2service + food - 2
+
+
+Inference rules:
+----------------
+(service is poor ∧ food is rancid) --&gt; tip is cheap
+service is good --&gt; tip is average
+(service is excellent ∨ food is delicious) --&gt; tip is generous
+
+
+Settings:
+---------
+- ProdAnd()
+- ProbSumOr()</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parser.jl#L89">source</a></section></article><h2 id="Generate-Julia-code"><a class="docs-heading-anchor" href="#Generate-Julia-code">Generate Julia code</a><a id="Generate-Julia-code-1"></a><a class="docs-heading-anchor-permalink" href="#Generate-Julia-code" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.compilefis" href="#FuzzyLogic.compilefis"><code>FuzzyLogic.compilefis</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">compilefis(
+    fname::AbstractString,
+    fis::FuzzyLogic.AbstractFuzzySystem
+) -&gt; Any
+compilefis(
+    fname::AbstractString,
+    fis::FuzzyLogic.AbstractFuzzySystem,
+    name::Symbol
+) -&gt; Any
+</code></pre><p>Compile the fuzzy inference system into stand-alone Julia code. If the first argument is a string, it write the code in the given file, otherwise it returns the Julia expression of the code.</p><p><strong>Inputs</strong></p><ul><li><code>fname::AbstractString</code> – file where to write</li><li><code>fis::AbstractFuzzySystem</code> – fuzzy system to compile</li><li><code>name::Symbol</code> – name of the generated function, default <code>fis.name</code></li></ul><p><strong>Notes</strong></p><p>Only type-1 inference systems are supported</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/tojulia.jl#L2">source</a></section></article><h2 id="Read-from-file"><a class="docs-heading-anchor" href="#Read-from-file">Read from file</a><a id="Read-from-file-1"></a><a class="docs-heading-anchor-permalink" href="#Read-from-file" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.readfis" href="#FuzzyLogic.readfis"><code>FuzzyLogic.readfis</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">readfis(file::String) -&gt; FuzzyLogic.AbstractFuzzySystem
+readfis(
+    file::String,
+    fmt::Union{Nothing, Symbol}
+) -&gt; FuzzyLogic.AbstractFuzzySystem
+</code></pre><p>Read a fuzzy system from a file using a specified format.</p><p><strong>Inputs</strong></p><ul><li><code>file::String</code> – path to the file to read.</li><li><code>fmt::Union{Symbol,Nothing}</code> – input format of the file. If <code>nothing</code>, it is inferred from the file extension.</li></ul><p>Supported formats are</p><ul><li><code>:fcl</code> – Fuzzy Control Language (corresponding file extension <code>.fcl</code>)</li><li><code>:fml</code> – Fuzzy Markup Language (corresponding file extension <code>.xml</code>)</li><li><code>:matlab</code> – Matlab fis (corresponding file extension <code>.fis</code>)</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/readwrite.jl#L1">source</a></section></article><h2 id="Parse-FCL"><a class="docs-heading-anchor" href="#Parse-FCL">Parse FCL</a><a id="Parse-FCL-1"></a><a class="docs-heading-anchor-permalink" href="#Parse-FCL" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.FCLParser.parse_fcl" href="#FuzzyLogic.FCLParser.parse_fcl"><code>FuzzyLogic.FCLParser.parse_fcl</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">parse_fcl(s::String)::AbstractFuzzySystem</code></pre><p>Parse a fuzzy inference system from a string representation in Fuzzy Control Language (FCL).</p><p><strong>Inputs</strong></p><ul><li><code>s::String</code> – string describing a fuzzy system in FCL conformant to the IEC 1131-7 standard.</li></ul><p><strong>Notes</strong></p><p>The parsers can read FCL comformant to IEC 1131-7, with the following remarks:</p><ul><li>Sugeno (system with singleton outputs) shall use COGS as defuzzifier.</li><li>the <code>RANGE</code> keyword is required for both fuzzification and defuzzification blocks.</li><li>Only the required <code>MAX</code> accumulator is supported.</li><li>Default value for defuzzification not supported.</li><li>Optional local variables are not supported.</li></ul><p>With the exceptions above, the parser supports all required and optional features of the standard (tables 6.1-1 and 6.1-2). In addition, it also supports the following features:</p><ul><li>Piecewise linear functions can have any number of points.</li><li>Membership degrees in piecewise linear functions points can be any number between <span>$0$</span> and <span>$1$</span>.</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/fcl.jl#L99-L123">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.FCLParser.@fcl_str" href="#FuzzyLogic.FCLParser.@fcl_str"><code>FuzzyLogic.FCLParser.@fcl_str</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>String macro to parse Fuzzy Control Language (FCL). See <a href="#FuzzyLogic.FCLParser.parse_fcl"><code>parse_fcl</code></a> for more details.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/fcl.jl#L152-L154">source</a></section></article><h2 id="Parse-FML"><a class="docs-heading-anchor" href="#Parse-FML">Parse FML</a><a id="Parse-FML-1"></a><a class="docs-heading-anchor-permalink" href="#Parse-FML" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.FMLParser.parse_fml" href="#FuzzyLogic.FMLParser.parse_fml"><code>FuzzyLogic.FMLParser.parse_fml</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">parse_fml(s::String)::AbstractFuzzySystem</code></pre><p>Parse a fuzzy inference system from a string representation in Fuzzy Markup Language (FML).</p><p><strong>Inputs</strong></p><ul><li><code>s::String</code> – string describing a fuzzy system in FML conformant to the IEEE 1855-2016 standard.</li></ul><p><strong>Notes</strong></p><p>The parsers can read FML comformant to IEEE 1855-2016, with the following remarks:</p><ul><li>only Mamdani and Sugeno are supported.</li><li>Operators <code>and</code> and <code>or</code> definitions should be set in the rule base block. Definitions at individual rules are ignored.</li><li>Modifiers are not supported.</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/fml.jl#L173-L190">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.FMLParser.@fml_str" href="#FuzzyLogic.FMLParser.@fml_str"><code>FuzzyLogic.FMLParser.@fml_str</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>String macro to parse Fuzzy Markup Language (FML). See <a href="#FuzzyLogic.FMLParser.parse_fml"><code>parse_fml</code></a> for more details.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/fml.jl#L207-L209">source</a></section></article><h2 id="Parse-Matlab"><a class="docs-heading-anchor" href="#Parse-Matlab">Parse Matlab</a><a id="Parse-Matlab-1"></a><a class="docs-heading-anchor-permalink" href="#Parse-Matlab" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.MatlabParser.parse_matlabfis" href="#FuzzyLogic.MatlabParser.parse_matlabfis"><code>FuzzyLogic.MatlabParser.parse_matlabfis</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">parse_matlabfis(s::AbstractString)</code></pre><p>Parse a fuzzy inference system from a string in Matlab FIS format.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/matlab_fis.jl#L98-L102">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="FuzzyLogic.MatlabParser.@matlabfis_str" href="#FuzzyLogic.MatlabParser.@matlabfis_str"><code>FuzzyLogic.MatlabParser.@matlabfis_str</code></a> — <span class="docstring-category">Macro</span></header><section><div><p>String macro to parse Matlab fis formats. See <a href="#FuzzyLogic.MatlabParser.parse_matlabfis"><code>parse_matlabfis</code></a> for more details.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/547e844a270c1745b791aec3c2d0208ae2a1c5b5/src/parsers/matlab_fis.jl#L146-L148">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../memberships/">« Membership functions</a><a class="docs-footer-nextpage" href="../genfis/">Learning fuzzy models »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.28.0-DEV on <span class="colophon-date" title="Sunday 12 March 2023 11:49">Sunday 12 March 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

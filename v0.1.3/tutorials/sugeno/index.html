@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Build a Sugeno inference system · FuzzyLogic.jl</title><meta name="title" content="Build a Sugeno inference system · FuzzyLogic.jl"/><meta property="og:title" content="Build a Sugeno inference system · FuzzyLogic.jl"/><meta property="twitter:title" content="Build a Sugeno inference system · FuzzyLogic.jl"/><meta name="description" content="Documentation for FuzzyLogic.jl."/><meta property="og:description" content="Documentation for FuzzyLogic.jl."/><meta property="twitter:description" content="Documentation for FuzzyLogic.jl."/><meta property="og:url" content="https://lucaferranti.github.io/FuzzyLogic.jl/tutorials/sugeno/"/><meta property="twitter:url" content="https://lucaferranti.github.io/FuzzyLogic.jl/tutorials/sugeno/"/><link rel="canonical" href="https://lucaferranti.github.io/FuzzyLogic.jl/tutorials/sugeno/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script><link href="../../assets/indigo.css" rel="stylesheet" type="text/css"/><link href="../../assets/favicon.ico" rel="icon" type="image/x-icon"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.svg" alt="FuzzyLogic.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../">FuzzyLogic.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../mamdani/">Build a Mamdani inference system</a></li><li class="is-active"><a class="tocitem" href>Build a Sugeno inference system</a></li><li><a class="tocitem" href="../type2/">Build a type-2 inference system</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Applications</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../applications/edge_detector/">Edge detection</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">API</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-4-1" type="checkbox"/><label class="tocitem" for="menuitem-4-1"><span class="docs-label">Inference system API</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../api/fis/">Types</a></li><li><a class="tocitem" href="../../api/logical/">Logical connectives</a></li><li><a class="tocitem" href="../../api/aggregation/">Aggregation methods</a></li><li><a class="tocitem" href="../../api/defuzzification/">Defuzzification methods</a></li></ul></li><li><a class="tocitem" href="../../api/memberships/">Membership functions</a></li><li><a class="tocitem" href="../../api/readwrite/">Reading/Writing</a></li><li><a class="tocitem" href="../../api/genfis/">Learning fuzzy models</a></li><li><a class="tocitem" href="../../api/plotting/">Plotting</a></li></ul></li><li><a class="tocitem" href="../../contributing/">Contributor&#39;s Guide</a></li><li><a class="tocitem" href="../../changelog/">Release notes</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Build a Sugeno inference system</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Build a Sugeno inference system</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/lucaferranti/FuzzyLogic.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/lucaferranti/FuzzyLogic.jl/blob/main/docs/src/literate/tutorials/sugeno.jl" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Build-a-Sugeno-inference-system"><a class="docs-heading-anchor" href="#Build-a-Sugeno-inference-system">Build a Sugeno inference system</a><a id="Build-a-Sugeno-inference-system-1"></a><a class="docs-heading-anchor-permalink" href="#Build-a-Sugeno-inference-system" title="Permalink"></a></h1><p>This tutorial describes how to construct a type-1 Sugeno inference system. The reader is assumed to be familiar with the basic syntax to build a fuzzy system, which is described in the <a href="../mamdani/#Build-a-Mamdani-inference-system">Build a Mamdani inference system</a> tutorial.</p><div class="admonition is-success"><header class="admonition-header">Try it yourself!</header><div class="admonition-body"><p>Read this as Jupyter notebook <a href="https://nbviewer.jupyter.org/github/lucaferranti/FuzzyLogic.jl/blob/gh-pages/v0.1.3/notebooks/sugeno.ipynb">here</a></p></div></div><p>A Sugeno inference system can be built using the <a href="../../api/readwrite/#FuzzyLogic.@sugfis"><code>@sugfis</code></a> macro. The following example shows the macro in action</p><pre><code class="language-julia hljs">using FuzzyLogic, Plots
+
+fis = @sugfis function tipper(service, food)::tip
+    service := begin
+        domain = 0:10
+        poor = GaussianMF(0.0, 1.5)
+        good = GaussianMF(5.0, 1.5)
+        excellent = GaussianMF(10.0, 1.5)
+    end
+
+    food := begin
+        domain = 0:10
+        rancid = TrapezoidalMF(-2, 0, 1, 3)
+        delicious = TrapezoidalMF(7, 9, 10, 12)
+    end
+
+    tip := begin
+        domain = 0:30
+        cheap = 5.002
+        average = 15
+        generous = 2service, 0.5food, 5.0
+    end
+
+    service == poor || food == rancid --&gt; tip == cheap
+    service == good --&gt; tip == average
+    service == excellent || food == delicious --&gt; tip == generous
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">tipper
+
+Inputs:
+-------
+service ∈ [0, 10] with membership functions:
+    poor = GaussianMF{Float64}(0.0, 1.5)
+    good = GaussianMF{Float64}(5.0, 1.5)
+    excellent = GaussianMF{Float64}(10.0, 1.5)
+
+food ∈ [0, 10] with membership functions:
+    rancid = TrapezoidalMF{Int64}(-2, 0, 1, 3)
+    delicious = TrapezoidalMF{Int64}(7, 9, 10, 12)
+
+
+Outputs:
+--------
+tip ∈ [0, 30] with membership functions:
+    cheap = 5.002
+    average = 15
+    generous = 2.0service + 0.5food + 5.0
+
+
+Inference rules:
+----------------
+(service is poor ∨ food is rancid) --&gt; tip is cheap
+service is good --&gt; tip is average
+(service is excellent ∨ food is delicious) --&gt; tip is generous
+
+
+Settings:
+---------
+- ProdAnd()
+- ProbSumOr()
+</code></pre><p>The result is an object of type <a href="../../api/fis/#FuzzyLogic.SugenoFuzzySystem"><code>SugenoFuzzySystem</code></a>. This is similar to a Mamdani, with the main difference being in the output definition. In a Sugeno system, the output &quot;membership functions&quot; can be:</p><ul><li>A <a href="../../api/fis/#FuzzyLogic.ConstantSugenoOutput"><code>ConstantSugenoOutput</code></a>, e.g. <code>average = 15</code>. This means that if the tip is average, then it has constant value <span>$15$</span>,</li><li>A <a href="../../api/fis/#FuzzyLogic.LinearSugenoOutput"><code>LinearSugenoOutput</code></a>, e.g. <code>generous = 2service, 0.5food, 5.0</code>. This means that if the tip is generous, then its value will be <span>$2service+0.5food + 5.0$</span>.</li></ul><p>It is good to highlight that these functions return the value of the output variable and not a membership degree, like in a Mamdani system.</p><p>The second difference from a Mandani system is in the settings that can be tuned. A Sugeno system only has the following options:</p><ul><li><code>and</code>: algorithm to evaluate <code>&amp;&amp;</code>. Must be one of the available <a href="../../api/logical/#Conjuction-methods">Conjuction methods</a>. Default <a href="../../api/logical/#ProdAnd"><code>ProdAnd</code></a>.</li><li><code>or</code>: algorithm to evaluate <code>||</code>. Must be one of the available <a href="../../api/logical/#Disjunction-methods">Disjunction methods</a>. Default <a href="../../api/logical/#ProbSumOr"><code>ProbSumOr</code></a></li></ul><p>The created model can be evaluated the same way of a Mamdani system.</p><pre><code class="language-julia hljs">fis(service = 2, food = 3)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1-element Dictionaries.Dictionary{Symbol, Union{Float64, FuzzyLogic.Interval{Float64}}}
+ :tip │ 7.4781463658605665</code></pre><p>Let&#39;s see the plotting of output variables, as it differs from the Mamdani system</p><pre><code class="language-julia hljs">plot(fis, :tip)</code></pre><img src="737f3555.svg" alt="Example block output"/><p>As you can see</p><ul><li>If the membership function is constant, then the plot simply shows a horizontal line at the output value level.</li><li>For <code>LinearSugenoOutput</code>, the plot is a bar plot, showing for each input variable the corresponding coefficient. This gives a visual indication of how much each input contributes to the output.</li></ul><p>Like the Mamdani case, we can plot the whole system.</p><pre><code class="language-julia hljs">plot(fis)</code></pre><img src="68827888.svg" alt="Example block output"/><p>Similarly to Mamdani, we can also generate stand-alone Julia code</p><pre><code class="language-julia hljs">fis_ex = compilefis(fis)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">:(function tipper(service, food)
+      poor = exp(-((service - 0.0) ^ 2) / 4.5)
+      good = exp(-((service - 5.0) ^ 2) / 4.5)
+      excellent = exp(-((service - 10.0) ^ 2) / 4.5)
+      rancid = max(min((food - -2) / 2, 1, (3 - food) / 2), 0)
+      delicious = max(min((food - 7) / 2, 1, (12 - food) / 2), 0)
+      ant1 = (poor + rancid) - poor * rancid
+      ant2 = good
+      ant3 = (excellent + delicious) - excellent * delicious
+      tot_weight = ant1 + ant2 + ant3
+      cheap = 5.002
+      average = 15
+      generous = 5.0 + 2.0service + 0.5 * food
+      tip = (ant1 * cheap + ant2 * average + ant3 * generous) / tot_weight
+      return tip
+  end)</code></pre><pre><code class="language-julia hljs">eval(fis_ex)
+tipper(2, 3)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">7.4781463658605665</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../mamdani/">« Build a Mamdani inference system</a><a class="docs-footer-nextpage" href="../type2/">Build a type-2 inference system »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Wednesday 18 September 2024 20:13">Wednesday 18 September 2024</span>. Using Julia version 1.10.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

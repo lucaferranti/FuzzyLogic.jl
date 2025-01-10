@@ -191,7 +191,7 @@ variable domain ``[a, b]`` the defuzzified output is the value ``t ∈ [a, b]`` 
 the area under ``f`` into two equal parts. That is
 
 ```math
-∫_a^tf(x)\\textrm{d}x = ∫_t^af(x)\\textrm{d}x.
+∫_a^tf(x)\\textrm{d}x = ∫_t^bf(x)\\textrm{d}x.
 ```
 
 ### Parameters

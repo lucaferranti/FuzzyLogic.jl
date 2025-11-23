@@ -152,9 +152,17 @@ let dt = 0.01,            # [s] time step
     time = collect(0:n_steps) .* dt
     h_log = similar(time)
     u_log = similar(time)
+    h_log_p = similar(time)
+    u_log_p = similar(time)
 
     h = 0.0
     e_prev = h_ref - h
+    h_p = 0.0
+    e_prev_p = h_ref - h_p
+    Kp = 0.8  # proportional gain
+    Ki = 0.1  # integral gain
+    Kd = 0.05 # derivative gain
+    int_e = 0.0
 
     for k in eachindex(time)
         e = h_ref - h
@@ -168,17 +176,31 @@ let dt = 0.01,            # [s] time step
 
         e_prev = e
         h = h_next
+
+        e_p = h_ref - h_p
+        de_p = e_p - e_prev_p
+        int_e += e_p * dt
+        u_p = clamp(Kp * e_p + Ki * int_e + Kd * de_p / dt, 0.0, 1.0)
+        h_next_p = step_tank(h_p, u_p; dt = dt)
+
+        h_log_p[k] = h_p
+        u_log_p[k] = u_p
+
+        e_prev_p = e_p
+        h_p = h_next_p
     end
 
     p1 = plot(time, h_log,
         xlabel = "time [s]", ylabel = "water level",
-        label = "h(t)", legend = :bottomright)
+        label = "fuzzy h(t)", legend = :bottomright)
+    plot!(p1, time, h_log_p, label = "PID h(t)")
     plot!(p1, time, fill(h_ref, length(time)), linestyle = :dash,
         label = "reference")
 
     p2 = plot(time, u_log,
         xlabel = "time [s]", ylabel = "valve opening u",
-        label = "u(t)", legend = :bottomright)
+        label = "fuzzy u(t)", legend = :bottomright)
+    plot!(p2, time, u_log_p, label = "PID u(t)")
 
     plot(p1, p2, layout = (2, 1), size = (800, 600))
 end

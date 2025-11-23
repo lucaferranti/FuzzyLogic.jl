@@ -76,48 +76,58 @@ fis = @mamfis function water_tank_controller(e, de)::u
     e := begin
         domain = -1:1
 
-        NL = ZShapeMF(-0.9, -0.2)                   # negative large
-        NS = TriangularMF(-0.7, -0.35, 0.0)         # negative small
-        ZE = TriangularMF(-0.1, 0.0, 0.1)           # around zero
-        PS = TriangularMF(0.0, 0.35, 0.7)           # positive small
-        PL = SShapeMF(0.6, 0.9)                     # positive large
+        PVS = ZShapeMF(-1.0, -0.666)                    # very small positive
+        PS = GaussianMF(-0.5, 0.333)            # small
+        PM = GaussianMF(0.0, 0.333)         # medium
+        PL = GaussianMF(0.5, 0.333)           # large
+        PVL = SShapeMF(0.666, 1.0)                    # very large
     end
 
     de := begin
         domain = -1:1
 
-        DN = ZShapeMF(-0.4, -0.05)                  # decreasing
-        DZ = TriangularMF(-0.1, 0.0, 0.1)           # roughly constant
-        DP = SShapeMF(0.05, 0.4)                    # increasing
+        VDN = ZShapeMF(-1.0, -0.666)                   # very decreasing
+        DN = GaussianMF(-0.5, 0.333)          # slightly decreasing
+        DZ = GaussianMF(0.0, 0.333)            # roughly constant
+        DP = GaussianMF(0.5, 0.333)           # slightly increasing
+        VDP = SShapeMF(0.666, 1.0)                     # very increasing
     end
 
     u := begin
         domain = 0:1
 
-        Close = ZShapeMF(0.05, 0.2)
-        Small = TriangularMF(0.1, 0.25, 0.4)
-        Medium = TriangularMF(0.3, 0.5, 0.7)
-        Large = TriangularMF(0.6, 0.75, 0.9)
-        Full = SShapeMF(0.8, 1.05)
+        Close = ZShapeMF(0.00, 0.166)
+        Small = GaussianMF(0.25, 0.166)
+        Medium = GaussianMF(0.5, 0.166)
+        Large = GaussianMF(0.75, 0.166)
+        Full = SShapeMF(0.833, 1.00)
     end
 
+    e == PVL && de == VDN --> u == Full
+    e == PVL && de == DN --> u == Full
+    e == PVL && de == DZ --> u == Full
+    e == PVL && de == DP --> u == Large
+    e == PVL && de == VDP --> u == Large
+
+    e == PL && de == VDN --> u == Full
     e == PL && de == DN --> u == Full
-    e == PL && de == DZ --> u == Full
-    e == PL && de == DP --> u == Large
+    e == PL && de == DZ --> u == Large
+    e == PL && de == DP --> u == Medium
+    e == PL && de == VDP --> u == Medium
 
-    e == PS && de == DN --> u == Full
-    e == PS && de == DZ --> u == Large
-    e == PS && de == DP --> u == Medium
+    e == PM && de == VDN --> u == Large
+    e == PM && de == DN --> u == Large
+    e == PM && de == DZ --> u == Medium
+    e == PM && de == DP --> u == Small
+    e == PM && de == VDP --> u == Small
 
-    e == ZE && de == DN --> u == Large
-    e == ZE && de == DZ --> u == Medium
-    e == ZE && de == DP --> u == Small
+    e == PS && de == VDN --> u == Medium
+    e == PS && de == DN --> u == Small
+    e == PS && de == DZ --> u == Small
+    e == PS && de == DP --> u == Close
+    e == PS && de == VDP --> u == Close
 
-    e == NS && de == DN --> u == Small
-    e == NS && de == DZ --> u == Close
-    e == NS && de == DP --> u == Close
-
-    e == NL --> u == Close
+    e == PVS --> u == Close
 end
 
 # Plot the fuzzy system and its membership functions.
@@ -133,7 +143,7 @@ plot(plot(fis, :e, size = (400, 300)),
 # and the fuzzy controller. We consider a unit step in the reference
 # level: the level should rise from 0 to 1 and stay close to 1 without
 # excessive overshoot.
-let dt = 0.1,             # [s] time step
+let dt = 0.01,            # [s] time step
     t_final = 60.0,       # [s] total simulation time
     h_ref = 1.0
 

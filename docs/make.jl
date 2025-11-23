@@ -161,6 +161,7 @@ makedocs(;
         ],
         "Applications" => [
             "Edge detection" => "applications/edge_detector.md",
+            "Water tank level control" => "applications/water_tank_control.md",
         ],
         "API" => [
             "Inference system API" => [

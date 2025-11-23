@@ -29,8 +29,8 @@ using FuzzyLogic
 using Plots
 
 # Tank parameters
-const A_tank  = 1.0     # [m^2] cross-section
-const k_out   = 0.5     # [1/s] outflow coefficient
+const A_tank = 1.0     # [m^2] cross-section
+const k_out = 0.5     # [1/s] outflow coefficient
 const q_in_max = 1.0    # [m^3/s] maximum inlet flow
 
 """
@@ -45,9 +45,9 @@ Simulate one time step of the water tank.
 Returns the new water level `h_next`.
 """
 function step_tank(h::Float64, u::Float64; dt::Float64)
-    q_in  = q_in_max * clamp(u, 0.0, 1.0)
+    q_in = q_in_max * clamp(u, 0.0, 1.0)
     q_out = k_out * max(h, 0.0)
-    dh    = (q_in - q_out) / A_tank
+    dh = (q_in - q_out) / A_tank
     h_new = h + dt * dh
     return max(h_new, 0.0)
 end
@@ -74,58 +74,58 @@ end
 # We implement the controller using the `@mamfis` macro.
 fis = @mamfis function water_tank_controller(e, de)::u
     e := begin
-        domain = -1.0:1.0
+        domain = -1:1
 
-        NL = TrapezoidalMF(-1.0, -1.0, -0.7, -0.3)  # negative large
+        NL = ZShapeMF(-0.9, -0.2)                   # negative large
         NS = TriangularMF(-0.7, -0.35, 0.0)         # negative small
         ZE = TriangularMF(-0.1, 0.0, 0.1)           # around zero
         PS = TriangularMF(0.0, 0.35, 0.7)           # positive small
-        PL = TrapezoidalMF(0.3, 0.7, 1.0, 1.0)      # positive large
+        PL = SShapeMF(0.6, 0.9)                     # positive large
     end
 
     de := begin
-        domain = -0.5:0.5
+        domain = -1:1
 
-        DN = TrapezoidalMF(-0.5, -0.5, -0.25, 0.0)  # decreasing
+        DN = ZShapeMF(-0.4, -0.05)                  # decreasing
         DZ = TriangularMF(-0.1, 0.0, 0.1)           # roughly constant
-        DP = TrapezoidalMF(0.0, 0.25, 0.5, 0.5)     # increasing
+        DP = SShapeMF(0.05, 0.4)                    # increasing
     end
 
     u := begin
-        domain = 0.0:1.0
+        domain = 0:1
 
-        Close  = TrapezoidalMF(0.0, 0.0, 0.1, 0.2)
-        Small  = TriangularMF(0.1, 0.25, 0.4)
+        Close = ZShapeMF(0.05, 0.2)
+        Small = TriangularMF(0.1, 0.25, 0.4)
         Medium = TriangularMF(0.3, 0.5, 0.7)
-        Large  = TriangularMF(0.6, 0.75, 0.9)
-        Full   = TrapezoidalMF(0.8, 0.9, 1.0, 1.0)
+        Large = TriangularMF(0.6, 0.75, 0.9)
+        Full = SShapeMF(0.8, 1.05)
     end
 
-    e == PL          && de == DN --> u == Full
-    e == PL          && de == DZ --> u == Full
-    e == PL          && de == DP --> u == Large
+    e == PL && de == DN --> u == Full
+    e == PL && de == DZ --> u == Full
+    e == PL && de == DP --> u == Large
 
-    e == PS          && de == DN --> u == Full
-    e == PS          && de == DZ --> u == Large
-    e == PS          && de == DP --> u == Medium
+    e == PS && de == DN --> u == Full
+    e == PS && de == DZ --> u == Large
+    e == PS && de == DP --> u == Medium
 
-    e == ZE          && de == DN --> u == Large
-    e == ZE          && de == DZ --> u == Medium
-    e == ZE          && de == DP --> u == Small
+    e == ZE && de == DN --> u == Large
+    e == ZE && de == DZ --> u == Medium
+    e == ZE && de == DP --> u == Small
 
-    e == NS          && de == DN --> u == Small
-    e == NS          && de == DZ --> u == Close
-    e == NS          && de == DP --> u == Close
+    e == NS && de == DN --> u == Small
+    e == NS && de == DZ --> u == Close
+    e == NS && de == DP --> u == Close
 
-    e == NL                      --> u == Close
+    e == NL --> u == Close
 end
 
 # Plot the fuzzy system and its membership functions.
 plot(fis, size = (800, 400))
 
 plot(plot(fis, :e, size = (400, 300)),
-     plot(fis, :u, size = (400, 300)),
-     layout = (1, 2))
+    plot(fis, :u, size = (400, 300)),
+    layout = (1, 2))
 
 # ## Closed-loop simulation
 #
@@ -147,7 +147,7 @@ let dt = 0.1,             # [s] time step
     e_prev = h_ref - h
 
     for k in eachindex(time)
-        e  = h_ref - h
+        e = h_ref - h
         de = e - e_prev
 
         u_val = fis(e = e, de = de)[:u]
@@ -157,18 +157,18 @@ let dt = 0.1,             # [s] time step
         u_log[k] = u_val
 
         e_prev = e
-        h      = h_next
+        h = h_next
     end
 
     p1 = plot(time, h_log,
-              xlabel = "time [s]", ylabel = "water level",
-              label = "h(t)", legend = :bottomright)
+        xlabel = "time [s]", ylabel = "water level",
+        label = "h(t)", legend = :bottomright)
     plot!(p1, time, fill(h_ref, length(time)), linestyle = :dash,
-          label = "reference")
+        label = "reference")
 
     p2 = plot(time, u_log,
-              xlabel = "time [s]", ylabel = "valve opening u",
-              label = "u(t)", legend = :bottomright)
+        xlabel = "time [s]", ylabel = "valve opening u",
+        label = "u(t)", legend = :bottomright)
 
     plot(p1, p2, layout = (2, 1), size = (800, 600))
 end

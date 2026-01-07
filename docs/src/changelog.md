@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Unreleased
 
 - ![](https://img.shields.io/badge/BREAKING-red.svg) use a different type parameter for each field of membership functions. This allows membership functions to support mixed-type inputs like `GaussianMF(0, 0.1)`.
+- ![](https://img.shields.io/badge/new%20feature-green.svg) added Gustafson-Kessel clustering algorithm.
 
 ## v0.1.3 -- 2024-09-18
 

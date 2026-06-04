@@ -13,14 +13,17 @@ RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
-Aqua = "0.6"
+Aqua = "0.6, 0.8"
 Dictionaries = "0.3"
 DocStringExtensions = "0.9"
+Documenter = "1"
 LightXML = "0.9"
 MacroTools = "0.5"
 PEG = "1.0"
 RecipesBase = "1.0"
 Reexport = "1.0"
+SafeTestsets = "0.1"
+Test = "1"
 julia = "1.6"
 
 [extras]
